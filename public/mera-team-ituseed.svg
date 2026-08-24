@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="nightSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#050C15" />
+      <stop offset="60%" stop-color="#0B1A2C" />
+      <stop offset="100%" stop-color="#0F243A" />
+    </linearGradient>
+
+    <linearGradient id="bosphorusBridge" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EF4444" />
+      <stop offset="50%" stop-color="#DC2626" />
+      <stop offset="100%" stop-color="#B91C1C" />
+    </linearGradient>
+
+    <filter id="cityGlow">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Night Sky Backdrop -->
+  <rect width="800" height="500" rx="20" fill="url(#nightSky)" />
+
+  <!-- Distant Istanbul Bosphorus Bridge (Boğaziçi Köprüsü Işıkları) -->
+  <g transform="translate(120, 110)">
+    <!-- Bridge Towers -->
+    <line x1="80" y1="10" x2="80" y2="90" stroke="#EF4444" stroke-width="2.5" />
+    <line x1="280" y1="0" x2="280" y2="85" stroke="#EF4444" stroke-width="2.5" />
+    
+    <!-- Suspension Cables Red Glow -->
+    <path d="M 0,80 Q 80,40 180,60 Q 280,30 360,75" fill="none" stroke="#EF4444" stroke-width="3" filter="url(#cityGlow)" />
+    <path d="M 0,82 Q 80,42 180,62 Q 280,32 360,77" fill="none" stroke="#FFFFFF" stroke-width="1" opacity="0.9" />
+
+    <!-- Vertical Strings -->
+    <line x1="120" y1="52" x2="120" y2="82" stroke="#EF4444" stroke-width="1" opacity="0.7" />
+    <line x1="160" y1="58" x2="160" y2="82" stroke="#EF4444" stroke-width="1" opacity="0.7" />
+    <line x1="200" y1="56" x2="200" y2="80" stroke="#EF4444" stroke-width="1" opacity="0.7" />
+    <line x1="240" y1="46" x2="240" y2="78" stroke="#EF4444" stroke-width="1" opacity="0.7" />
+  </g>
+
+  <!-- Distant City Lights / Night Skyline Bokeh -->
+  <g fill="#FDE047" opacity="0.6">
+    <circle cx="220" cy="180" r="1.5" />
+    <circle cx="260" cy="175" r="2" />
+    <circle cx="310" cy="190" r="1.5" />
+    <circle cx="380" cy="165" r="2.5" />
+    <circle cx="440" cy="185" r="2" />
+    <circle cx="510" cy="170" r="1.5" />
+    <circle cx="590" cy="180" r="2.5" />
+    <circle cx="680" cy="195" r="1.5" />
+  </g>
+  <g fill="#F43F5E" opacity="0.5">
+    <circle cx="290" cy="182" r="2" />
+    <circle cx="470" cy="178" r="2" />
+    <circle cx="640" cy="188" r="2" />
+  </g>
+
+  <!-- Balcony Railing Silhouettes / Glass Panel -->
+  <rect x="0" y="320" width="800" height="180" fill="#07111C" opacity="0.95" />
+  <line x1="0" y1="320" x2="800" y2="320" stroke="#334155" stroke-width="6" />
+  <line x1="0" y1="350" x2="800" y2="350" stroke="#1E293B" stroke-width="2" />
+
+  <!-- Team Members (3 Core Founders / Researchers) -->
+  <g transform="translate(180, 180)">
+    
+    <!-- Member 1 (Left - Data & AI) -->
+    <g transform="translate(0, 30)">
+      <circle cx="50" cy="35" r="24" fill="#F8FAFC" />
+      <path d="M 32,20 Q 50,10 68,22 Q 62,35 48,32 Z" fill="#334155" />
+      <path d="M 15,100 Q 20,65 50,65 Q 80,65 85,100 Z" fill="#1E293B" />
+      <rect x="15" y="95" width="70" height="100" fill="#0F172A" />
+    </g>
+
+    <!-- Member 2 (Center / Foreground - Founder & Product Lead) -->
+    <g transform="translate(130, 0)">
+      <circle cx="65" cy="40" r="30" fill="#FEE2E2" />
+      <path d="M 40,25 Q 65,12 88,24 Q 90,45 65,40 Z" fill="#78350F" />
+      <!-- White t-shirt & dark jacket -->
+      <path d="M 20,130 Q 30,75 65,75 Q 100,75 110,130 Z" fill="#334155" />
+      <polygon points="50,75 80,75 75,130 55,130" fill="#F8FAFC" />
+      <rect x="20" y="125" width="90" height="120" fill="#1E293B" />
+    </g>
+
+    <!-- Member 3 (Right - Physiology & Research Lead) -->
+    <g transform="translate(270, 35)">
+      <circle cx="50" cy="35" r="23" fill="#F8FAFC" />
+      <path d="M 35,20 Q 50,12 65,22 Q 62,30 45,28 Z" fill="#1E293B" />
+      <!-- Jacket with emblem -->
+      <path d="M 15,100 Q 20,65 50,65 Q 80,65 85,100 Z" fill="#1E293B" />
+      <circle cx="65" cy="85" r="6" fill="#38BDF8" opacity="0.6" />
+      <rect x="15" y="95" width="70" height="100" fill="#0F172A" />
+    </g>
+  </g>
+
+  <!-- ITÜ SEED & INNOGATE BADGE (Bottom Right) -->
+  <g transform="translate(480, 360)">
+    <rect x="0" y="0" width="280" height="85" rx="16" fill="#0F1F2E" stroke="#1E3A5F" stroke-width="1.5" />
+    
+    <!-- Colorful Seed Icon -->
+    <g transform="translate(20, 24)">
+      <circle cx="16" cy="18" r="8" fill="#F43F5E" />
+      <circle cx="28" cy="18" r="8" fill="#84CC16" />
+      <circle cx="22" cy="28" r="8" fill="#FBBF24" />
+    </g>
+
+    <!-- ITÜ SEED Text -->
+    <text x="68" y="44" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="24" font-weight="900" letter-spacing="1">
+      ITUSEED
+    </text>
+    <text x="68" y="62" fill="#38BDF8" font-family="system-ui, sans-serif" font-size="11" font-weight="700">
+      İTÜ Çekirdek &amp; Innogate Mezunu
+    </text>
+  </g>
+
+  <!-- Tagline Banner on Bottom Left -->
+  <g transform="translate(40, 385)">
+    <text x="0" y="0" fill="#2ED8B6" font-family="system-ui, sans-serif" font-size="16" font-weight="800">
+      Mera Ekibi • İstanbul
+    </text>
+    <text x="0" y="24" fill="#94A3B8" font-family="system-ui, sans-serif" font-size="12" font-weight="500">
+      Metabolik Performans ve Spor Fizyolojisi Laboratuvarı
+    </text>
+  </g>
+</svg>

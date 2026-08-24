@@ -1,0 +1,6 @@
+{
+  "name": "SportTech Türkiye",
+  "description": "sporttech.com.tr domaini ve Sport Tech Türkiye markasıyla spor teknolojileri, girişimler, haberler, destekleyiciler ve inovasyon platformu. Provided by Sporsepeti.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

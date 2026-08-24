@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <!-- Top-Left Azure/Cyan Gradient -->
+    <linearGradient id="sp-cyan-grad" x1="60" y1="20" x2="120" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="60%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+
+    <!-- Top-Left Royal Blue Gradient -->
+    <linearGradient id="sp-blue-grad" x1="20" y1="70" x2="100" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="70%" stop-color="#1D4ED8" />
+      <stop offset="100%" stop-color="#1E3A8A" />
+    </linearGradient>
+
+    <!-- Top-Left Deep Blue Shadow/Facet -->
+    <linearGradient id="sp-darkblue-grad" x1="30" y1="110" x2="70" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1D4ED8" />
+      <stop offset="100%" stop-color="#172554" />
+    </linearGradient>
+
+    <!-- Bottom-Right Magenta/Pink Gradient -->
+    <linearGradient id="sp-magenta-grad" x1="140" y1="90" x2="220" y2="170" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D946EF" />
+      <stop offset="40%" stop-color="#EC4899" />
+      <stop offset="100%" stop-color="#E11D48" />
+    </linearGradient>
+
+    <!-- Bottom-Right Coral/Red-Orange Gradient -->
+    <linearGradient id="sp-coral-grad" x1="170" y1="110" x2="210" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="60%" stop-color="#FB7185" />
+      <stop offset="100%" stop-color="#F97316" />
+    </linearGradient>
+
+    <!-- Bottom-Right Gold/Amber Gradient -->
+    <linearGradient id="sp-gold-grad" x1="120" y1="160" x2="180" y2="230" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FB923C" />
+      <stop offset="50%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#FDE047" />
+    </linearGradient>
+  </defs>
+
+  <!-- ==================== TOP-LEFT BLUE EMBLEM ==================== -->
+  <g id="sporsepeti-top-wing">
+    <!-- Top Cyan Curve / Apex -->
+    <path
+      d="M104.5 13.5 C116 25 119 44 107 56 L64 99 L36 71 L76 31 C84 23 93 12 104.5 13.5 Z"
+      fill="url(#sp-cyan-grad)"
+    />
+
+    <!-- Middle Vibrant Blue Diamond/Segment -->
+    <path
+      d="M64 99 L100 135 L61 150 C37 146 22 131 16 112 L64 99 Z"
+      fill="url(#sp-blue-grad)"
+    />
+
+    <!-- Connecting / Overlapping Main Wing Body -->
+    <path
+      d="M104.5 13.5 C118 27 116 48 102 62 L64 100 L100 136 C80 156 50 152 28 130 C12 114 10 88 32 66 L78 22 C86 14 95 10 104.5 13.5 Z"
+      fill="none"
+    />
+
+    <!-- Detailed Facets matching Sporsepeti Icon -->
+    <!-- Top-Right Cyan/Blue Petal -->
+    <path
+      d="M104 14 C117 27 115 48 102 61 L62 101 L26 65 L68 23 C78 13 92 10 104 14 Z"
+      fill="url(#sp-cyan-grad)"
+    />
+    <!-- Bottom-Left Deep Royal Blue Petal -->
+    <path
+      d="M62 101 L100 139 C82 157 54 153 32 131 C16 115 14 91 34 71 L62 101 Z"
+      fill="url(#sp-blue-grad)"
+    />
+    <!-- Inner Dark Accent Corner -->
+    <path
+      d="M62 101 L40 123 C30 113 26 103 34 71 L62 101 Z"
+      fill="url(#sp-darkblue-grad)"
+      opacity="0.35"
+    />
+  </g>
+
+  <!-- ==================== BOTTOM-RIGHT WARM EMBLEM ==================== -->
+  <g id="sporsepeti-bottom-wing">
+    <!-- Top Magenta/Pink Cap -->
+    <path
+      d="M138 101 L178 61 C196 79 192 107 170 129 L138 101 Z"
+      fill="url(#sp-magenta-grad)"
+    />
+    <!-- Middle Coral/Pink Slope -->
+    <path
+      d="M178 61 C196 79 192 107 170 129 L206 165 C222 149 224 125 204 105 L178 61 Z"
+      fill="url(#sp-coral-grad)"
+    />
+    <!-- Main Sweeping Warm Wing -->
+    <path
+      d="M138 101 L178 61 C198 79 220 101 224 126 C228 152 208 178 184 202 C162 224 136 226 120 210 C104 194 108 166 128 146 L170 104 L138 101 Z"
+      fill="none"
+    />
+    <!-- Bottom Gold/Amber Tail -->
+    <path
+      d="M170 129 L206 165 C224 183 210 211 184 219 C158 227 132 215 120 199 C108 183 114 157 134 137 L170 129 Z"
+      fill="url(#sp-gold-grad)"
+    />
+    <!-- Main Coral/Rose Diagonal Body -->
+    <path
+      d="M178 61 C190 73 194 93 176 111 L136 151 L172 187 C190 169 214 145 220 125 C224 105 208 81 178 61 Z"
+      fill="url(#sp-coral-grad)"
+    />
+    <!-- Bottom Golden/Amber Swept Cap -->
+    <path
+      d="M172 187 L136 151 L122 165 C106 181 108 203 124 219 C142 237 170 231 188 213 L204 197 L172 187 Z"
+      fill="url(#sp-gold-grad)"
+    />
+  </g>
+</svg>
