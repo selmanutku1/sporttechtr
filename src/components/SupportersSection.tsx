@@ -50,12 +50,16 @@ export const SupportersSection: React.FC<SupportersSectionProps> = ({ onOpenPart
               id={`supporter-card-${primarySupporter.id}`}
             >
               <div className="w-24 h-24 rounded-2xl bg-white border border-slate-200 p-3 flex items-center justify-center shrink-0 shadow-2xs">
-                <img 
-                  src={primarySupporter.logo} 
-                  alt={primarySupporter.name}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-contain"
-                />
+                {primarySupporter.id === 'sporsepeti-corp' ? (
+                  <SporsepetiIcon className="w-16 h-16" />
+                ) : (
+                  <img 
+                    src={primarySupporter.logo} 
+                    alt={primarySupporter.name}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain"
+                  />
+                )}
               </div>
 
               <div className="flex-1 text-center md:text-left space-y-3">
