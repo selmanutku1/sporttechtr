@@ -1,7 +1,7 @@
 import { NewsArticle, NewsCategory } from '../types';
 import { NEWS_ARTICLES as INITIAL_NEWS } from '../data/news';
 
-const STORAGE_KEY_NEWS = 'stt_news_articles';
+const STORAGE_KEY_NEWS = 'stt_news_articles_v2';
 
 export const NEWS_CATEGORIES: { id: NewsCategory; label: string }[] = [
   { id: 'all', label: 'Tüm Haberler' },

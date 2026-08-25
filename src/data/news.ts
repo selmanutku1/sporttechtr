@@ -2,6 +2,33 @@ import { NewsArticle } from '../types';
 
 export const NEWS_ARTICLES: NewsArticle[] = [
   {
+    id: 'fmag-tr-dijital-stadyum-vizyonu-ve-profesyonel-aglar',
+    title: 'fmag.tr: Profesyonel Futbolun Dijitalleşen Yüzü ve Genişleyen Veri Ağı',
+    slug: 'fmag-tr-dijital-stadyum-vizyonu-ve-profesyonel-aglar',
+    excerpt: "Türkiye'nin en kapsamlı menajerlik ve futbolcu dizini fmag.tr, teknolojik altyapısını güçlendirerek kulüpler ve ajanslar arasındaki bağı dijital bir stadyum vizyonuyla güçlendiriyor.",
+    content: [
+      'Türk futbol ekosistemi, fmag.tr platformunun sunduğu derinlemesine veri analizi ve profesyonel ağ yetenekleriyle dijital bir dönüşümden geçiyor. 120 binden fazla futbolcu verisi ve 380’den fazla aktif ajans kaydıyla platform, transfer süreçlerinin şeffaflaşmasında kritik bir rol üstleniyor.',
+      'Yeni duyurulan "Dijital Stadyum" vizyonu kapsamında, menajerlerin ve kulüplerin etkileşimi sadece bir veri girişi olmaktan çıkıp, profesyonel bir sosyal ağ deneyimine dönüşüyor. Bu vizyon, oyuncu profillerinin sadece istatistiklerle değil, temsil ilişkileri ve kariyer projeksiyonlarıyla zenginleştirilmesini hedefliyor.',
+      'Platformun teknolojik altyapısı, scout ekiplerinin aradığı kriterlere göre anlık filtreleme yapabilmesine olanak tanıyor. Özellikle alt liglerdeki gizli yeteneklerin keşfedilmesi ve profesyonel sözleşme süreçlerinin hızlandırılması noktasında fmag.tr, ekosistemin vazgeçilmez bir parçası haline gelmiş durumda.',
+      'fmag.tr kurucu ekibi, önümüzdeki dönemde yapay zeka destekli performans tahmin modellerini de platforma entegre etmeyi planlıyor. Bu sayede bir futbolcunun kariyer rotasındaki bir sonraki adımın, veri tabanlı öngörülerle desteklenmesi mümkün olacak.'
+    ],
+    category: 'ecosystem',
+    categoryName: 'Ekosistem & Platform',
+    author: {
+      name: 'SportTech Araştırma Masası',
+      role: 'Ekosistem & Strateji Editörlüğü',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80'
+    },
+    date: '25 Ağustos 2026',
+    readTime: '6 dk okuma',
+    coverImage: '/fmag-cover.jpg',
+    tags: ['fmag.tr', 'Futbol Menajerliği', 'Transfer Verisi', 'Scout Sistemi', 'Dijital Dönüşüm', 'Yapay Zeka'],
+    source: 'fmag.tr / SportTech Türkiye',
+    isFeatured: true,
+    status: 'active',
+    likesCount: 456
+  },
+  {
     id: 'fmag-futbolun-gelecegi-verinin-icinde-sakli',
     title: 'Menajerlerin Yeni Gözdesi Fmag: Futbolun Geleceği Verinin İçinde Saklı',
     slug: 'fmag-futbolun-gelecegi-verinin-icinde-sakli',
@@ -25,7 +52,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     coverImage: '/fmag-stadium.png',
     tags: ['fmag.tr', 'Futbol Menajerliği', 'Transfer Verisi', 'Scout Sistemi', 'Dijital Dönüşüm', 'Yapay Zeka'],
     source: 'fmag.tr / SportTech Türkiye',
-    isFeatured: true,
+    isFeatured: false,
+    status: 'active',
     likesCount: 342
   },
   {
@@ -53,7 +81,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     tags: ['Mera', 'Mera AI', 'VO₂max', 'Metabolik Performans', 'Sinir Ağları', 'İTÜ Seed', 'Innogate', 'SportTech'],
     source: 'Mera / SportTech Türkiye',
     isFeatured: true,
-    likesCount: 512
+    likesCount: 512,
+    status: 'active'
   },
   {
     id: 'sporsepeti-dijital-spor-ekosistemi-donusumu',
@@ -78,7 +107,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     tags: ['Sporsepeti', 'Spor Ekosistemi', 'SportsFly', 'Spor Kütüphanesi', 'Dijital Dönüşüm'],
     source: 'SportTech Türkiye Araştırma Birimi',
     isFeatured: true,
-    likesCount: 428
+    likesCount: 428,
+    status: 'active'
   },
   {
     id: 'sportsfly-spor-isletmeleri-yonetim-yazilimi-basarisi',

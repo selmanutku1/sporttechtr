@@ -89,6 +89,14 @@ export const App: React.FC = () => {
 
   // Load all data from storage on mount
   useEffect(() => {
+    // Handle hash to path redirect for old links
+    if (window.location.hash) {
+      const hash = window.location.hash.substring(1);
+      if (hash.startsWith('/')) {
+        navigate(hash, { replace: true });
+      }
+    }
+
     setApprovedStartups(getApprovedStartups());
     setPendingSubmissions(getPendingSubmissions());
     setApprovedSupporters(getApprovedSupporters());
