@@ -357,6 +357,21 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                   </div>
                 </div>
               )}
+
+              {/* Contextual Visual Module for fmag.tr */}
+              {idx === 1 && article.tags.includes('fmag.tr') && (
+                <div className="my-8 rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
+                  <img 
+                    src="/fmag-stadium.png" 
+                    alt="fmag.tr - Türkiye'nin Profesyonel Menajerlik Dizini"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-auto object-cover"
+                  />
+                  <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 text-center italic">
+                    fmag.tr: Türkiye'nin Profesyonel Menajerlik Dizini ve Futbolcu Veri Ağı
+                  </div>
+                </div>
+              )}
             </React.Fragment>
           ))}
         </div>

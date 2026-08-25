@@ -2,6 +2,33 @@ import { NewsArticle } from '../types';
 
 export const NEWS_ARTICLES: NewsArticle[] = [
   {
+    id: 'fmag-futbolun-gelecegi-verinin-icinde-sakli',
+    title: 'Menajerlerin Yeni Gözdesi Fmag: Futbolun Geleceği Verinin İçinde Saklı',
+    slug: 'fmag-futbolun-gelecegi-verinin-icinde-sakli',
+    excerpt: 'Futbol dünyasında transfer süreçleri dijital veriler ve profesyonel ağlarla şekilleniyor. fmag.tr, Türkiye’de futbolcu, menajer ve ajans bilgilerini bir araya getiren dijital dizin olarak öne çıkıyor.',
+    content: [
+      'Futbol dünyasında transfer süreçleri artık yalnızca saha içindeki performansla değil, dijital veriler, oyuncu profilleri ve profesyonel ağlarla da şekilleniyor. Kulüpler, scout ekipleri ve menajerler; doğru oyuncuya daha hızlı ulaşabilmek için geniş veri havuzlarından yararlanıyor.',
+      'fmag.tr, Türkiye’de futbolcu, menajer ve ajans bilgilerini bir araya getiren dijital bir dizin olarak öne çıkıyor. Platformda hangi oyuncunun hangi ajans tarafından temsil edildiği, oyunculara ilişkin çeşitli bilgiler ve menajerlik ekosistemine dair veriler tek bir yapı içerisinde sunuluyor.',
+      '380’in üzerinde ajans kaydının yer aldığı platform, kulüpler ve futbol profesyonelleri açısından daha erişilebilir ve sistematik bir araştırma ortamı oluşturmayı hedefliyor. Platformda 123 binden fazla futbolcuya ilişkin kayıt bulunuyor.',
+      'Modern futbolda veri analizi artık yalnızca maç istatistiklerinden ibaret değil. Oyuncunun performans geçmişi, kariyer rotası, piyasa değeri ve temsil ilişkileri gibi birçok veri, karar alma süreçlerinde kullanılabiliyor. fmag.tr verilerine göre bugüne kadar 500’ün üzerinde transfer sürecine katkı sağlandı.',
+      'AI Office Türkiye ekibinin değerlendirmesine göre bu tür platformlar, büyük veri ve yapay zekâ teknolojilerinin spor sektöründeki kullanım alanlarının genişlemesi açısından önemli bir potansiyel taşıyor. Geleceğin scout sistemi algoritmalarda ve dijital platformlarda şekilleniyor.'
+    ],
+    category: 'ecosystem',
+    categoryName: 'Ekosistem & Platform',
+    author: {
+      name: 'SportTech Araştırma Masası',
+      role: 'Ekosistem & Strateji Editörlüğü',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80'
+    },
+    date: '25 Ağustos 2026',
+    readTime: '5 dk okuma',
+    coverImage: '/fmag-cover.jpg',
+    tags: ['fmag.tr', 'Futbol Menajerliği', 'Transfer Verisi', 'Scout Sistemi', 'Dijital Dönüşüm', 'Yapay Zeka'],
+    source: 'fmag.tr / SportTech Türkiye',
+    isFeatured: true,
+    likesCount: 342
+  },
+  {
     id: 'mera-metabolik-hazir-olus-platformu-public-demo',
     title: 'Mera, Sporcuların Metabolik Hazır Oluş Düzeyini Değerlendiren Platformunu Kullanıma Sundu',
     slug: 'mera-metabolik-hazir-olus-platformu-public-demo',

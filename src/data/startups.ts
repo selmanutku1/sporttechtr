@@ -2,6 +2,37 @@ import { Startup } from '../types';
 
 export const STARTUPS: Startup[] = [
   {
+    id: 'fmag',
+    name: 'fmag.tr',
+    tagLine: "Futbolun Dijital LinkedIn'i: Profesyonel Menajerlik ve Futbolcu Dizini",
+    description: 'fmag.tr, Türkiye’de futbolcu, menajer ve ajans bilgilerini bir araya getiren dijital bir dizin ve profesyonel ağ platformudur. 380’in üzerinde ajans ve 120 binden fazla futbolcu verisiyle transfer ekosistemini dijitalleştiriyor.',
+    fullStory: "Futbol dünyasında transfer süreçleri artık yalnızca saha içindeki performansla değil, dijital veriler, oyuncu profilleri ve profesyonel ağlarla da şekilleniyor. fmag.tr, Türkiye’de futbolcu, menajer ve ajans bilgilerini bir araya getiren dijital bir dizin olarak öne çıkıyor. Platformda hangi oyuncunun hangi ajans tarafından temsil edildiği, oyunculara ilişkin çeşitli bilgiler ve menajerlik ekosistemine dair veriler tek bir yapı içerisinde sunuluyor. 380’in üzerinde ajans kaydının yer aldığı platform, kulüpler ve futbol profesyonelleri açısından daha erişilebilir ve sistematik bir araştırma ortamı oluşturmayı hedefliyor.",
+    logo: '/fmag-cover.jpg',
+    coverImage: '/fmag-stadium.png',
+    category: 'management_platform',
+    categoryName: 'Yönetim & Dijital Platform',
+    stage: 'Bootstrapped',
+    foundedYear: 2022,
+    location: 'İstanbul',
+    website: 'https://fmag.tr',
+    teamSize: '10-15 Kişi',
+    fundingRaised: 'Bootstrapped',
+    techStack: ['Big Data', 'Search Algorithms', 'Cloud Architecture', 'Digital Identity Management'],
+    keyMetrics: [
+      { label: 'Kayıtlı Futbolcu', value: '123,000+' },
+      { label: 'Kayıtlı Ajans', value: '380+' },
+      { label: 'Transfer Katkısı', value: '500+' },
+      { label: 'Dijital Görünürlük', value: 'Yüksek' }
+    ],
+    founders: [
+      { name: 'fmag.tr Ekibi', role: 'Kurucu Ekip' }
+    ],
+    contactEmail: 'info@fmag.tr',
+    isFeatured: true,
+    featuredHighlight: 'Türkiye’nin en kapsamlı dijital futbolcu ve menajerlik dizini platformu',
+    tags: ['Futbol', 'Menajerlik', 'Big Data', 'Transfer', 'Scouting', 'SaaS']
+  },
+  {
     id: 'mera',
     name: 'Mera',
     tagLine: 'Sporcuların Metabolik Hazır Oluş Düzeyini Değerlendiren Yapay Zeka Platformu',
