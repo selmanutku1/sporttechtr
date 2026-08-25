@@ -238,7 +238,7 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
                   src={startup.logo} 
                   alt={startup.name}
                   referrerPolicy="no-referrer"
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-white bg-white p-1 shadow-xl"
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-contain border-2 border-white bg-white p-2 shadow-xl"
                 />
                 <div>
                   <h2 className="text-2xl sm:text-3xl font-extrabold text-white font-display drop-shadow-xs flex items-center gap-2">

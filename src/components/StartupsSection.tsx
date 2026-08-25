@@ -224,7 +224,7 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
                         src={startup.logo} 
                         alt={startup.name}
                         referrerPolicy="no-referrer"
-                        className="w-11 h-11 rounded-xl object-cover border-2 border-white bg-white p-0.5 shadow-md shrink-0"
+                        className="w-11 h-11 rounded-xl object-contain border-2 border-white bg-white p-1 shadow-md shrink-0"
                       />
                       <div className="min-w-0">
                         <h3 className="text-lg font-bold text-white font-display group-hover:text-blue-300 transition-colors truncate drop-shadow-xs flex items-center gap-1.5">
