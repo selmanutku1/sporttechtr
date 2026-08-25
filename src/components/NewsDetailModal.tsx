@@ -362,7 +362,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
               {idx === 1 && article.tags.includes('fmag.tr') && (
                 <div className="my-8 rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
                   <img 
-                    src="/fmag-stadium.png" 
+                    src="/fmag-cover.jpg" 
                     alt="fmag.tr - Türkiye'nin Profesyonel Menajerlik Dizini"
                     referrerPolicy="no-referrer"
                     className="w-full h-auto object-cover"

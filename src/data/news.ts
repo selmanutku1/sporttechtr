@@ -22,7 +22,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     },
     date: '25 Ağustos 2026',
     readTime: '5 dk okuma',
-    coverImage: '/fmag-cover.jpg',
+    coverImage: '/fmag-stadium.png',
     tags: ['fmag.tr', 'Futbol Menajerliği', 'Transfer Verisi', 'Scout Sistemi', 'Dijital Dönüşüm', 'Yapay Zeka'],
     source: 'fmag.tr / SportTech Türkiye',
     isFeatured: true,
