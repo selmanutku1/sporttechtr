@@ -13,6 +13,9 @@ import {
   ArrowLeft,
   Share2,
   Check,
+  Twitter,
+  Linkedin,
+  MessageCircle,
   Building2,
   ShieldCheck,
   Layers,
@@ -48,6 +51,7 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
   const [senderMessage, setSenderMessage] = useState('');
   const [copied, setCopied] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -81,11 +85,32 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
   };
 
   const handleShare = () => {
+    const url = window.location.href;
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
+  };
+
+  const shareOnTwitter = () => {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`${startup.name} - ${startup.tagLine}`);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const shareOnLinkedin = () => {
+    const url = encodeURIComponent(window.location.href);
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const shareOnWhatsapp = () => {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`${startup.name} - ${startup.tagLine}`);
+    window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+    setShowShareMenu(false);
   };
 
   // Find related news for this startup
@@ -102,6 +127,11 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
       className="fixed inset-0 z-50 bg-white overflow-y-auto animate-in fade-in duration-200"
       id={`startup-fullpage-${startup.id}`}
     >
+      <title>{startup.name} - Girişim Analizi | SportTech Türkiye</title>
+      <meta name="description" content={startup.tagLine} />
+      <meta property="og:title" content={`${startup.name} | SportTech Türkiye`} />
+      <meta property="og:description" content={startup.tagLine} />
+      <meta property="og:image" content={startup.logo.startsWith('http') ? startup.logo : `https://sporttech.com.tr${startup.logo}`} />
       {/* Sticky Editorial Top Bar */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
@@ -141,13 +171,57 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
 
-            <button
-              onClick={handleShare}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center gap-1 transition-colors"
-              title="Bağlantıyı Kopyala"
-            >
-              {copied ? <Check className="w-4 h-4 text-blue-600" /> : <Share2 className="w-4 h-4" />}
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowShareMenu(!showShareMenu)}
+                className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1 transition-colors ${
+                  showShareMenu ? 'bg-blue-50 border-blue-300 text-blue-600' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                }`}
+                title="Girişimi Paylaş"
+              >
+                <Share2 className="w-4 h-4" />
+              </button>
+
+              {showShareMenu && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-10" 
+                    onClick={() => setShowShareMenu(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-20 animate-in zoom-in-95 duration-100 origin-top-right">
+                    <button
+                      onClick={shareOnLinkedin}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      <Linkedin className="w-4 h-4 text-[#0077b5]" />
+                      <span>LinkedIn'de Paylaş</span>
+                    </button>
+                    <button
+                      onClick={shareOnTwitter}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      <Twitter className="w-4 h-4 text-[#1da1f2]" />
+                      <span>Twitter'da Paylaş</span>
+                    </button>
+                    <button
+                      onClick={shareOnWhatsapp}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      <MessageCircle className="w-4 h-4 text-[#25d366]" />
+                      <span>WhatsApp'ta Paylaş</span>
+                    </button>
+                    <div className="my-1 border-t border-slate-100" />
+                    <button
+                      onClick={handleShare}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4 text-slate-400" />}
+                      <span>{copied ? 'Kopyalandı!' : 'Bağlantıyı Kopyala'}</span>
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
 
             <button
               onClick={() => setIsSaved(!isSaved)}
@@ -741,6 +815,49 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
                   </form>
                 )}
 
+              </div>
+            </div>
+          </section>
+
+          {/* Social Share Section */}
+          <section className="mt-12 py-8 border-t border-slate-100">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 rounded-2xl bg-slate-50 border border-slate-200">
+              <div className="text-center sm:text-left">
+                <h4 className="text-sm font-bold text-slate-900 mb-1">Bu Girişimi Ekosistemle Paylaşın</h4>
+                <p className="text-xs text-slate-500">Spor teknolojileri dünyasını birlikte büyütelim.</p>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={shareOnLinkedin}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-[#0077b5]/10 text-slate-700 hover:text-[#0077b5] border border-slate-200 transition-all font-bold text-xs"
+                >
+                  <Linkedin className="w-4 h-4" />
+                  <span>LinkedIn</span>
+                </button>
+                <button 
+                  onClick={shareOnTwitter}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-[#1da1f2]/10 text-slate-700 hover:text-[#1da1f2] border border-slate-200 transition-all font-bold text-xs"
+                >
+                  <Twitter className="w-4 h-4" />
+                  <span>Twitter</span>
+                </button>
+                <button 
+                  onClick={shareOnWhatsapp}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white hover:bg-[#25d366]/10 text-slate-700 hover:text-[#25d366] border border-slate-200 transition-all font-bold text-xs"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>WhatsApp</span>
+                </button>
+                <button 
+                  onClick={handleShare}
+                  className={`p-2 rounded-xl border transition-all ${
+                    copied ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-200'
+                  }`}
+                  title="Bağlantıyı Kopyala"
+                >
+                  {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+                </button>
               </div>
             </div>
           </section>

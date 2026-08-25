@@ -133,7 +133,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     tags: ['SportsFly', 'Spor Yönetim Yazılımı', 'Üye Takibi', 'Yoklama Sistemi', 'SaaS', 'Stüdyo Yönetimi'],
     source: 'SportTech Insights',
     isFeatured: false,
-    likesCount: 362
+    likesCount: 362,
+    status: 'active'
   },
   {
     id: 'sporpuan-turkiyenin-bagimsiz-spor-tesisleri-puanlama-platformu',
@@ -158,7 +159,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     tags: ['Sporpuan', 'Tesis Puanlama', 'Kullanıcı Yorumları', 'Hijyen & Ekipman', 'Şeffaf Referans'],
     source: 'SportTech Gazetesi',
     isFeatured: false,
-    likesCount: 295
+    likesCount: 295,
+    status: 'active'
   },
   {
     id: 'spor-kutuphanesi-50-brans-rehberi',
@@ -183,7 +185,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     tags: ['Spor Kütüphanesi', 'Sporsepeti', '50+ Branş', 'Spor Kültürü', 'Spor Eğitimi'],
     source: 'SportsTech Review',
     isFeatured: false,
-    likesCount: 318
+    likesCount: 318,
+    status: 'active'
   },
   {
     id: 'spor-okullari-ve-akademilerde-sportsfly-altyapisi',
@@ -208,7 +211,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     tags: ['SportsFly', 'Spor Okulları', 'Tenis Akademisi', 'Aidat Takibi', 'Yoklama'],
     source: 'TechClub Insights',
     isFeatured: false,
-    likesCount: 247
+    likesCount: 247,
+    status: 'active'
   },
   {
     id: 'sporpuan-tesis-hijyen-ve-kalite-standartlari-raporu',
@@ -233,7 +237,8 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     tags: ['Sporpuan', 'Tesis Raporu', 'Hijyen Standartları', 'Ekipman Kalitesi', 'Puanlama'],
     source: 'Sporpuan Araştırma Masası',
     isFeatured: false,
-    likesCount: 389
+    likesCount: 389,
+    status: 'active'
   }
 ];
 

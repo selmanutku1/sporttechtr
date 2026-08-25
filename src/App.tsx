@@ -130,17 +130,13 @@ export const App: React.FC = () => {
     if (path === '/') {
       setSelectedArticle(null);
       setSelectedStartup(null);
-      document.title = 'SportTech Türkiye | Spor Teknolojileri & Performans Sistemleri';
     } else if (path.startsWith('/news/')) {
       const id = path.split('/news/')[1];
       if (selectedArticle?.id !== id) {
         const article = newsArticles.find(a => a.id === id);
         if (article) {
           setSelectedArticle(article);
-          document.title = `${article.title} | SportTech Türkiye`;
         }
-      } else if (selectedArticle) {
-        document.title = `${selectedArticle.title} | SportTech Türkiye`;
       }
     } else if (path.startsWith('/startup/')) {
       const id = path.split('/startup/')[1];
@@ -148,14 +144,8 @@ export const App: React.FC = () => {
         const startup = approvedStartups.find(s => s.id === id);
         if (startup) {
           setSelectedStartup(startup);
-          document.title = `${startup.name} - Girişim Analizi | SportTech Türkiye`;
         }
-      } else if (selectedStartup) {
-        document.title = `${selectedStartup.name} - Girişim Analizi | SportTech Türkiye`;
       }
-    } else if (path.startsWith('/section/')) {
-      const section = path.split('/section/')[1];
-      document.title = `SportTech Türkiye | ${section.charAt(0).toUpperCase() + section.slice(1)}`;
     }
   }, [location.pathname, newsArticles, approvedStartups, selectedArticle, selectedStartup]);
 
@@ -294,6 +284,8 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
+      <title>SportTech Türkiye | Spor Teknolojileri & Performans Sistemleri</title>
+      <meta name="description" content="Türkiye'nin ve bölgenin en kapsamlı spor teknolojileri, akıllı antrenman ve performans analizi çözümleri." />
       
       {/* Sticky Header with SportTech Türkiye Brand & Nav */}
       <Header
