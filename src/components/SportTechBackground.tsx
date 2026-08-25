@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Activity, Radio, Cpu, Zap, Compass, Crosshair } from 'lucide-react';
+import { Activity, Radio, Cpu, Zap, Compass, Crosshair, Dumbbell, Timer, Footprints, TrendingUp } from 'lucide-react';
 
 interface Particle {
   x: number;
@@ -102,6 +102,19 @@ export const SportTechBackground: React.FC = () => {
       ctx.save();
       ctx.strokeStyle = 'rgba(37, 99, 235, 0.04)';
       ctx.lineWidth = 1;
+
+      // Draw abstract motion paths (Athletic movement simulation)
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.strokeStyle = i === 0 ? 'rgba(37, 99, 235, 0.03)' : 'rgba(249, 115, 22, 0.03)';
+        const offset = i * 100;
+        for (let x = -50; x < width + 50; x += 20) {
+          const y = (height * 0.7) + Math.sin(x * 0.003 + time * 0.5 + i) * 60 + (i * 40);
+          if (x === -50) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
 
       // Isometric court arcs & telemetry guide grid
       const centerX = width / 2;
@@ -258,10 +271,25 @@ export const SportTechBackground: React.FC = () => {
       <div className="absolute bottom-10 right-[8%] w-80 h-80 bg-orange-500/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Floating SportTech HUD Badges & Micro-Telemetry Accents */}
-      <div className="hidden xl:block absolute top-28 left-8 xl:left-14 animate-pulse duration-1000">
+      <div className="hidden lg:block absolute top-[20%] right-[15%] opacity-20 rotate-12">
+        <Dumbbell className="w-24 h-24 text-slate-400" />
+      </div>
+
+      <div className="hidden lg:block absolute bottom-[15%] left-[10%] opacity-10 -rotate-12">
+        <Timer className="w-32 h-32 text-blue-500" />
+      </div>
+
+      <div className="hidden xl:block absolute top-28 left-8 xl:left-14 animate-pulse duration-2000">
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/70 backdrop-blur-xs border border-slate-200/80 shadow-2xs text-[11px] text-slate-500 font-mono">
-          <Activity className="w-3.5 h-3.5 text-blue-600 animate-bounce" />
+          <Activity className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
           <span>BIOMETRIC METRICS // LIVE</span>
+        </div>
+      </div>
+
+      <div className="hidden xl:block absolute top-60 left-[5%] animate-bounce duration-[4000ms]">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/70 backdrop-blur-xs border border-slate-200/80 shadow-2xs text-[11px] text-slate-500 font-mono">
+          <Dumbbell className="w-3.5 h-3.5 text-blue-500" />
+          <span>LOAD SENSOR OPTIMIZED</span>
         </div>
       </div>
 
@@ -269,6 +297,27 @@ export const SportTechBackground: React.FC = () => {
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/70 backdrop-blur-xs border border-slate-200/80 shadow-2xs text-[11px] text-slate-500 font-mono">
           <Radio className="w-3.5 h-3.5 text-orange-500" />
           <span>KINEMATIC TRACKING 120 FPS</span>
+        </div>
+      </div>
+
+      <div className="hidden xl:block absolute top-80 right-[3%] animate-pulse">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/70 backdrop-blur-xs border border-slate-200/80 shadow-2xs text-[11px] text-slate-500 font-mono">
+          <Timer className="w-3.5 h-3.5 text-emerald-500" />
+          <span>REACTION TIME: 142ms</span>
+        </div>
+      </div>
+
+      <div className="hidden lg:block absolute bottom-40 left-20 opacity-40">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/40 border border-slate-200/50 text-[10px] text-slate-400 font-mono">
+          <Footprints className="w-3.5 h-3.5 text-slate-400" />
+          <span>STRIDE LENGTH: 1.84m</span>
+        </div>
+      </div>
+
+      <div className="hidden lg:block absolute bottom-60 right-20 opacity-40">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/40 border border-slate-200/50 text-[10px] text-slate-400 font-mono">
+          <TrendingUp className="w-3.5 h-3.5 text-blue-400" />
+          <span>VO2 MAX PROJECTION</span>
         </div>
       </div>
 

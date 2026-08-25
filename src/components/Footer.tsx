@@ -43,10 +43,21 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
               Türkiye'nin spor teknolojileri, biyomekanik sistemler, yapay zeka analitiği ve akıllı stadyum ekosistem platformu. Girişimleri kulüplerle, yatırımcılarla ve akademiyle buluşturuyoruz.
             </p>
 
-            <div className="pt-2 flex items-center gap-3 text-xs text-slate-500">
+            <div className="pt-2 flex flex-col gap-2 text-xs text-slate-500">
               <div className="flex items-center gap-1.5">
                 <Mail className="w-4 h-4 text-slate-400" />
                 <span>iletisim@sporttech.com.tr</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <ExternalLink className="w-4 h-4 text-slate-400" />
+                <a 
+                  href="https://tr.linkedin.com/company/sport-tech-turkiye" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-blue-600 transition-colors flex items-center gap-1"
+                >
+                  LinkedIn'de Takip Et
+                </a>
               </div>
             </div>
           </div>
