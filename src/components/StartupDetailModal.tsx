@@ -428,7 +428,7 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
                 <div className="rounded-3xl border border-slate-200 bg-slate-50 overflow-hidden flex flex-col justify-between shadow-xs">
                   <div className="p-4 bg-white flex items-center justify-center border-b border-slate-200 h-56">
                     <img 
-                      src="/sporpuan-map-cover.svg" 
+                      src="/sporpuan-map-v2.svg" 
                       alt="Sporpuan Türkiye İnteraktif Tesis Haritası"
                       referrerPolicy="no-referrer"
                       className="w-full max-h-48 object-contain hover:scale-105 transition-transform duration-300"

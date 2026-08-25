@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { StartupsSection } from './components/StartupsSection';
@@ -53,6 +54,9 @@ import {
 } from './services/newsManagement';
 
 export const App: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   // Navigation & Filter States
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [selectedCategory, setSelectedCategory] = useState<StartupCategory>('all');
@@ -90,12 +94,67 @@ export const App: React.FC = () => {
     setApprovedSupporters(getApprovedSupporters());
     setPendingPartners(getPendingPartners());
     setNewsletterSubscribers(getNewsletterSubscribers());
-    setNewsArticles(getNewsArticles());
+    const articles = getNewsArticles();
+    setNewsArticles(articles);
+
+    // Initial routing based on URL
+    const path = location.pathname;
+    if (path.startsWith('/news/')) {
+      const id = path.split('/news/')[1];
+      const article = articles.find(a => a.id === id);
+      if (article) setSelectedArticle(article);
+    } else if (path.startsWith('/startup/')) {
+      const id = path.split('/startup/')[1];
+      // We need startups to find it, but they might not be loaded yet in state
+      // but they are loaded in local variable above or via getApprovedStartups
+      const allStartups = getApprovedStartups();
+      const startup = allStartups.find(s => s.id === id);
+      if (startup) setSelectedStartup(startup);
+    } else if (path.startsWith('/section/')) {
+      const section = path.split('/section/')[1];
+      setTimeout(() => scrollToSection(section), 500);
+    }
   }, []);
+
+  // Listen for URL changes (back/forward buttons)
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === '/') {
+      setSelectedArticle(null);
+      setSelectedStartup(null);
+      document.title = 'SportTech Türkiye | Spor Teknolojileri & Performans Sistemleri';
+    } else if (path.startsWith('/news/')) {
+      const id = path.split('/news/')[1];
+      if (selectedArticle?.id !== id) {
+        const article = newsArticles.find(a => a.id === id);
+        if (article) {
+          setSelectedArticle(article);
+          document.title = `${article.title} | SportTech Türkiye`;
+        }
+      } else if (selectedArticle) {
+        document.title = `${selectedArticle.title} | SportTech Türkiye`;
+      }
+    } else if (path.startsWith('/startup/')) {
+      const id = path.split('/startup/')[1];
+      if (selectedStartup?.id !== id) {
+        const startup = approvedStartups.find(s => s.id === id);
+        if (startup) {
+          setSelectedStartup(startup);
+          document.title = `${startup.name} - Girişim Analizi | SportTech Türkiye`;
+        }
+      } else if (selectedStartup) {
+        document.title = `${selectedStartup.name} - Girişim Analizi | SportTech Türkiye`;
+      }
+    } else if (path.startsWith('/section/')) {
+      const section = path.split('/section/')[1];
+      document.title = `SportTech Türkiye | ${section.charAt(0).toUpperCase() + section.slice(1)}`;
+    }
+  }, [location.pathname, newsArticles, approvedStartups, selectedArticle, selectedStartup]);
 
   // Smooth scroll helper
   const scrollToSection = (id: string) => {
     setActiveSection(id);
+    navigate(`/section/${id}`, { replace: true });
     const element = document.getElementById(id);
     if (element) {
       const offset = 80;
@@ -254,14 +313,20 @@ export const App: React.FC = () => {
         <StartupsSection
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
-          onSelectStartup={(startup) => setSelectedStartup(startup)}
+          onSelectStartup={(startup) => {
+            setSelectedStartup(startup);
+            navigate(`/startup/${startup.id}`);
+          }}
           onOpenStartupSubmit={() => setIsStartupSubmitOpen(true)}
           startupsList={approvedStartups}
         />
 
         {/* 3. News, Reports & Insights Section (Haberler) */}
         <NewsSection
-          onSelectArticle={(article) => setSelectedArticle(article)}
+          onSelectArticle={(article) => {
+            setSelectedArticle(article);
+            navigate(`/news/${article.id}`);
+          }}
           articles={newsArticles}
         />
 
@@ -297,23 +362,32 @@ export const App: React.FC = () => {
       {/* Modals & Dialogs (Full-Page Editorial Experience) */}
       <StartupDetailModal
         startup={selectedStartup}
-        onClose={() => setSelectedStartup(null)}
+        onClose={() => {
+          setSelectedStartup(null);
+          navigate('/');
+        }}
         onSelectArticle={(article) => {
           setSelectedStartup(null);
           setSelectedArticle(article);
+          navigate(`/news/${article.id}`);
         }}
         articles={newsArticles}
       />
 
       <NewsDetailModal
         article={selectedArticle}
-        onClose={() => setSelectedArticle(null)}
+        onClose={() => {
+          setSelectedArticle(null);
+          navigate('/');
+        }}
         onSelectStartup={(startup) => {
           setSelectedArticle(null);
           setSelectedStartup(startup);
+          navigate(`/startup/${startup.id}`);
         }}
         onSelectArticle={(article) => {
           setSelectedArticle(article);
+          navigate(`/news/${article.id}`);
         }}
         articles={newsArticles}
       />
@@ -333,8 +407,16 @@ export const App: React.FC = () => {
       <SearchModal
         isOpen={isSearchModalOpen}
         onClose={() => setIsSearchModalOpen(false)}
-        onSelectStartup={(s) => setSelectedStartup(s)}
-        onSelectArticle={(a) => setSelectedArticle(a)}
+        onSelectStartup={(s) => {
+          setSelectedStartup(s);
+          navigate(`/startup/${s.id}`);
+          setIsSearchModalOpen(false);
+        }}
+        onSelectArticle={(a) => {
+          setSelectedArticle(a);
+          navigate(`/news/${a.id}`);
+          setIsSearchModalOpen(false);
+        }}
         startups={approvedStartups}
         articles={newsArticles}
         supporters={approvedSupporters}
@@ -359,7 +441,10 @@ export const App: React.FC = () => {
         onRejectStartup={handleRejectStartup}
         onDeleteApprovedStartup={handleDeleteApprovedStartup}
         onUpdateApprovedStartup={handleUpdateApprovedStartup}
-        onViewStartupDetail={(s) => setSelectedStartup(s)}
+        onViewStartupDetail={(s) => {
+          setSelectedStartup(s);
+          navigate(`/startup/${s.id}`);
+        }}
         // Partner Props
         pendingPartners={pendingPartners}
         approvedSupporters={approvedSupporters}
@@ -377,7 +462,10 @@ export const App: React.FC = () => {
         onUpdateNewsArticle={handleUpdateNewsArticle}
         onDeleteNewsArticle={handleDeleteNewsArticle}
         onToggleFeaturedNewsArticle={handleToggleFeaturedNewsArticle}
-        onViewNewsArticleDetail={(a) => setSelectedArticle(a)}
+        onViewNewsArticleDetail={(a) => {
+          setSelectedArticle(a);
+          navigate(`/news/${a.id}`);
+        }}
       />
 
     </div>

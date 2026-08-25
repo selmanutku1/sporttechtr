@@ -97,7 +97,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
     },
     date: '18 Mayıs 2026',
     readTime: '4 dk okuma',
-    coverImage: '/sporpuan-cover.svg',
+    coverImage: '/sporpuan-map-v2.svg',
     tags: ['Sporpuan', 'Tesis Puanlama', 'Kullanıcı Yorumları', 'Hijyen & Ekipman', 'Şeffaf Referans'],
     source: 'SportTech Gazetesi',
     isFeatured: false,

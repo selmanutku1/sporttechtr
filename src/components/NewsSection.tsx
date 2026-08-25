@@ -99,6 +99,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ onSelectArticle, artic
                   src={featuredArticle.coverImage} 
                   alt={featuredArticle.title}
                   referrerPolicy="no-referrer"
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-4 left-4 flex items-center gap-2">
@@ -174,6 +175,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ onSelectArticle, artic
                     src={article.coverImage} 
                     alt={article.title}
                     referrerPolicy="no-referrer"
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full bg-white/90 backdrop-blur-xs border border-slate-200 text-[10px] font-bold text-slate-800 shadow-2xs">

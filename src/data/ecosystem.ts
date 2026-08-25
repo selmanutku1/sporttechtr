@@ -69,10 +69,10 @@ export const CATEGORIES_DATA = [
 
 export const UPCOMING_EVENTS: EcosystemEvent[] = [
   {
-    id: 'sporttech-turkiye-summit-2026',
+    id: 'sporttech-turkiye-summit-2026-past',
     title: 'SportTech Türkiye İnovasyon Zirvesi 2026',
     type: 'Summit',
-    date: '18-19 Ekim 2026',
+    date: '18-19 Mart 2026',
     location: 'İstanbul Kongre Merkezi & Hibrit',
     isOnline: true,
     description: 'Türkiye\'nin ve bölgenin en büyük spor teknolojileri zirvesi. 50+ konuşmacı, 40+ startup standı, yatırımcı panelleri ve canlı teknoloji demoları.',
@@ -81,10 +81,10 @@ export const UPCOMING_EVENTS: EcosystemEvent[] = [
     registrationOpen: true
   },
   {
-    id: 'sport-hackathon-2026',
+    id: 'sport-hackathon-2026-past',
     title: 'Süper Lig AI & Big Data Hackathon',
     type: 'Hackathon',
-    date: '12-14 Kasım 2026',
+    date: '12-14 Nisan 2026',
     location: 'Bilişim Vadisi, Gebze / Kocaeli',
     isOnline: false,
     description: '48 saatlik maratonda canlı maç telemetrisi ve optik kamera verileriyle en iyi sakatlık tahmini ve taktik modeli geliştiren ekiplere 500.000 TL ödül.',
@@ -93,10 +93,10 @@ export const UPCOMING_EVENTS: EcosystemEvent[] = [
     registrationOpen: true
   },
   {
-    id: 'sporttech-demo-day-q4',
-    title: 'SportTech Girişimleri Demo Day (Q4 2026)',
+    id: 'sporttech-demo-day-q1-2026',
+    title: 'SportTech Girişimleri Demo Day (Q1 2026)',
     type: 'Demo Day',
-    date: '05 Aralık 2026',
+    date: '05 Ocak 2026',
     location: 'İTÜ ARI Teknokent / Canlı Yayın',
     isOnline: true,
     description: 'Tohum ve Seri A aşamasındaki seçilmiş 10 spor teknolojisi girişimi, 40+ yerli ve uluslararası spor yatırımcısının karşısına çıkıyor.',
