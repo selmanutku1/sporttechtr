@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Outer Orange Arc -->
+  <path
+    d="M 50 12 A 38 38 0 0 0 50 88"
+    stroke="#F37926"
+    stroke-width="8"
+    stroke-linecap="butt"
+  />
+  <!-- Inner Royal Cobalt Blue Arc -->
+  <path
+    d="M 78 48 A 28 28 0 1 0 70 70"
+    stroke="#0D62D2"
+    stroke-width="8"
+    stroke-linecap="butt"
+  />
+</svg>

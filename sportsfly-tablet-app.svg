@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="100%" height="100%">
+  <defs>
+    <linearGradient id="tabBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <filter id="tabletShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Background Environment -->
+  <rect width="1000" height="650" rx="24" fill="#F1F5F9" />
+  <!-- Soft blurred sports center background bokeh -->
+  <circle cx="200" cy="150" r="140" fill="#E2E8F0" opacity="0.6" />
+  <circle cx="850" cy="480" r="180" fill="#E2E8F0" opacity="0.5" />
+
+  <!-- Tablet Frame Mockup (Held by user perspective) -->
+  <rect x="140" y="55" width="720" height="540" rx="32" fill="#0F172A" stroke="#334155" stroke-width="4" filter="url(#tabletShadow)" />
+  
+  <!-- Tablet Camera Dot & Speaker -->
+  <circle cx="500" cy="74" r="3.5" fill="#334155" />
+
+  <!-- Tablet Inner Screen Display -->
+  <rect x="165" y="90" width="670" height="470" rx="16" fill="#FFFFFF" />
+
+  <!-- Top App Navigation within Tablet Screen -->
+  <rect x="165" y="90" width="670" height="44" rx="16" fill="#FFFFFF" />
+  <line x1="165" y1="134" x2="835" y2="134" stroke="#F1F5F9" stroke-width="1.5" />
+
+  <!-- Left Mini Sidebar in Tablet -->
+  <rect x="165" y="134" width="46" height="426" fill="#F8FAFC" />
+  <rect x="174" y="146" width="28" height="28" rx="8" fill="#0066FF" />
+  <circle cx="188" cy="195" r="7" fill="#94A3B8" />
+  <circle cx="188" cy="235" r="7" fill="#94A3B8" />
+  <circle cx="188" cy="275" r="7" fill="#94A3B8" />
+  <circle cx="188" cy="315" r="7" fill="#94A3B8" />
+
+  <!-- Mini Calendar Column in Tablet (Left Section) -->
+  <rect x="221" y="146" width="165" height="400" rx="12" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1" />
+  <text x="235" y="172" fill="#0F172A" font-family="system-ui, sans-serif" font-size="12" font-weight="800">
+    Haziran 2026
+  </text>
+  <text x="235" y="194" fill="#64748B" font-family="system-ui, sans-serif" font-size="10" font-weight="600">
+    Pt  Sa  Ça  Pe  Cu  Ct  Pz
+  </text>
+
+  <!-- Mini Month Grid dots -->
+  <g fill="#CBD5E1" transform="translate(235, 205)">
+    <!-- Week 1 -->
+    <circle cx="6" cy="10" r="3" />
+    <circle cx="28" cy="10" r="3" />
+    <circle cx="50" cy="10" r="3" />
+    <circle cx="72" cy="10" r="3" />
+    <circle cx="94" cy="10" r="3" fill="#0066FF" />
+    <circle cx="116" cy="10" r="3" />
+    <circle cx="138" cy="10" r="3" />
+    <!-- Week 2 -->
+    <circle cx="6" cy="30" r="3" />
+    <circle cx="28" cy="30" r="3" />
+    <circle cx="50" cy="30" r="3" fill="#0066FF" />
+    <circle cx="72" cy="30" r="3" />
+    <circle cx="94" cy="30" r="3" />
+    <circle cx="116" cy="30" r="3" />
+    <circle cx="138" cy="30" r="3" />
+  </g>
+
+  <!-- Coach / Room Legend in Mini Column -->
+  <rect x="233" y="275" width="141" height="60" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+  <circle cx="245" cy="292" r="4" fill="#3B82F6" />
+  <text x="256" y="295" fill="#334155" font-family="system-ui, sans-serif" font-size="10" font-weight="600">
+    Salon A - Tenis Kortu
+  </text>
+  <circle cx="245" cy="318" r="4" fill="#EC4899" />
+  <text x="256" y="321" fill="#334155" font-family="system-ui, sans-serif" font-size="10" font-weight="600">
+    Salon B - Pilates Studio
+  </text>
+
+  <!-- Main Schedule Calendar Grid (Right Section in Tablet) -->
+  <!-- Top Schedule Header Toolbar -->
+  <rect x="398" y="146" width="425" height="38" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+  <text x="412" y="170" fill="#0F172A" font-family="system-ui, sans-serif" font-size="13" font-weight="800">
+    Haftalık Ders ve Antrenman Çizelgesi
+  </text>
+  <rect x="735" y="152" width="78" height="26" rx="6" fill="#0066FF" />
+  <text x="774" y="169" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle">
+    + Ekle
+  </text>
+
+  <!-- Calendar Day Headers -->
+  <g transform="translate(398, 192)">
+    <text x="35" y="14" fill="#64748B" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle">Pzt</text>
+    <text x="115" y="14" fill="#64748B" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle">Sal</text>
+    <text x="195" y="14" fill="#64748B" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle">Çar</text>
+    <text x="275" y="14" fill="#64748B" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle">Per</text>
+    <text x="355" y="14" fill="#64748B" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle">Cum</text>
+    <line x1="0" y1="24" x2="425" y2="24" stroke="#F1F5F9" stroke-width="1" />
+  </g>
+
+  <!-- Time Slots & Colored Appointment Cards in Tablet Grid -->
+  <g transform="translate(398, 224)">
+    <!-- Grid Horizontal Lines -->
+    <line x1="0" y1="50" x2="425" y2="50" stroke="#F8FAFC" stroke-width="1" />
+    <line x1="0" y1="110" x2="425" y2="110" stroke="#F8FAFC" stroke-width="1" />
+    <line x1="0" y1="170" x2="425" y2="170" stroke="#F8FAFC" stroke-width="1" />
+    <line x1="0" y1="230" x2="425" y2="230" stroke="#F8FAFC" stroke-width="1" />
+
+    <!-- Appointment Card 1 (Blue) - Tenis Altyapı -->
+    <rect x="10" y="10" width="70" height="50" rx="6" fill="#3B82F6" />
+    <text x="16" y="26" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="9" font-weight="800">
+      09:00 - 10:30
+    </text>
+    <text x="16" y="38" fill="#DBEAFE" font-family="system-ui, sans-serif" font-size="8" font-weight="600">
+      Tenis U12
+    </text>
+
+    <!-- Appointment Card 2 (Pink) - Reformer Pilates -->
+    <rect x="90" y="70" width="70" height="45" rx="6" fill="#EC4899" />
+    <text x="96" y="86" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="9" font-weight="800">
+      11:00 - 12:00
+    </text>
+    <text x="96" y="98" fill="#FCE7F3" font-family="system-ui, sans-serif" font-size="8" font-weight="600">
+      Pilates Grup
+    </text>
+
+    <!-- Appointment Card 3 (Orange) - Basketbol Akademi -->
+    <rect x="170" y="130" width="70" height="55" rx="6" fill="#F97316" />
+    <text x="176" y="146" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="9" font-weight="800">
+      14:00 - 15:30
+    </text>
+    <text x="176" y="158" fill="#FFEDD5" font-family="system-ui, sans-serif" font-size="8" font-weight="600">
+      Basketbol A
+    </text>
+
+    <!-- Appointment Card 4 (Cyan/Blue) - Yüzme Dersi -->
+    <rect x="250" y="30" width="70" height="50" rx="6" fill="#0EA5E9" />
+    <text x="256" y="46" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="9" font-weight="800">
+      10:00 - 11:00
+    </text>
+    <text x="256" y="58" fill="#E0F2FE" font-family="system-ui, sans-serif" font-size="8" font-weight="600">
+      Yüzme Okulu
+    </text>
+
+    <!-- Appointment Card 5 (Purple) - Fitness Özel Ders -->
+    <rect x="330" y="160" width="70" height="50" rx="6" fill="#8B5CF6" />
+    <text x="336" y="176" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="9" font-weight="800">
+      16:00 - 17:00
+    </text>
+    <text x="336" y="188" fill="#EDE9FE" font-family="system-ui, sans-serif" font-size="8" font-weight="600">
+      PT Seansı
+    </text>
+  </g>
+
+</svg>

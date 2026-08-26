@@ -1,0 +1,243 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <!-- Gradients for outer arrows -->
+    <linearGradient id="gBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0055FF" />
+      <stop offset="100%" stop-color="#0088FF" />
+    </linearGradient>
+    <linearGradient id="gPink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF1E7A" />
+      <stop offset="100%" stop-color="#FF4B93" />
+    </linearGradient>
+    <linearGradient id="gCoral" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF5252" />
+      <stop offset="100%" stop-color="#FF7A66" />
+    </linearGradient>
+    <linearGradient id="gCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0099FF" />
+      <stop offset="100%" stop-color="#00D2FF" />
+    </linearGradient>
+    <linearGradient id="gDeepBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0044EE" />
+      <stop offset="100%" stop-color="#0066FF" />
+    </linearGradient>
+
+    <!-- Center Logo Gradients -->
+    <linearGradient id="sfLogoBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066FF" />
+      <stop offset="100%" stop-color="#00D2FF" />
+    </linearGradient>
+    <linearGradient id="sfLogoPink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF2D85" />
+      <stop offset="100%" stop-color="#FF9E44" />
+    </linearGradient>
+
+    <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.06" />
+    </filter>
+  </defs>
+
+  <rect width="600" height="600" rx="30" fill="#F8FAFC" />
+
+  <!-- Main Outer Ring / Background Disk -->
+  <circle cx="300" cy="300" r="275" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2" filter="url(#cardShadow)" />
+
+  <!-- Outer Arrow Segment 1: Top (Spor Pazarlaması) - Blue -->
+  <path
+    d="M 210,32 
+       A 270,270 0 0,1 465,108 
+       L 456,128 
+       L 485,116 
+       L 472,86 
+       L 455,100 
+       A 235,235 0 0,0 230,68 Z"
+    fill="url(#gBlue)"
+  />
+
+  <!-- Outer Arrow Segment 2: Right (Dijital Kütüphane) - Magenta/Pink -->
+  <path
+    d="M 470,115 
+       A 270,270 0 0,1 556,380 
+       L 534,374 
+       L 556,402 
+       L 576,378 
+       L 556,375 
+       A 235,235 0 0,0 478,145 Z"
+    fill="url(#gPink)"
+  />
+
+  <!-- Outer Arrow Segment 3: Bottom Right (Web Çözümleri) - Coral Red -->
+  <path
+    d="M 552,388 
+       A 270,270 0 0,1 285,568 
+       L 294,546 
+       L 265,558 
+       L 278,588 
+       L 295,572 
+       A 235,235 0 0,0 528,414 Z"
+    fill="url(#gCoral)"
+  />
+
+  <!-- Outer Arrow Segment 4: Bottom Left (Sporda Satış) - Cyan Blue -->
+  <path
+    d="M 275,568 
+       A 270,270 0 0,1 36,375 
+       L 58,382 
+       L 36,354 
+       L 16,378 
+       L 36,381 
+       A 235,235 0 0,0 248,538 Z"
+    fill="url(#gCyan)"
+  />
+
+  <!-- Outer Arrow Segment 5: Top Left (Spor İletişimi) - Deep Blue -->
+  <path
+    d="M 38,365 
+       A 270,270 0 0,1 200,34 
+       L 204,56 
+       L 226,30 
+       L 200,12 
+       L 198,34 
+       A 235,235 0 0,0 65,335 Z"
+    fill="url(#gDeepBlue)"
+  />
+
+  <!-- Text Along Outer Arcs (Pillars) -->
+  <!-- Top: Spor Pazarlaması -->
+  <text x="300" y="52" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800" text-anchor="middle" letter-spacing="0.5">
+    Spor Pazarlaması
+  </text>
+
+  <!-- Right: Dijital Kütüphane (Rotated) -->
+  <g transform="rotate(72, 515, 255)">
+    <text x="515" y="260" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800" text-anchor="middle" letter-spacing="0.5">
+      Dijital Kütüphane
+    </text>
+  </g>
+
+  <!-- Bottom Right: Web Çözümleri (Rotated) -->
+  <g transform="rotate(-36, 440, 515)">
+    <text x="440" y="520" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800" text-anchor="middle" letter-spacing="0.5">
+      Web Çözümleri
+    </text>
+  </g>
+
+  <!-- Bottom Left: Sporda Satış (Rotated) -->
+  <g transform="rotate(36, 155, 515)">
+    <text x="155" y="520" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800" text-anchor="middle" letter-spacing="0.5">
+      Sporda Satış
+    </text>
+  </g>
+
+  <!-- Left: Spor İletişimi (Rotated) -->
+  <g transform="rotate(-72, 85, 255)">
+    <text x="85" y="260" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800" text-anchor="middle" letter-spacing="0.5">
+      Spor İletişimi
+    </text>
+  </g>
+
+  <!-- Inner Modules Circle Grid (5 Petals / Segments) -->
+  <circle cx="300" cy="300" r="225" fill="#F8FAFC" stroke="#EDF2F7" stroke-width="1.5" />
+
+  <!-- Radial Dividing Lines between 5 segments -->
+  <line x1="300" y1="300" x2="300" y2="75" stroke="#E2E8F0" stroke-width="1.5" />
+  <line x1="300" y1="300" x2="514" y2="230" stroke="#E2E8F0" stroke-width="1.5" />
+  <line x1="300" y1="300" x2="432" y2="482" stroke="#E2E8F0" stroke-width="1.5" />
+  <line x1="300" y1="300" x2="168" y2="482" stroke="#E2E8F0" stroke-width="1.5" />
+  <line x1="300" y1="300" x2="86" y2="230" stroke="#E2E8F0" stroke-width="1.5" />
+
+  <!-- Module 1: Top Left - Antrenör Yönetimi -->
+  <g transform="translate(195, 125)">
+    <!-- Trainer / Coach Icon -->
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#FFF1F2" stroke="#FF4D6D" stroke-width="1.5" />
+    <circle cx="17" cy="11" r="5" fill="none" stroke="#FF4D6D" stroke-width="2" />
+    <path d="M7 27 C7 20, 27 20, 27 27" fill="none" stroke="#FF4D6D" stroke-width="2" stroke-linecap="round" />
+    <text x="17" y="52" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Antrenör
+    </text>
+    <text x="17" y="68" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Yönetimi
+    </text>
+  </g>
+
+  <!-- Module 2: Top Right - Raporlama ve Analiz -->
+  <g transform="translate(370, 125)">
+    <!-- Report & Document Icon -->
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#FFF1F2" stroke="#FF4D6D" stroke-width="1.5" />
+    <rect x="7" y="7" width="20" height="20" rx="3" fill="none" stroke="#FF4D6D" stroke-width="2" />
+    <line x1="12" y1="12" x2="22" y2="12" stroke="#FF4D6D" stroke-width="2" stroke-linecap="round" />
+    <line x1="12" y1="17" x2="22" y2="17" stroke="#FF4D6D" stroke-width="2" stroke-linecap="round" />
+    <circle cx="14" cy="22" r="1.5" fill="#FF4D6D" />
+    <line x1="18" y1="22" x2="22" y2="22" stroke="#FF4D6D" stroke-width="1.5" />
+    <text x="17" y="52" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Raporlama ve
+    </text>
+    <text x="17" y="68" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Analiz
+    </text>
+  </g>
+
+  <!-- Module 3: Right - Sadakat Yönetimi -->
+  <g transform="translate(415, 275)">
+    <!-- Loyalty / Calendar Gift Icon -->
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#FFF1F2" stroke="#FF4D6D" stroke-width="1.5" />
+    <rect x="7" y="8" width="20" height="18" rx="2" fill="none" stroke="#FF4D6D" stroke-width="2" />
+    <line x1="7" y1="14" x2="27" y2="14" stroke="#FF4D6D" stroke-width="1.5" />
+    <circle cx="12" cy="19" r="1" fill="#FF4D6D" />
+    <circle cx="17" cy="19" r="1" fill="#FF4D6D" />
+    <circle cx="22" cy="19" r="1" fill="#FF4D6D" />
+    <circle cx="17" cy="23" r="1" fill="#FF4D6D" />
+    <text x="17" y="52" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Sadakat
+    </text>
+    <text x="17" y="68" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Yönetimi
+    </text>
+  </g>
+
+  <!-- Module 4: Bottom Center - Ödeme Yönetimi -->
+  <g transform="translate(283, 385)">
+    <!-- Payment / POS & Card Icon -->
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#FFF1F2" stroke="#FF4D6D" stroke-width="1.5" />
+    <rect x="7" y="6" width="14" height="22" rx="2" fill="none" stroke="#FF4D6D" stroke-width="1.5" />
+    <rect x="14" y="12" width="14" height="10" rx="1.5" fill="none" stroke="#FF4D6D" stroke-width="1.5" />
+    <line x1="14" y1="15" x2="28" y2="15" stroke="#FF4D6D" stroke-width="1" />
+    <text x="17" y="52" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Ödeme
+    </text>
+    <text x="17" y="68" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Yönetimi
+    </text>
+  </g>
+
+  <!-- Module 5: Left - Veri Yönetimi -->
+  <g transform="translate(150, 275)">
+    <!-- Data / Chart Bars Icon -->
+    <rect x="0" y="0" width="34" height="34" rx="8" fill="#FFF1F2" stroke="#FF4D6D" stroke-width="1.5" />
+    <rect x="8" y="18" width="4" height="8" fill="#FF4D6D" />
+    <rect x="15" y="12" width="4" height="14" fill="#FF4D6D" />
+    <rect x="22" y="7" width="4" height="19" fill="#FF4D6D" />
+    <text x="17" y="52" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Veri
+    </text>
+    <text x="17" y="68" fill="#1E293B" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Yönetimi
+    </text>
+  </g>
+
+  <!-- Central Hub Circle with SportsFly Dual Teardrop Logo -->
+  <circle cx="300" cy="300" r="68" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="3" filter="url(#cardShadow)" />
+
+  <!-- Center Dual Teardrop Icon -->
+  <g transform="translate(262, 262) scale(0.48)">
+    <path
+      d="M 68 38 C 80 48, 82 70, 70 86 C 60 98, 44 96, 40 82 C 36 68, 50 48, 68 38 Z"
+      fill="url(#sfLogoBlue)"
+    />
+    <path
+      d="M 92 122 C 80 112, 78 90, 90 74 C 100 62, 116 64, 120 78 C 124 92, 110 112, 92 122 Z"
+      fill="url(#sfLogoPink)"
+    />
+    <circle cx="80" cy="80" r="8" fill="#FFFFFF" opacity="0.9" />
+  </g>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" fill="none">
+  <!-- Outer Orange / Tangerine Arc (Semi-circle on left) -->
+  <path
+    d="M 68 26 A 56 56 0 0 0 68 138"
+    stroke="#F37926"
+    stroke-width="9.5"
+    stroke-linecap="butt"
+  />
+
+  <!-- Inner Royal Cobalt Blue Arc (~280° loop) -->
+  <path
+    d="M 108 78 A 42 42 0 1 0 96 112"
+    stroke="#0D62D2"
+    stroke-width="9.5"
+    stroke-linecap="butt"
+  />
+
+  <!-- Typography -->
+  <text
+    x="115"
+    y="74"
+    fill="#0F172A"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-weight="900"
+    font-size="32"
+    letter-spacing="0.02em"
+  >
+    SPORT
+  </text>
+  <text
+    x="115"
+    y="112"
+    fill="#0F172A"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-weight="900"
+    font-size="32"
+    letter-spacing="0.02em"
+  >
+    TECH
+  </text>
+  <text
+    x="116"
+    y="144"
+    fill="#334155"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-weight="300"
+    font-size="22"
+    letter-spacing="0.16em"
+  >
+    TÜRKİYE
+  </text>
+</svg>

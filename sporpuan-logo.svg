@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sporpuanBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2F7BFE" />
+      <stop offset="100%" stop-color="#145BF5" />
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#145BF5" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Blue Rounded 5-Point Star -->
+  <path
+    d="M 100,16 
+       C 105,16 110,26 114,35 
+       L 125,58 
+       C 128,65 136,71 143,72 
+       L 168,75 
+       C 178,76 182,86 175,93 
+       L 156,110 
+       C 150,115 147,124 149,132 
+       L 154,156 
+       C 156,166 148,172 139,167 
+       L 117,155 
+       C 110,151 101,151 94,155 
+       L 72,167 
+       C 63,172 55,166 57,156 
+       L 62,132 
+       C 64,124 61,115 55,110 
+       L 36,93 
+       C 29,86 33,76 43,75 
+       L 68,72 
+       C 75,71 83,65 86,58 
+       L 97,35 
+       C 101,26 106,16 100,16 Z"
+    fill="url(#sporpuanBlue)"
+    filter="url(#softShadow)"
+  />
+
+  <!-- White Checkmark in Center -->
+  <path
+    d="M 72 98 L 92 118 L 132 78"
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-width="15"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

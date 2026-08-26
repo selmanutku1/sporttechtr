@@ -1,14 +1,12 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 
 import { STARTUPS } from './src/data/startups';
 import { NEWS_ARTICLES } from './src/data/news';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const rootDir = process.cwd();
 
 async function startServer() {
   const app = express();
@@ -18,14 +16,13 @@ async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
     vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: 'spa',
+      appType: 'custom',
     });
     // Mount Vite middleware first so it can serve client scripts, assets and hot-module reloads correctly
     app.use(vite.middlewares);
   } else {
-    const distPath = path.resolve(__dirname, 'dist');
-    const resolvedDist = fs.existsSync(distPath) ? distPath : __dirname;
-    app.use(express.static(resolvedDist, { index: false }));
+    const distPath = path.resolve(rootDir, 'dist');
+    app.use(express.static(distPath, { index: false }));
   }
 
   // Catch-all route to serve index.html with dynamically injected SEO/OG tags
@@ -41,8 +38,12 @@ async function startServer() {
       let title = 'SportTech Türkiye | Spor Teknolojileri Ekosistemi';
       let description = "Türkiye'nin ve bölgenin en kapsamlı spor teknolojileri, akıllı antrenman ve performans analizi çözümleri.";
       
-      const host = req.get('host') || 'sporttech.com.tr';
-      const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+      const forwardedHost = req.headers['x-forwarded-host'];
+      const host = (Array.isArray(forwardedHost) ? forwardedHost[0] : forwardedHost) || req.get('host') || 'sporttech.com.tr';
+      
+      const forwardedProto = req.headers['x-forwarded-proto'];
+      const protocol = (Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto) || req.protocol || 'https';
+      
       const baseUrl = `${protocol}://${host}`;
       let image = `${baseUrl}/og-image.png`;
 
@@ -68,10 +69,10 @@ async function startServer() {
       }
 
       const indexPath = process.env.NODE_ENV === 'production'
-        ? path.resolve(__dirname, 'dist/index.html')
-        : path.resolve(__dirname, 'index.html');
+        ? path.resolve(rootDir, 'dist/index.html')
+        : path.resolve(rootDir, 'index.html');
 
-      const finalIndexPath = fs.existsSync(indexPath) ? indexPath : path.resolve(__dirname, 'index.html');
+      const finalIndexPath = fs.existsSync(indexPath) ? indexPath : path.resolve(rootDir, 'index.html');
 
       if (!fs.existsSync(finalIndexPath)) {
         return res.status(404).send('index.html not found');
@@ -102,9 +103,9 @@ async function startServer() {
 
       let html = template
         .replace(/<title>.*?<\/title>/i, '')
-        .replace(/<meta[^>]+property=["\']og:(title|description|image|url|type)["\'][^>]*\/?>/gi, '')
+        .replace(/<meta[^>]+(?:property|name)=["\']og:(title|description|image|url|type)["\'][^>]*\/?>/gi, '')
         .replace(/<meta[^>]+name=["\']description["\'][^>]*\/?>/gi, '')
-        .replace(/<meta[^>]+property=["\']twitter:(title|description|image|url|card)["\'][^>]*\/?>/gi, '');
+        .replace(/<meta[^>]+(?:property|name)=["\']twitter:(title|description|image|url|card)["\'][^>]*\/?>/gi, '');
 
       html = html.replace('<head>', `<head>${headContent}`);
 

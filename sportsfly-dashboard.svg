@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8FAFC" />
+      <stop offset="100%" stop-color="#EFF6FF" />
+    </linearGradient>
+    <linearGradient id="blueCircleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066FF" />
+      <stop offset="100%" stop-color="#00C0FF" />
+    </linearGradient>
+    <linearGradient id="pinkCircleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E11D48" />
+      <stop offset="100%" stop-color="#9333EA" />
+    </linearGradient>
+    <filter id="softCard" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.08" />
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="1000" height="650" rx="24" fill="url(#bgGrad)" />
+
+  <!-- Background App Mockup Grid Windows -->
+  <rect x="40" y="40" width="920" height="570" rx="20" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#softCard)" />
+
+  <!-- App Header / Toolbar -->
+  <rect x="40" y="40" width="920" height="60" rx="20" fill="#FFFFFF" />
+  <line x1="40" y1="100" x2="960" y2="100" stroke="#F1F5F9" stroke-width="1.5" />
+  
+  <!-- Left App Navigation Bar Mockup -->
+  <rect x="40" y="100" width="60" height="510" fill="#F8FAFC" />
+  <rect x="52" y="120" width="36" height="36" rx="10" fill="#0066FF" />
+  <circle cx="70" cy="190" r="10" fill="#CBD5E1" />
+  <circle cx="70" cy="240" r="10" fill="#CBD5E1" />
+  <circle cx="70" cy="290" r="10" fill="#CBD5E1" />
+
+  <!-- Calendar Date Bar on Top -->
+  <rect x="130" y="120" width="180" height="36" rx="8" fill="#F1F5F9" />
+  <text x="220" y="144" fill="#334155" font-family="system-ui, sans-serif" font-size="14" font-weight="700" text-anchor="middle">
+    ‹  Mayıs 2026  ›
+  </text>
+  <rect x="800" y="120" width="120" height="36" rx="8" fill="#0066FF" />
+  <text x="860" y="143" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+    + Yeni Randevu
+  </text>
+
+  <!-- Big Metric Rings Top Right -->
+  <!-- Ring 1: 310 Üye -->
+  <g transform="translate(620, 115)">
+    <circle cx="60" cy="60" r="54" fill="#FFFFFF" stroke="url(#blueCircleGrad)" stroke-width="8" filter="url(#softCard)" />
+    <text x="60" y="55" fill="#0F172A" font-family="system-ui, sans-serif" font-size="24" font-weight="800" text-anchor="middle">
+      310
+    </text>
+    <text x="60" y="78" fill="#64748B" font-family="system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Üye
+    </text>
+  </g>
+
+  <!-- Ring 2: 12 Eğitmen -->
+  <g transform="translate(780, 115)">
+    <circle cx="60" cy="60" r="54" fill="#FFFFFF" stroke="url(#pinkCircleGrad)" stroke-width="8" filter="url(#softCard)" />
+    <text x="60" y="55" fill="#0F172A" font-family="system-ui, sans-serif" font-size="24" font-weight="800" text-anchor="middle">
+      12
+    </text>
+    <text x="60" y="78" fill="#64748B" font-family="system-ui, sans-serif" font-size="13" font-weight="700" text-anchor="middle">
+      Eğitmen
+    </text>
+  </g>
+
+  <!-- Giant Blue Feature Sphere / Circle on Bottom Left -->
+  <circle cx="280" cy="460" r="210" fill="#0070F3" />
+  
+  <!-- Sphere Title Badge -->
+  <rect x="130" y="320" width="220" height="34" rx="17" fill="#0056C6" />
+  <text x="240" y="342" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="14" font-weight="800" text-anchor="middle">
+    Sporcu / Üye Veri Yönetimi
+  </text>
+
+  <!-- Floating Feature Pill 1: Hoşgeldin! -->
+  <g transform="translate(110, 375)">
+    <rect x="0" y="0" width="240" height="46" rx="23" fill="#FFFFFF" filter="url(#softCard)" />
+    <circle cx="28" cy="23" r="13" fill="#ECFDF5" />
+    <path d="M22 23 L26 27 L34 19" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="50" y="29" fill="#0F172A" font-family="system-ui, sans-serif" font-size="14" font-weight="700">
+      Hoşgeldin!
+    </text>
+  </g>
+
+  <!-- Floating Feature Pill 2: Antrenman Takvimi -->
+  <g transform="translate(110, 440)">
+    <rect x="0" y="0" width="270" height="46" rx="23" fill="#FFFFFF" filter="url(#softCard)" />
+    <circle cx="28" cy="23" r="13" fill="#ECFDF5" />
+    <path d="M22 23 L26 27 L34 19" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="50" y="29" fill="#0F172A" font-family="system-ui, sans-serif" font-size="13" font-weight="700">
+      Antrenman takvimini görüntüleyin
+    </text>
+  </g>
+
+  <!-- Floating Feature Pill 3: Gelir Raporları -->
+  <g transform="translate(110, 505)">
+    <rect x="0" y="0" width="250" height="46" rx="23" fill="#FFFFFF" filter="url(#softCard)" />
+    <circle cx="28" cy="23" r="13" fill="#ECFDF5" />
+    <path d="M22 23 L26 27 L34 19" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="50" y="29" fill="#0F172A" font-family="system-ui, sans-serif" font-size="13" font-weight="700">
+      Gelir raporlarını görüntüleyin
+    </text>
+  </g>
+
+  <!-- Center Manager / Executive Illustration & Academy Team Representation -->
+  <g transform="translate(430, 210)">
+    <!-- Manager Avatar Card -->
+    <rect x="0" y="0" width="260" height="360" rx="24" fill="#0F172A" filter="url(#softCard)" />
+    <!-- Gradient Inner Glow -->
+    <rect x="4" y="4" width="252" height="352" rx="20" fill="none" stroke="#334155" stroke-width="1.5" />
+    
+    <!-- Silhouette / Professional Executive -->
+    <circle cx="130" cy="110" r="50" fill="#38BDF8" opacity="0.2" />
+    <circle cx="130" cy="100" r="38" fill="#F8FAFC" />
+    <!-- Suit and tie contour -->
+    <path d="M60 270 C60 190 200 190 200 270 Z" fill="#1E293B" />
+    <path d="M110 200 L130 250 L150 200 Z" fill="#FFFFFF" />
+    <path d="M125 210 L130 250 L135 210 Z" fill="#0066FF" />
+
+    <text x="130" y="305" fill="#FFFFFF" font-family="system-ui, sans-serif" font-size="16" font-weight="800" text-anchor="middle">
+      Tesis & Kulüp Yönetimi
+    </text>
+    <text x="130" y="328" fill="#94A3B8" font-family="system-ui, sans-serif" font-size="12" font-weight="600" text-anchor="middle">
+      SportsFly Bulut Paneli
+    </text>
+  </g>
+
+  <!-- Right Side: Fitness / Pilates & Academy Card -->
+  <g transform="translate(720, 270)">
+    <rect x="0" y="0" width="210" height="300" rx="20" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5" filter="url(#softCard)" />
+    
+    <rect x="20" y="20" width="170" height="120" rx="14" fill="#E0F2FE" />
+    <!-- Sport icon -->
+    <circle cx="105" cy="70" r="28" fill="#0284C7" />
+    <path d="M95 70 L102 77 L115 63" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <text x="105" y="125" fill="#0369A1" font-family="system-ui, sans-serif" font-size="12" font-weight="700" text-anchor="middle">
+      Akademi & Stüdyolar
+    </text>
+
+    <!-- Stat items -->
+    <text x="24" y="175" fill="#0F172A" font-family="system-ui, sans-serif" font-size="13" font-weight="700">
+      Tenis & Yüzme Okulları
+    </text>
+    <text x="24" y="195" fill="#64748B" font-family="system-ui, sans-serif" font-size="11">
+      Anlık mobil yoklama takibi
+    </text>
+
+    <text x="24" y="235" fill="#0F172A" font-family="system-ui, sans-serif" font-size="13" font-weight="700">
+      Fitness / Yoga / Pilates
+    </text>
+    <text x="24" y="255" fill="#64748B" font-family="system-ui, sans-serif" font-size="11">
+      Otomatik üyelik & aidat tahsilatı
+    </text>
+  </g>
+
+</svg>
