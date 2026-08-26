@@ -185,6 +185,34 @@ export const App: React.FC = () => {
     }
   }, [location.pathname, newsArticles, approvedStartups, selectedArticle, selectedStartup]);
 
+  // Dynamically update document title and description based on selected item or current path
+  useEffect(() => {
+    const defaultTitle = "SportTech Türkiye | Spor Teknolojileri & Performans Sistemleri";
+    const defaultDescription = "Türkiye'nin lider spor teknolojileri platformu. Atletik performans ölçüm cihazları, kuvvet platformları ve akıllı fitness ekipmanları.";
+
+    let title = defaultTitle;
+    let description = defaultDescription;
+
+    if (selectedArticle) {
+      title = `${selectedArticle.title} | SportTech Türkiye`;
+      description = selectedArticle.excerpt || selectedArticle.title;
+    } else if (selectedStartup) {
+      title = `${selectedStartup.name} | SportTech Türkiye`;
+      description = selectedStartup.tagLine ? `${selectedStartup.tagLine} - ${selectedStartup.description}` : selectedStartup.description;
+    }
+
+    document.title = title;
+
+    // Dynamically find or fallback create the meta description tag
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      document.head.appendChild(metaDescription);
+    }
+    metaDescription.setAttribute('content', description);
+  }, [selectedArticle, selectedStartup]);
+
   // Smooth scroll helper
   const scrollToSection = (id: string) => {
     setActiveSection(id);
