@@ -21,7 +21,11 @@ function getRasterImage(imagePath: string | undefined, origin: string): string {
 
   // If it's an SVG, dynamically convert it to a raster PNG using the secure, fast weserv.nl proxy
   if (absoluteUrl.toLowerCase().endsWith('.svg')) {
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+    const hostname = origin.replace(/^https?:\/\//i, '').split(':')[0];
+    const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0' || hostname.startsWith('192.168.');
+    const envAppUrl = typeof process !== 'undefined' && process.env && process.env.APP_URL ? process.env.APP_URL : '';
+    
+    if (isLocalHost && !envAppUrl) {
       return `${origin}/og-image.png`;
     }
     const cleanUrl = absoluteUrl.replace(/^https?:\/\//i, '');
@@ -44,14 +48,34 @@ export function getSeoMetadata(
   selectedStartup?: Startup | null,
   selectedArticle?: NewsArticle | null
 ): SeoMetadata {
+  // Extract hostname without port to detect local server versus live domain
+  const rawHostname = origin.replace(/^https?:\/\//i, '').split(':')[0];
+  const isLocalHost = rawHostname === 'localhost' || rawHostname === '127.0.0.1' || rawHostname === '0.0.0.0' || rawHostname.startsWith('192.168.');
+  
+  // Resolve public origin for external crawlers:
+  // If request is from localhost/127.0.0.1, fallback to APP_URL if we are on a remote server, otherwise default production domain.
+  // Otherwise, use the original (e.g. preview URL) but make sure to strip any internal development port (like :3000)
+  let publicOrigin = origin;
+  const envAppUrl = typeof process !== 'undefined' && process.env && process.env.APP_URL ? process.env.APP_URL : '';
+
+  if (isLocalHost) {
+    if (envAppUrl) {
+      publicOrigin = envAppUrl;
+    } else {
+      publicOrigin = 'https://sporttech.com.tr';
+    }
+  } else {
+    publicOrigin = origin.replace(/:3000$/, '').replace(/:3000\/$/, '');
+  }
+
   // Normalize pathname: extract path without query strings or hash parameters
   const cleanPath = pathname.split('?')[0].split('#')[0];
   const normalizedPath = cleanPath.endsWith('/') && cleanPath !== '/' ? cleanPath.slice(0, -1) : cleanPath;
-  const url = `${origin}${normalizedPath}`;
+  const url = `${publicOrigin}${normalizedPath}`;
   
   let title = '';
   let description = '';
-  let image = `${origin}/og-image.png`;
+  let image = `${publicOrigin}/og-image.png`;
 
   // Matches for paths
   const newsMatch = normalizedPath.match(/\/news\/([^/?#]+)/);
@@ -72,7 +96,7 @@ export function getSeoMetadata(
       if (description.length > 165) {
         description = description.substring(0, 162) + '...';
       }
-      image = getRasterImage(startup.coverImage || startup.logo, origin);
+      image = getRasterImage(startup.coverImage || startup.logo, publicOrigin);
     }
   } 
   // 2. Dynamic News Detail page
@@ -89,7 +113,7 @@ export function getSeoMetadata(
     if (article) {
       title = `${article.title} | SportTech Türkiye`;
       description = article.excerpt || article.content[0].substring(0, 160);
-      image = getRasterImage(article.coverImage, origin);
+      image = getRasterImage(article.coverImage, publicOrigin);
     }
   }
 

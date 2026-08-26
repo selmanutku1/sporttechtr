@@ -418,7 +418,7 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
           {/* Görsel ve Medya Yönetimi (Logo, Cover Image & File Upload) */}
           <div className={`p-5 rounded-2xl border ${
             theme === 'dark' ? 'bg-slate-950/40 border-slate-800' : 'bg-slate-50 border-slate-200'
-          } space-y-4`}>
+          } space-y-6`}>
             <h4 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
               theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
             }`}>
@@ -426,152 +426,170 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
               <span>Görsel ve Marka Kimliği Yönetimi</span>
             </h4>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {/* Logo Settings */}
-              <div className="space-y-3">
-                <div>
-                  <label className={`block text-xs font-bold mb-1 ${
-                    theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
-                  }`}>
-                    Girişim Logosu (Görsel Yolu / URL)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.logo || ''}
-                    onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
-                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-mono focus:outline-none focus:border-blue-600 shadow-2xs transition-all ${
-                      theme === 'dark' ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-700' : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400'
-                    }`}
-                    placeholder="/logo.svg"
-                  />
-                </div>
-
-                {/* Logo Presets */}
-                <div className="space-y-1.5">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Hızlı Seçim Şablonları</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {[
-                      { name: 'Varsayılan', path: '/logo.svg' },
-                      { name: 'Sporpuan', path: '/sporpuan-logo.svg' },
-                      { name: 'Mera', path: '/mera-logo.svg' },
-                      { name: 'SportsFly', path: '/sportsfly-logo.svg' }
-                    ].map((preset) => (
-                      <button
-                        key={preset.path}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, logo: preset.path })}
-                        className={`px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all ${
-                          formData.logo === preset.path
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                            : theme === 'dark'
-                              ? 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-300'
-                              : 'bg-white border-slate-200 hover:border-slate-300 text-slate-600'
-                        }`}
-                      >
-                        {preset.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Logo Preview */}
-                <div className="flex items-center gap-3 p-2.5 rounded-xl border border-dashed border-slate-800 bg-slate-950/20">
-                  <div className="w-12 h-12 rounded-lg border border-slate-800 bg-slate-900 flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
-                    {formData.logo ? (
-                      <img
-                        src={formData.logo}
-                        alt="Logo Önizleme"
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-contain"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/logo.svg';
-                        }}
-                      />
-                    ) : (
-                      <Building2 className="w-6 h-6 text-slate-600" />
-                    )}
-                  </div>
+            {/* Logo Settings Stack (Inline layout) */}
+            <div className={`p-4 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/40 border-slate-800/80' : 'bg-white border-slate-100'} space-y-3`}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                <div className="space-y-3">
                   <div>
-                    <span className="text-[10px] font-bold text-slate-500 block uppercase">Canlı Logo Önizleme</span>
-                    <span className="text-xs font-semibold text-slate-300 font-mono truncate max-w-[180px] block">
-                      {formData.logo || 'Atanmadı'}
-                    </span>
+                    <label className={`block text-xs font-bold mb-1 ${
+                      theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
+                    }`}>
+                      Girişim Logosu (Görsel Yolu / URL)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.logo || ''}
+                      onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
+                      className={`w-full px-3.5 py-2 rounded-xl border text-xs font-mono focus:outline-none focus:border-blue-600 shadow-2xs transition-all ${
+                        theme === 'dark' ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-700' : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400'
+                      }`}
+                      placeholder="/logo.svg"
+                    />
+                  </div>
+
+                  {/* Logo Presets */}
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Hızlı Logo Şablonları</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { name: 'Varsayılan', path: '/logo.svg' },
+                        { name: 'Sporpuan', path: '/sporpuan-logo.svg' },
+                        { name: 'Mera', path: '/mera-logo.svg' },
+                        { name: 'SportsFly', path: '/sportsfly-logo.svg' }
+                      ].map((preset) => (
+                        <button
+                          key={preset.path}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, logo: preset.path })}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all ${
+                            formData.logo === preset.path
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                              : theme === 'dark'
+                                ? 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-300'
+                                : 'bg-white border-slate-200 hover:border-slate-300 text-slate-600'
+                          }`}
+                        >
+                          {preset.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Logo Live Preview */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Canlı Logo Önizleme</span>
+                  <div className={`flex items-center gap-3 p-3 rounded-xl border ${theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                    <div className="w-12 h-12 rounded-lg border border-slate-800 bg-slate-900 flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                      {formData.logo ? (
+                        <img
+                          src={formData.logo}
+                          alt="Logo Önizleme"
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-contain"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/logo.svg';
+                          }}
+                        />
+                      ) : (
+                        <Building2 className="w-6 h-6 text-slate-600" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold text-slate-500 block uppercase">Canlı Logo Durumu</span>
+                      <span className="text-xs font-semibold text-slate-300 font-mono truncate block max-w-[200px]">
+                        {formData.logo || 'Atanmadı'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Cover Image Settings */}
-              <div className="space-y-3">
-                <div>
-                  <label className={`block text-xs font-bold mb-1 ${
-                    theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
-                  }`}>
-                    Kapak Görseli (Görsel Yolu / URL)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.coverImage || ''}
-                    onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
-                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-mono focus:outline-none focus:border-blue-600 shadow-2xs transition-all ${
-                      theme === 'dark' ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-700' : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400'
-                    }`}
-                    placeholder="/og-image.png"
-                  />
-                </div>
+            {/* Cover Image Settings Stack - REAL-TIME SIDE-BY-SIDE PREVIEW AREA */}
+            <div className={`p-4 rounded-xl border ${theme === 'dark' ? 'bg-slate-900/40 border-slate-800/80' : 'bg-white border-slate-100'} space-y-3`}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                
+                {/* Sol taraf: Giriş Alanı ve Şablonlar */}
+                <div className="space-y-3">
+                  <div>
+                    <label className={`block text-xs font-bold mb-1 ${
+                      theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
+                    }`}>
+                      Kapak Görseli (Görsel Yolu / URL)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.coverImage || ''}
+                      onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                      className={`w-full px-3.5 py-2 rounded-xl border text-xs font-mono focus:outline-none focus:border-blue-600 shadow-2xs transition-all ${
+                        theme === 'dark' ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-700' : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400'
+                      }`}
+                      placeholder="/og-image.png"
+                    />
+                  </div>
 
-                {/* Cover Image Presets */}
-                <div className="space-y-1.5">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Kapak Görsel Şablonları</span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {[
-                      { name: 'Sporpuan Yeni Kapak (SVG)', path: '/sporttech-sppn.svg' },
-                      { name: 'Sporpuan Harita', path: '/sporpuan-map-v2.svg' },
-                      { name: 'Mera', path: '/mera-cover.svg' },
-                      { name: 'SportsFly', path: '/sportsfly-tablet-app.svg' },
-                      { name: 'Genel STT', path: '/og-image.png' }
-                    ].map((preset) => (
-                      <button
-                        key={preset.path}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, coverImage: preset.path })}
-                        className={`px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all ${
-                          formData.coverImage === preset.path
-                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                            : theme === 'dark'
-                              ? 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-300'
-                              : 'bg-white border-slate-200 hover:border-slate-300 text-slate-600'
-                        }`}
-                      >
-                        {preset.name}
-                      </button>
-                    ))}
+                  {/* Cover Image Presets */}
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Kapak Görsel Şablonları</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { name: 'Mera Kapak (SVG)', path: '/mera-cover.svg' },
+                        { name: 'SportsFly Panel', path: '/sportsfly-dashboard.svg' },
+                        { name: 'SportsFly Tablet', path: '/sportsfly-tablet-app.svg' },
+                        { name: 'Sporpuan Kapak', path: '/sporpuan-cover.svg' },
+                        { name: 'Sporpuan Harita', path: '/sporpuan-map-v2.svg' },
+                        { name: 'Genel STT', path: '/og-image.png' }
+                      ].map((preset) => (
+                        <button
+                          key={preset.path}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, coverImage: preset.path })}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all ${
+                            formData.coverImage === preset.path
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                              : theme === 'dark'
+                                ? 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-300'
+                                : 'bg-white border-slate-200 hover:border-slate-300 text-slate-600'
+                          }`}
+                        >
+                          {preset.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Cover Image Preview */}
-                <div className="space-y-2 p-2.5 rounded-xl border border-dashed border-slate-800 bg-slate-950/20">
-                  <div className="w-full h-24 rounded-lg border border-slate-800 bg-slate-900 flex items-center justify-center overflow-hidden relative">
+                {/* Sağ taraf: REAL-TIME CANLI ÖNİZLEME ALANI (Side-by-side) */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Canlı Kapak Önizleme</span>
+                  <div className={`w-full h-28 rounded-xl border flex items-center justify-center overflow-hidden relative shadow-inner group ${
+                    theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-slate-100 border-slate-200'
+                  }`}>
                     {formData.coverImage ? (
-                      <img
-                        src={formData.coverImage}
-                        alt="Kapak Önizleme"
-                        referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/og-image.png';
-                        }}
-                      />
+                      <>
+                        <img
+                          src={formData.coverImage}
+                          alt="Kapak Önizleme"
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/og-image.png';
+                          }}
+                        />
+                        <div className="absolute bottom-2 left-2 right-2 bg-slate-950/85 backdrop-blur-xs py-1 px-2 rounded-lg border border-slate-800/50 text-[10px] font-mono text-slate-300 truncate">
+                          {formData.coverImage}
+                        </div>
+                      </>
                     ) : (
-                      <Image className="w-8 h-8 text-slate-600" />
+                      <div className="flex flex-col items-center justify-center text-slate-500 gap-1 p-4">
+                        <Image className="w-6 h-6 animate-pulse" />
+                        <span className="text-[10px] font-semibold">Görsel URL'si yapıştırın veya şablon seçin</span>
+                      </div>
                     )}
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-500 block uppercase">Canlı Kapak Önizleme</span>
-                    <span className="text-[10px] font-semibold text-slate-300 font-mono max-w-[180px] truncate block">
-                      {formData.coverImage || 'Atanmadı'}
-                    </span>
-                  </div>
                 </div>
+
               </div>
             </div>
 
@@ -601,11 +619,14 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
                     const file = files[0];
                     const extension = file.name.split('.').pop()?.toLowerCase();
                     
-                    // Simulate processing the file
-                    if (file.name.toLowerCase().includes('sporttech-sppn') || file.name.toLowerCase().includes('sppn')) {
-                      setFormData({ ...formData, coverImage: '/sporttech-sppn.svg' });
+                    const lowerName = file.name.toLowerCase();
+                    if (lowerName.includes('sporttech-sppn') || lowerName.includes('sppn')) {
+                      setFormData({ ...formData, coverImage: '/sporpuan-cover.svg' });
+                    } else if (lowerName.includes('sportsfly') || lowerName.includes('sportfly')) {
+                      setFormData({ ...formData, coverImage: '/sportsfly-dashboard.svg' });
+                    } else if (lowerName.includes('mera')) {
+                      setFormData({ ...formData, coverImage: '/mera-cover.svg' });
                     } else if (['png', 'jpg', 'jpeg', 'svg'].includes(extension || '')) {
-                      // Apply it as a simulated local upload path
                       setFormData({ ...formData, coverImage: `/${file.name}` });
                     }
                   }
@@ -620,8 +641,13 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
                       const file = files[0];
                       const extension = file.name.split('.').pop()?.toLowerCase();
                       
-                      if (file.name.toLowerCase().includes('sporttech-sppn') || file.name.toLowerCase().includes('sppn')) {
-                        setFormData({ ...formData, coverImage: '/sporttech-sppn.svg' });
+                      const lowerName = file.name.toLowerCase();
+                      if (lowerName.includes('sporttech-sppn') || lowerName.includes('sppn')) {
+                        setFormData({ ...formData, coverImage: '/sporpuan-cover.svg' });
+                      } else if (lowerName.includes('sportsfly') || lowerName.includes('sportfly')) {
+                        setFormData({ ...formData, coverImage: '/sportsfly-dashboard.svg' });
+                      } else if (lowerName.includes('mera')) {
+                        setFormData({ ...formData, coverImage: '/mera-cover.svg' });
                       } else if (['png', 'jpg', 'jpeg', 'svg'].includes(extension || '')) {
                         setFormData({ ...formData, coverImage: `/${file.name}` });
                       }
@@ -641,7 +667,7 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
                 <p className="text-xs font-bold">Kapak veya Logo Görseli Seçin / Sürükleyin</p>
                 <p className="text-[10px] text-slate-500 mt-1">PNG, JPG, JPEG veya SVG (Sınırsız Boyut)</p>
                 <p className="text-[10px] text-emerald-500 font-bold mt-2 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                  İpucu: Yüklediğiniz "sporttech-sppn.png" görseli, Sporpuan yeni SVG kapağı (/sporttech-sppn.svg) ile eşleştirilerek kusursuzca yüklenecektir!
+                  İpucu: Yüklediğiniz "sppn", "sportsfly" veya "mera" görselleri ilgili yeni SVG kapakları ile eşleştirilerek kusursuzca atanacaktır!
                 </p>
               </div>
             </div>

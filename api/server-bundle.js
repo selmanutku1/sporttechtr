@@ -74,7 +74,7 @@ var STARTUPS = [
     description: "Spor salonlar\u0131, spor okullar\u0131, fitness/pilates/yoga st\xFCdyolar\u0131 ve tenis akademilerinin \xFCye y\xF6netimi, yoklama, e\u011Fitmen/personel y\xF6netimi, sadakat programlar\u0131 ve raporlama ihtiya\xE7lar\u0131n\u0131 tek bir panelden kar\u015F\u0131l\u0131yor. Ama\xE7: i\u015Fletmelerin dijital d\xF6n\xFC\u015F\xFCm\xFCn\xFC kolayla\u015Ft\u0131r\u0131p \xFCye deneyimini iyile\u015Ftirmek.",
     fullStory: "SportsFly, spor i\u015Fletmeleri i\xE7in geli\u015Ftirilmi\u015F kapsaml\u0131 bir y\xF6netim yaz\u0131l\u0131m\u0131d\u0131r. Spor salonlar\u0131, spor okullar\u0131, fitness/pilates/yoga st\xFCdyolar\u0131, tenis akademileri ve benzeri tesislerin \xFCye y\xF6netimi, yoklama, e\u011Fitmen/personel y\xF6netimi, sadakat programlar\u0131 ve raporlama ihtiya\xE7lar\u0131n\u0131 tek bir panelden kar\u015F\u0131l\u0131yor. Ama\xE7: i\u015Fletmelerin dijital d\xF6n\xFC\u015F\xFCm\xFCn\xFC kolayla\u015Ft\u0131r\u0131p \xFCye deneyimini iyile\u015Ftirmek.",
     logo: "/sportsfly-logo.svg",
-    coverImage: "/sportsfly-tablet-app.svg",
+    coverImage: "/sportsfly-dashboard.svg",
     category: "management_platform",
     categoryName: "Y\xF6netim & Dijital Platform",
     stage: "Bootstrapped",
@@ -105,7 +105,7 @@ var STARTUPS = [
     description: "T\xFCrkiye'nin ba\u011F\u0131ms\u0131z spor tesisleri ve etkinlikleri puanlama platformu. Spor salonlar\u0131n\u0131, spor okullar\u0131n\u0131 ve etkinlikleri hijyen, ekipman ve lokasyon gibi objektif kriterlere g\xF6re de\u011Ferlendirip tarafs\u0131z kullan\u0131c\u0131 yorumlar\u0131yla sporseverlere rehberlik ediyor. Hedef: tesis se\xE7iminde \u015Feffaf ve g\xFCvenilir bir referans kayna\u011F\u0131 olmak.",
     fullStory: "Sporpuan, T\xFCrkiye'nin ba\u011F\u0131ms\u0131z spor tesisleri ve etkinlikleri puanlama platformudur. Spor salonlar\u0131n\u0131, spor okullar\u0131n\u0131 ve etkinlikleri hijyen, ekipman ve lokasyon gibi objektif kriterlere g\xF6re de\u011Ferlendirip tarafs\u0131z kullan\u0131c\u0131 yorumlar\u0131yla sporseverlere rehberlik ediyor. Hedef: tesis se\xE7iminde \u015Feffaf ve g\xFCvenilir bir referans kayna\u011F\u0131 olmak.",
     logo: "/sporpuan-logo.svg",
-    coverImage: "/sporpuan-map-v2.svg",
+    coverImage: "/sporpuan-cover.svg",
     category: "management_platform",
     categoryName: "Y\xF6netim & Dijital Platform",
     stage: "Bootstrapped",
@@ -375,31 +375,72 @@ var NEWS_ARTICLES = [
 ];
 
 // src/utils/seo.ts
+function getRasterImage(imagePath, origin) {
+  if (!imagePath) {
+    return `${origin}/og-image.png`;
+  }
+  const absoluteUrl = imagePath.startsWith("http") ? imagePath : `${origin}${imagePath.startsWith("/") ? "" : "/"}${imagePath}`;
+  if (absoluteUrl.toLowerCase().endsWith(".svg")) {
+    const hostname = origin.replace(/^https?:\/\//i, "").split(":")[0];
+    const isLocalHost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0" || hostname.startsWith("192.168.");
+    const envAppUrl = typeof process !== "undefined" && process.env && process.env.APP_URL ? process.env.APP_URL : "";
+    if (isLocalHost && !envAppUrl) {
+      return `${origin}/og-image.png`;
+    }
+    const cleanUrl = absoluteUrl.replace(/^https?:\/\//i, "");
+    const protocol = absoluteUrl.startsWith("https") ? "ssl:" : "";
+    return `https://images.weserv.nl/?url=${protocol}${cleanUrl}&output=png`;
+  }
+  return absoluteUrl;
+}
 function getSeoMetadata(pathname, language, startups, newsArticles, origin = "https://sporttech.com.tr", selectedStartup, selectedArticle) {
-  const cleanPath = pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
-  const url = `${origin}${cleanPath}`;
+  const rawHostname = origin.replace(/^https?:\/\//i, "").split(":")[0];
+  const isLocalHost = rawHostname === "localhost" || rawHostname === "127.0.0.1" || rawHostname === "0.0.0.0" || rawHostname.startsWith("192.168.");
+  let publicOrigin = origin;
+  const envAppUrl = typeof process !== "undefined" && process.env && process.env.APP_URL ? process.env.APP_URL : "";
+  if (isLocalHost) {
+    if (envAppUrl) {
+      publicOrigin = envAppUrl;
+    } else {
+      publicOrigin = "https://sporttech.com.tr";
+    }
+  } else {
+    publicOrigin = origin.replace(/:3000$/, "").replace(/:3000\/$/, "");
+  }
+  const cleanPath = pathname.split("?")[0].split("#")[0];
+  const normalizedPath = cleanPath.endsWith("/") && cleanPath !== "/" ? cleanPath.slice(0, -1) : cleanPath;
+  const url = `${publicOrigin}${normalizedPath}`;
   let title = "";
   let description = "";
-  let image = `${origin}/og-image.png`;
-  const newsMatch = cleanPath.match(/\/news\/([^/?#]+)/);
-  const startupMatch = cleanPath.match(/\/startup\/([^/?#]+)/);
+  let image = `${publicOrigin}/og-image.png`;
+  const newsMatch = normalizedPath.match(/\/news\/([^/?#]+)/);
+  const startupMatch = normalizedPath.match(/\/startup\/([^/?#]+)/);
   if (selectedStartup || startupMatch) {
-    const startup = selectedStartup || (startupMatch ? startups.find((s) => s.id === startupMatch[1]) : null);
+    const rawId = decodeURIComponent(startupMatch ? startupMatch[1] : "").toLowerCase();
+    const startup = selectedStartup || startups.find(
+      (s) => s.id.toLowerCase() === rawId || s.name.toLowerCase() === rawId || s.id.toLowerCase().includes(rawId) || rawId.includes(s.id.toLowerCase())
+    );
     if (startup) {
       title = `${startup.name} | SportTech T\xFCrkiye`;
-      description = startup.tagLine || startup.description.substring(0, 160);
-      image = startup.logo.startsWith("http") ? startup.logo : `${origin}${startup.logo}`;
+      description = startup.description || startup.tagLine;
+      if (description.length > 165) {
+        description = description.substring(0, 162) + "...";
+      }
+      image = getRasterImage(startup.coverImage || startup.logo, publicOrigin);
     }
   } else if (selectedArticle || newsMatch) {
-    const article = selectedArticle || (newsMatch ? newsArticles.find((a) => a.id === newsMatch[1]) : null);
+    const rawId = decodeURIComponent(newsMatch ? newsMatch[1] : "").toLowerCase();
+    const article = selectedArticle || newsArticles.find(
+      (a) => a.id.toLowerCase() === rawId || a.slug?.toLowerCase() === rawId || a.id.toLowerCase().includes(rawId) || rawId.includes(a.id.toLowerCase()) || a.slug?.toLowerCase().includes(rawId) || rawId.includes(a.slug?.toLowerCase() || "")
+    );
     if (article) {
       title = `${article.title} | SportTech T\xFCrkiye`;
       description = article.excerpt || article.content[0].substring(0, 160);
-      image = article.coverImage.startsWith("http") ? article.coverImage : `${origin}${article.coverImage}`;
+      image = getRasterImage(article.coverImage, publicOrigin);
     }
   }
   if (!title) {
-    if (cleanPath.includes("/section/startups")) {
+    if (normalizedPath.includes("/section/startups")) {
       if (language === "tr") {
         title = "Giri\u015Fimler & Teknolojiler | SportTech T\xFCrkiye";
         description = "Spor teknolojileri ekosistemindeki ak\u0131ll\u0131 antrenman, performans analizi, giyilebilir teknoloji ve y\xF6netim yaz\u0131l\u0131mlar\u0131 sunan lider giri\u015Fimler.";
@@ -410,18 +451,18 @@ function getSeoMetadata(pathname, language, startups, newsArticles, origin = "ht
         title = "Startups & Technologies | SportTech Turkey";
         description = "The database of innovative startups shaping the future of sport technologies: smart coaching, wearable devices, and sports analytics.";
       }
-    } else if (cleanPath.includes("/section/news")) {
+    } else if (normalizedPath.includes("/section/news")) {
       if (language === "tr") {
         title = "Sekt\xF6rel Haberler & Analizler | SportTech T\xFCrkiye";
         description = "Spor ve teknolojinin kesi\u015Fimindeki en son geli\u015Fmeler, yeni \xFCr\xFCn lansmanlar\u0131, yat\u0131r\u0131m turlar\u0131 ve derinlemesine pazar analizleri.";
       } else if (language === "ar") {
         title = "\u0623\u062E\u0628\u0627\u0631 \u0627\u0644\u0642\u0637\u0627\u0639 \u0648\u0627\u0644\u062A\u062D\u0644\u064A\u0644\u0627\u062A | \u0633\u0628\u0648\u0631\u062A \u062A\u064A\u0643 \u062A\u0631\u0643\u064A\u0627";
-        description = "\u0622\u062E\u0631 \u0627\u0644\u062A\u0637\u0648\u0631\u0627\u062A \u0648\u0627\u0644\u0627\u0628\u062A\u0643\u0627\u0631\u0627\u062A \u0648\u062C\u0648\u0644\u0627\u062A \u0627\u0644\u0627\u0633\u062A\u062B\u0645\u0627\u0631 \u0648\u0627\u0644\u062A\u062D\u0644\u064A\u0644\u0627\u062A \u0627\u0644\u0639\u0645\u064A\u0642\u0629 \u0641\u064A \u062A\u0642\u0627\u0637\u0639 \u0627\u0644\u0631\u064A\u0627\u0636\u0629 \u0648\u0627\u0644\u062A\u0643\u0646\u0648\u0644\u0648\u062C\u064A\u0627.";
+        description = "\u0622\u062E\u0631 \u0627\u0644\u062A\u0637\u0648\u0631\u0627\u062A \u0648\u0627\u0644\u0627\u0628\u062A\u0643\u0627\u0631\u0627\u062A \u0648\u062C\u0648\u0644\u0627\u062A \u0627\u0644\u0627\u0633\u062A\u062B\u0645\u0627\u0631 \u0648\u0627\u0644\u062A\u062D\u0644\u064A\u0644\u0627\u062A \u0627\u0644\u0639\u0645\u064A\u0642\u0629 in \u062A\u0642\u0627\u0637\u0639 \u0627\u0644\u0631\u064A\u0627\u0636\u0629 \u0648\u0627\u0644\u062A\u0643\u0646\u0648\u0644\u0648\u062C\u064A\u0627.";
       } else {
         title = "Industry News & Market Insights | SportTech Turkey";
         description = "Latest developments, product launches, venture capital funding rounds, and in-depth market analyses in sports tech.";
       }
-    } else if (cleanPath.includes("/section/about")) {
+    } else if (normalizedPath.includes("/section/about")) {
       if (language === "tr") {
         title = "Hakk\u0131m\u0131zda | SportTech T\xFCrkiye";
         description = "SportTech T\xFCrkiye, \xFClkemizdeki spor teknolojisi ekosistemini bir araya getiren, b\xFCy\xFCyen ve d\xFCnyaya a\xE7an ba\u011F\u0131ms\u0131z bir platformdur.";
@@ -430,9 +471,9 @@ function getSeoMetadata(pathname, language, startups, newsArticles, origin = "ht
         description = "\u0645\u0646\u0635\u0629 \u0645\u0633\u062A\u0642\u0644\u0629 \u062A\u062C\u0645\u0639 \u0648\u062A\u0646\u0645\u064A \u0648\u062A\u0639\u0631\u0636 \u0645\u0646\u0638\u0648\u0645\u0629 \u0627\u0644\u062A\u0643\u0646\u0648\u0644\u0648\u062C\u064A\u0627 \u0627\u0644\u0631\u064A\u0627\u0636\u064A\u0629 \u0641\u064A \u062A\u0631\u0643\u064A\u0627 \u0644\u0644\u0639\u0627\u0644\u0645.";
       } else {
         title = "About Us | SportTech Turkey";
-        description = "SportTech Turkey is an independent platform that unites, scales, and accelerates our nation's sports tech ecosystem globally.";
+        description = "About Us | SportTech Turkey";
       }
-    } else if (cleanPath.includes("/section/supporters")) {
+    } else if (normalizedPath.includes("/section/supporters")) {
       if (language === "tr") {
         title = "Ekosistem Destekleyicileri & Partnerler | SportTech T\xFCrkiye";
         description = "Platformumuzun geli\u015Fimine, giri\u015Fimlerin b\xFCy\xFCmesine ve spor k\xFClt\xFCr\xFCn\xFCn dijitalle\u015Fmesine katk\u0131 sa\u011Flayan lider kurumlar.";
@@ -443,7 +484,7 @@ function getSeoMetadata(pathname, language, startups, newsArticles, origin = "ht
         title = "Ecosystem Supporters & Partners | SportTech Turkey";
         description = "Leading institutions and corporate partners contributing to the scale-up and digitalization of the sports tech ecosystem.";
       }
-    } else if (cleanPath.includes("/section/events")) {
+    } else if (normalizedPath.includes("/section/events")) {
       if (language === "tr") {
         title = "Etkinlikler & Programlar | SportTech T\xFCrkiye";
         description = "Yakla\u015Fan spor teknolojisi zirveleri, hackathonlar, yat\u0131r\u0131mc\u0131 bulu\u015Fmalar\u0131 ve giri\u015Fim h\u0131zland\u0131rma programlar\u0131.";
@@ -481,12 +522,19 @@ app.get("*", async (req, res, next) => {
   try {
     const forwardedHost = req.headers["x-forwarded-host"];
     const host = (Array.isArray(forwardedHost) ? forwardedHost[0] : forwardedHost) || req.get("host") || "sporttech.com.tr";
-    const forwardedProto = req.headers["x-forwarded-proto"];
-    const protocol = (Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto) || req.protocol || "https";
+    const isLocal = host.includes("localhost") || host.includes("127.0.0.1") || host.includes(":3000");
+    const protocol = isLocal ? "http" : "https";
     const baseUrl = `${protocol}://${host}`;
     const langParam = req.query.lang;
     const language = typeof langParam === "string" && ["tr", "en-US", "en-GB", "ar"].includes(langParam) ? langParam : "tr";
     const metadata = getSeoMetadata(url, language, STARTUPS, NEWS_ARTICLES, baseUrl);
+    const escapeHtmlAttr = (unsafe) => {
+      return unsafe.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    };
+    const escapedTitle = escapeHtmlAttr(metadata.title);
+    const escapedDesc = escapeHtmlAttr(metadata.description);
+    const escapedImage = escapeHtmlAttr(metadata.image);
+    const escapedUrl = escapeHtmlAttr(metadata.url);
     const indexPath = path.resolve(rootDir, "dist/index.html");
     const backupIndexPath = path.resolve(rootDir, "index.html");
     const finalIndexPath = fs.existsSync(indexPath) ? indexPath : backupIndexPath;
@@ -495,18 +543,18 @@ app.get("*", async (req, res, next) => {
     }
     let template = fs.readFileSync(finalIndexPath, "utf-8");
     const headContent = `
-    <title>${metadata.title}</title>
-    <meta name="description" content="${metadata.description}" />
-    <meta property="og:title" content="${metadata.title}" />
-    <meta property="og:description" content="${metadata.description}" />
-    <meta property="og:image" content="${metadata.image}" />
-    <meta property="og:url" content="${metadata.url}" />
+    <title>${escapedTitle}</title>
+    <meta name="description" content="${escapedDesc}" />
+    <meta property="og:title" content="${escapedTitle}" />
+    <meta property="og:description" content="${escapedDesc}" />
+    <meta property="og:image" content="${escapedImage}" />
+    <meta property="og:url" content="${escapedUrl}" />
     <meta property="og:type" content="website" />
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content="${metadata.title}" />
-    <meta property="twitter:description" content="${metadata.description}" />
-    <meta property="twitter:image" content="${metadata.image}" />
-    <meta property="twitter:url" content="${metadata.url}" />
+    <meta property="twitter:title" content="${escapedTitle}" />
+    <meta property="twitter:description" content="${escapedDesc}" />
+    <meta property="twitter:image" content="${escapedImage}" />
+    <meta property="twitter:url" content="${escapedUrl}" />
 `;
     let html = template.replace(/<title>.*?<\/title>/i, "").replace(/<meta[^>]+(?:property|name)=["\']og:(title|description|image|url|type)["\'][^>]*\/?>/gi, "").replace(/<meta[^>]+name=["\']description["\'][^>]*\/?>/gi, "").replace(/<meta[^>]+(?:property|name)=["\']twitter:(title|description|image|url|card)["\'][^>]*\/?>/gi, "");
     html = html.replace("<head>", `<head>${headContent}`);
