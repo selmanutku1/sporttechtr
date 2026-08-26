@@ -25,6 +25,66 @@ async function startServer() {
     app.use(express.static(distPath, { index: false }));
   }
 
+  // Dynamic XML Sitemap Generator Route
+  app.get('/sitemap.xml', (req, res) => {
+    const forwardedHost = req.headers['x-forwarded-host'];
+    const host = (Array.isArray(forwardedHost) ? forwardedHost[0] : forwardedHost) || req.get('host') || 'sporttech.com.tr';
+    const forwardedProto = req.headers['x-forwarded-proto'];
+    const protocol = (Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto) || req.protocol || 'https';
+    const baseUrl = `${protocol}://${host}`;
+
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    // Main section/index pages
+    const staticPages = [
+      { path: '', priority: '1.0', changefreq: 'daily' },
+      { path: 'section/startups', priority: '0.8', changefreq: 'weekly' },
+      { path: 'section/news', priority: '0.8', changefreq: 'weekly' },
+      { path: 'section/about', priority: '0.8', changefreq: 'weekly' },
+      { path: 'section/supporters', priority: '0.8', changefreq: 'weekly' },
+      { path: 'section/events', priority: '0.8', changefreq: 'weekly' },
+    ];
+
+    let sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+    sitemapXml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+    // 1. Static Pages
+    staticPages.forEach(p => {
+      const urlPath = p.path ? `/${p.path}` : '';
+      sitemapXml += `  <url>\n`;
+      sitemapXml += `    <loc>${baseUrl}${urlPath}</loc>\n`;
+      sitemapXml += `    <lastmod>${currentDate}</lastmod>\n`;
+      sitemapXml += `    <changefreq>${p.changefreq}</changefreq>\n`;
+      sitemapXml += `    <priority>${p.priority}</priority>\n`;
+      sitemapXml += `  </url>\n`;
+    });
+
+    // 2. Dynamic Approved Startups
+    STARTUPS.forEach(startup => {
+      sitemapXml += `  <url>\n`;
+      sitemapXml += `    <loc>${baseUrl}/startup/${startup.id}</loc>\n`;
+      sitemapXml += `    <lastmod>${currentDate}</lastmod>\n`;
+      sitemapXml += `    <changefreq>monthly</changefreq>\n`;
+      sitemapXml += `    <priority>0.7</priority>\n`;
+      sitemapXml += `  </url>\n`;
+    });
+
+    // 3. Dynamic Active News Articles
+    NEWS_ARTICLES.filter(a => a.status !== 'passive').forEach(article => {
+      sitemapXml += `  <url>\n`;
+      sitemapXml += `    <loc>${baseUrl}/news/${article.id}</loc>\n`;
+      sitemapXml += `    <lastmod>${currentDate}</lastmod>\n`;
+      sitemapXml += `    <changefreq>monthly</changefreq>\n`;
+      sitemapXml += `    <priority>0.7</priority>\n`;
+      sitemapXml += `  </url>\n`;
+    });
+
+    sitemapXml += `</urlset>\n`;
+
+    res.header('Content-Type', 'application/xml');
+    res.status(200).send(sitemapXml);
+  });
+
   // Catch-all route to serve index.html with dynamically injected SEO/OG tags
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl || req.url;

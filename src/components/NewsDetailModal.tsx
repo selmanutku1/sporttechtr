@@ -69,6 +69,25 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
     type: 'article'
   });
 
+  // Find other articles
+  const otherArticles = useMemo(() => {
+    if (!article) return [];
+    return articles
+      .filter(a => a.id !== article.id && a.status !== 'passive')
+      .slice(0, 3)
+      .map(other => translateNewsArticle(other, language));
+  }, [articles, article, language]);
+
+  // Find related startups
+  const relatedStartups = useMemo(() => {
+    if (!article) return [];
+    return STARTUPS.filter(s => 
+      article.title.toLowerCase().includes(s.name.toLowerCase()) ||
+      article.excerpt.toLowerCase().includes(s.name.toLowerCase()) ||
+      article.tags.some(t => t.toLowerCase().includes(s.name.toLowerCase()))
+    ).map(s => translateStartup(s, language));
+  }, [article, language]);
+
   // Handle ESC key to close modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -126,23 +145,6 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
     window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
     setShowShareMenu(false);
   };
-
-  // Find other articles
-  const otherArticles = useMemo(() => {
-    return articles
-      .filter(a => a.id !== article.id && a.status !== 'passive')
-      .slice(0, 3)
-      .map(other => translateNewsArticle(other, language));
-  }, [articles, article.id, language]);
-
-  // Find related startups
-  const relatedStartups = useMemo(() => {
-    return STARTUPS.filter(s => 
-      article.title.toLowerCase().includes(s.name.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(s.name.toLowerCase()) ||
-      article.tags.some(t => t.toLowerCase().includes(s.name.toLowerCase()))
-    ).map(s => translateStartup(s, language));
-  }, [article, language]);
 
   return (
     <div 

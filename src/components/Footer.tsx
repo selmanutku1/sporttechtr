@@ -161,7 +161,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
         {/* Bottom Section with 'provided by sporsepeti' */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
           
-          <div className="flex items-center gap-2 text-slate-500">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-slate-500">
             <span>
               © 2026{' '}
               <button 
@@ -173,6 +173,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
               </button>{' '}
               (sporttech.com.tr). {language === 'tr' ? 'Tüm hakları saklıdır.' : language === 'ar' ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}
             </span>
+            <span className="hidden sm:inline text-slate-300">|</span>
+            <a 
+              href="/sitemap.xml" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs hover:text-blue-600 transition-colors opacity-70 hover:opacity-100 flex items-center gap-1"
+              id="footer-sitemap-link"
+            >
+              <span>{language === 'tr' ? 'Site Haritası' : language === 'ar' ? 'خريطة الموقع' : 'Sitemap'}</span>
+            </a>
           </div>
 
           {/* Explicit requirement: provided by sporsepeti */}

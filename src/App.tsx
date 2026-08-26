@@ -17,6 +17,7 @@ import { PartnerModal } from './components/PartnerModal';
 import { SearchModal } from './components/SearchModal';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { AdminDashboardModal } from './components/AdminDashboardModal';
+import { useLanguage } from './context/LanguageContext';
 
 import { Startup, NewsArticle, StartupCategory, Supporter } from './types';
 import { 
@@ -52,10 +53,12 @@ import {
   deleteNewsArticle,
   toggleFeaturedArticle
 } from './services/newsManagement';
+import { generateSitemapXml } from './utils/sitemap';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { language } = useLanguage();
 
   // Navigation & Filter States
   const [activeSection, setActiveSection] = useState<string>('hero');
@@ -185,20 +188,104 @@ export const App: React.FC = () => {
     }
   }, [location.pathname, newsArticles, approvedStartups, selectedArticle, selectedStartup]);
 
-  // Dynamically update document title and description based on selected item or current path
+  // Dynamically update document title and description based on selected item, current path, and selected language
   useEffect(() => {
-    const defaultTitle = "SportTech Türkiye | Spor Teknolojileri & Performans Sistemleri";
-    const defaultDescription = "Türkiye'nin lider spor teknolojileri platformu. Atletik performans ölçüm cihazları, kuvvet platformları ve akıllı fitness ekipmanları.";
-
-    let title = defaultTitle;
-    let description = defaultDescription;
+    let title = "";
+    let description = "";
 
     if (selectedArticle) {
-      title = `${selectedArticle.title} | SportTech Türkiye`;
-      description = selectedArticle.excerpt || selectedArticle.title;
+      if (language === 'tr') {
+        title = `${selectedArticle.title} - Sektörel Haber | SportTech Türkiye`;
+        description = selectedArticle.excerpt || selectedArticle.title;
+      } else if (language === 'ar') {
+        title = `${selectedArticle.title} - أخبار الصناعة | سبورت تيك تركيا`;
+        description = selectedArticle.excerpt || selectedArticle.title;
+      } else {
+        title = `${selectedArticle.title} - Industry News | SportTech Turkey`;
+        description = selectedArticle.excerpt || selectedArticle.title;
+      }
     } else if (selectedStartup) {
-      title = `${selectedStartup.name} | SportTech Türkiye`;
-      description = selectedStartup.tagLine ? `${selectedStartup.tagLine} - ${selectedStartup.description}` : selectedStartup.description;
+      if (language === 'tr') {
+        title = `${selectedStartup.name} - Girişim Profili | SportTech Türkiye`;
+        description = selectedStartup.tagLine ? `${selectedStartup.tagLine} - ${selectedStartup.description}` : selectedStartup.description;
+      } else if (language === 'ar') {
+        title = `${selectedStartup.name} - ملف تعريف الشركة | سبورت تيك تركيا`;
+        description = selectedStartup.tagLine ? `${selectedStartup.tagLine} - ${selectedStartup.description}` : selectedStartup.description;
+      } else {
+        title = `${selectedStartup.name} - Startup Profile | SportTech Turkey`;
+        description = selectedStartup.tagLine ? `${selectedStartup.tagLine} - ${selectedStartup.description}` : selectedStartup.description;
+      }
+    } else {
+      // Check active section or path
+      const path = location.pathname;
+      if (path.includes('/section/startups')) {
+        if (language === 'tr') {
+          title = "Girişimler Dizini | SportTech Türkiye";
+          description = "Türkiye'nin ve bölgenin öncü spor teknolojisi girişimleri kataloğu. Performans, yapay zeka, giyilebilir cihazlar ve yönetim yazılımları.";
+        } else if (language === 'ar') {
+          title = "دليل الشركات الناشئة | سبورت تيك تركيا";
+          description = "كتالوج الشركات الناشئة الرائدة في تكنولوجيا الرياضة في تركيا والمنطقة. الأداء والذكاء الاصطناعي والأجهزة القابلة للارتداء.";
+        } else {
+          title = "Startups Directory | SportTech Turkey";
+          description = "The pioneering directory of sports technology startups in Turkey and its region. AI, wearables, venues, and performance.";
+        }
+      } else if (path.includes('/section/news')) {
+        if (language === 'tr') {
+          title = "Sektörel Haberler & Analizler | SportTech Türkiye";
+          description = "Spor teknolojileri dünyasındaki son gelişmeler, yatırım turları, ürün lansmanları ve pazar raporları.";
+        } else if (language === 'ar') {
+          title = "أخبار الصناعة والتحليلات | سبورت تيك تركيا";
+          description = "آخر التطورات في عالم التكنولوجيا الرياضية، جولات الاستثمار، إطلاق المنتجات وتحليلات السوق.";
+        } else {
+          title = "Industry News & Market Insights | SportTech Turkey";
+          description = "Latest developments, product launches, venture capital funding rounds, and in-depth market analyses in sports tech.";
+        }
+      } else if (path.includes('/section/about')) {
+        if (language === 'tr') {
+          title = "Hakkımızda | SportTech Türkiye";
+          description = "SportTech Türkiye, ülkemizdeki spor teknolojisi ekosistemini bir araya getiren, büyüten ve dünyaya açan bağımsız bir platformdur.";
+        } else if (language === 'ar') {
+          title = "من نحن | سبورت تيك تركيا";
+          description = "منصة مستقلة تجمع وتنمي وتعرض منظومة التكنولوجيا الرياضية في تركيا للعالم.";
+        } else {
+          title = "About Us | SportTech Turkey";
+          description = "SportTech Turkey is an independent platform that unites, scales, and accelerates our nation's sports tech ecosystem globally.";
+        }
+      } else if (path.includes('/section/supporters')) {
+        if (language === 'tr') {
+          title = "Ekosistem Destekleyicileri & Partnerler | SportTech Türkiye";
+          description = "Platformumuzun gelişimine, girişimlerin büyümesine ve spor kültürünün dijitalleşmesine katkı sağlayan lider kurumlar.";
+        } else if (language === 'ar') {
+          title = "الشركات الداعمة والشراكات | سبورت تيك تركيا";
+          description = "المؤسسات والمنظمات التي تساهم في تطوير وتوسيع الشركات الناشئة ورقمنة الرياضة.";
+        } else {
+          title = "Ecosystem Supporters & Partners | SportTech Turkey";
+          description = "Leading institutions and corporate partners contributing to the scale-up and digitalization of the sports tech ecosystem.";
+        }
+      } else if (path.includes('/section/events')) {
+        if (language === 'tr') {
+          title = "Etkinlikler & Programlar | SportTech Türkiye";
+          description = "Yaklaşan spor teknolojisi zirveleri, hackathonlar, yatırımcı buluşmaları ve girişim hızlandırma programları.";
+        } else if (language === 'ar') {
+          title = "الفعاليات والبرامج | سبورت تيك تركيا";
+          description = "مؤتمرات التكنولوجيا الرياضية القادمة، والهاكاثونات، ولقاءات المستثمرين، وبرامج تسريع الشركات الناشئة.";
+        } else {
+          title = "Events, Summits & Acceleration Programs | SportTech Turkey";
+          description = "Upcoming summits, hackathons, demo days, and incubator/accelerator programs in sports tech.";
+        }
+      } else {
+        // Main Home view or other
+        if (language === 'tr') {
+          title = "SportTech Türkiye | Spor Teknolojileri & Performans Sistemleri";
+          description = "Türkiye'nin ilk ve lider spor teknolojileri platformu. Atletik performans analiz cihazları, kuvvet platformları ve akıllı antrenman çözümleri.";
+        } else if (language === 'ar') {
+          title = "سبورت تيك تركيا | تكنولوجيا الرياضة وأنظمة الأداء الذكية";
+          description = "المنصة الرائدة في تكنولوجيا الرياضة، وأنظمة الأداء الذكية، وحلول الرياضة الرقمية في تركيا والمنطقة.";
+        } else {
+          title = "SportTech Turkey | Sports Technologies & Performance Systems";
+          description = "The premier independent sports technology ecosystem hub of Turkey and its region. Spotlighting elite athletic tech, analytics, and software.";
+        }
+      }
     }
 
     document.title = title;
@@ -211,7 +298,52 @@ export const App: React.FC = () => {
       document.head.appendChild(metaDescription);
     }
     metaDescription.setAttribute('content', description);
-  }, [selectedArticle, selectedStartup]);
+
+    // Dynamically find or fallback create the canonical link tag
+    let canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalLink);
+    }
+    // Standardize URL by removing trailing slash if present (except for root homepage)
+    const cleanPathname = location.pathname.endsWith('/') && location.pathname !== '/'
+      ? location.pathname.slice(0, -1)
+      : location.pathname;
+    const canonicalUrl = `${window.location.origin}${cleanPathname}`;
+    canonicalLink.setAttribute('href', canonicalUrl);
+
+    // Dynamically find or fallback create the sitemap link tag
+    let sitemapLink = document.querySelector('link[rel="sitemap"]');
+    if (!sitemapLink) {
+      sitemapLink = document.createElement('link');
+      sitemapLink.setAttribute('rel', 'sitemap');
+      sitemapLink.setAttribute('type', 'application/xml');
+      sitemapLink.setAttribute('title', 'Sitemap');
+      document.head.appendChild(sitemapLink);
+    }
+    sitemapLink.setAttribute('href', `${window.location.origin}/sitemap.xml`);
+
+    // Generate sitemap XML string client-side for dynamic verification
+    const sitemapXmlString = generateSitemapXml(approvedStartups, newsArticles, window.location.origin);
+
+    // SEO Diagnostic Logging Utility
+    console.log(
+      `%c🔍 [SEO Diagnostics] Route/State Changed %c\n` +
+      `%-15s: %s\n` +
+      `%-15s: %s\n` +
+      `%-15s: %s\n` +
+      `%-15s: %s\n` +
+      `%-15s: %d characters (URLs: %d)`,
+      'background: #0f172a; color: #38bdf8; font-weight: bold; padding: 4px 8px; border-radius: 6px;',
+      'color: inherit;',
+      'Language', language.toUpperCase(),
+      'Title', title,
+      'Description', description,
+      'Canonical', canonicalUrl,
+      'Sitemap XML', sitemapXmlString.length, (sitemapXmlString.match(/<url>/g) || []).length
+    );
+  }, [selectedArticle, selectedStartup, location.pathname, language, approvedStartups, newsArticles]);
 
   // Smooth scroll helper
   const scrollToSection = (id: string) => {
@@ -429,8 +561,6 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
-      <title>SportTech Türkiye | Spor Teknolojileri & Performans Sistemleri</title>
-      <meta name="description" content="Türkiye'nin ve bölgenin en kapsamlı spor teknolojileri, akıllı antrenman ve performans analizi çözümleri." />
       
       {/* Sticky Header with SportTech Türkiye Brand & Nav */}
       <Header
