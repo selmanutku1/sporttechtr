@@ -54,6 +54,7 @@ import {
   toggleFeaturedArticle
 } from './services/newsManagement';
 import { generateSitemapXml } from './utils/sitemap';
+import { getSeoMetadata, updateSeoTags } from './utils/seo';
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
@@ -190,128 +191,19 @@ export const App: React.FC = () => {
 
   // Dynamically update document title and description based on selected item, current path, and selected language
   useEffect(() => {
-    let title = "";
-    let description = "";
+    // Generate/retrieve centralized SEO metadata
+    const metadata = getSeoMetadata(
+      location.pathname,
+      language,
+      approvedStartups,
+      newsArticles,
+      window.location.origin,
+      selectedStartup,
+      selectedArticle
+    );
 
-    if (selectedArticle) {
-      if (language === 'tr') {
-        title = `${selectedArticle.title} - Sektörel Haber | SportTech Türkiye`;
-        description = selectedArticle.excerpt || selectedArticle.title;
-      } else if (language === 'ar') {
-        title = `${selectedArticle.title} - أخبار الصناعة | سبورت تيك تركيا`;
-        description = selectedArticle.excerpt || selectedArticle.title;
-      } else {
-        title = `${selectedArticle.title} - Industry News | SportTech Turkey`;
-        description = selectedArticle.excerpt || selectedArticle.title;
-      }
-    } else if (selectedStartup) {
-      if (language === 'tr') {
-        title = `${selectedStartup.name} - Girişim Profili | SportTech Türkiye`;
-        description = selectedStartup.tagLine ? `${selectedStartup.tagLine} - ${selectedStartup.description}` : selectedStartup.description;
-      } else if (language === 'ar') {
-        title = `${selectedStartup.name} - ملف تعريف الشركة | سبورت تيك تركيا`;
-        description = selectedStartup.tagLine ? `${selectedStartup.tagLine} - ${selectedStartup.description}` : selectedStartup.description;
-      } else {
-        title = `${selectedStartup.name} - Startup Profile | SportTech Turkey`;
-        description = selectedStartup.tagLine ? `${selectedStartup.tagLine} - ${selectedStartup.description}` : selectedStartup.description;
-      }
-    } else {
-      // Check active section or path
-      const path = location.pathname;
-      if (path.includes('/section/startups')) {
-        if (language === 'tr') {
-          title = "Girişimler Dizini | SportTech Türkiye";
-          description = "Türkiye'nin ve bölgenin öncü spor teknolojisi girişimleri kataloğu. Performans, yapay zeka, giyilebilir cihazlar ve yönetim yazılımları.";
-        } else if (language === 'ar') {
-          title = "دليل الشركات الناشئة | سبورت تيك تركيا";
-          description = "كتالوج الشركات الناشئة الرائدة في تكنولوجيا الرياضة في تركيا والمنطقة. الأداء والذكاء الاصطناعي والأجهزة القابلة للارتداء.";
-        } else {
-          title = "Startups Directory | SportTech Turkey";
-          description = "The pioneering directory of sports technology startups in Turkey and its region. AI, wearables, venues, and performance.";
-        }
-      } else if (path.includes('/section/news')) {
-        if (language === 'tr') {
-          title = "Sektörel Haberler & Analizler | SportTech Türkiye";
-          description = "Spor teknolojileri dünyasındaki son gelişmeler, yatırım turları, ürün lansmanları ve pazar raporları.";
-        } else if (language === 'ar') {
-          title = "أخبار الصناعة والتحليلات | سبورت تيك تركيا";
-          description = "آخر التطورات في عالم التكنولوجيا الرياضية، جولات الاستثمار، إطلاق المنتجات وتحليلات السوق.";
-        } else {
-          title = "Industry News & Market Insights | SportTech Turkey";
-          description = "Latest developments, product launches, venture capital funding rounds, and in-depth market analyses in sports tech.";
-        }
-      } else if (path.includes('/section/about')) {
-        if (language === 'tr') {
-          title = "Hakkımızda | SportTech Türkiye";
-          description = "SportTech Türkiye, ülkemizdeki spor teknolojisi ekosistemini bir araya getiren, büyüten ve dünyaya açan bağımsız bir platformdur.";
-        } else if (language === 'ar') {
-          title = "من نحن | سبورت تيك تركيا";
-          description = "منصة مستقلة تجمع وتنمي وتعرض منظومة التكنولوجيا الرياضية في تركيا للعالم.";
-        } else {
-          title = "About Us | SportTech Turkey";
-          description = "SportTech Turkey is an independent platform that unites, scales, and accelerates our nation's sports tech ecosystem globally.";
-        }
-      } else if (path.includes('/section/supporters')) {
-        if (language === 'tr') {
-          title = "Ekosistem Destekleyicileri & Partnerler | SportTech Türkiye";
-          description = "Platformumuzun gelişimine, girişimlerin büyümesine ve spor kültürünün dijitalleşmesine katkı sağlayan lider kurumlar.";
-        } else if (language === 'ar') {
-          title = "الشركات الداعمة والشراكات | سبورت تيك تركيا";
-          description = "المؤسسات والمنظمات التي تساهم في تطوير وتوسيع الشركات الناشئة ورقمنة الرياضة.";
-        } else {
-          title = "Ecosystem Supporters & Partners | SportTech Turkey";
-          description = "Leading institutions and corporate partners contributing to the scale-up and digitalization of the sports tech ecosystem.";
-        }
-      } else if (path.includes('/section/events')) {
-        if (language === 'tr') {
-          title = "Etkinlikler & Programlar | SportTech Türkiye";
-          description = "Yaklaşan spor teknolojisi zirveleri, hackathonlar, yatırımcı buluşmaları ve girişim hızlandırma programları.";
-        } else if (language === 'ar') {
-          title = "الفعاليات والبرامج | سبورت تيك تركيا";
-          description = "مؤتمرات التكنولوجيا الرياضية القادمة، والهاكاثونات، ولقاءات المستثمرين، وبرامج تسريع الشركات الناشئة.";
-        } else {
-          title = "Events, Summits & Acceleration Programs | SportTech Turkey";
-          description = "Upcoming summits, hackathons, demo days, and incubator/accelerator programs in sports tech.";
-        }
-      } else {
-        // Main Home view or other
-        if (language === 'tr') {
-          title = "SportTech Türkiye | Spor Teknolojileri & Performans Sistemleri";
-          description = "Türkiye'nin ilk ve lider spor teknolojileri platformu. Atletik performans analiz cihazları, kuvvet platformları ve akıllı antrenman çözümleri.";
-        } else if (language === 'ar') {
-          title = "سبورت تيك تركيا | تكنولوجيا الرياضة وأنظمة الأداء الذكية";
-          description = "المنصة الرائدة في تكنولوجيا الرياضة، وأنظمة الأداء الذكية، وحلول الرياضة الرقمية في تركيا والمنطقة.";
-        } else {
-          title = "SportTech Turkey | Sports Technologies & Performance Systems";
-          description = "The premier independent sports technology ecosystem hub of Turkey and its region. Spotlighting elite athletic tech, analytics, and software.";
-        }
-      }
-    }
-
-    document.title = title;
-
-    // Dynamically find or fallback create the meta description tag
-    let metaDescription = document.querySelector('meta[name="description"]');
-    if (!metaDescription) {
-      metaDescription = document.createElement('meta');
-      metaDescription.setAttribute('name', 'description');
-      document.head.appendChild(metaDescription);
-    }
-    metaDescription.setAttribute('content', description);
-
-    // Dynamically find or fallback create the canonical link tag
-    let canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (!canonicalLink) {
-      canonicalLink = document.createElement('link');
-      canonicalLink.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonicalLink);
-    }
-    // Standardize URL by removing trailing slash if present (except for root homepage)
-    const cleanPathname = location.pathname.endsWith('/') && location.pathname !== '/'
-      ? location.pathname.slice(0, -1)
-      : location.pathname;
-    const canonicalUrl = `${window.location.origin}${cleanPathname}`;
-    canonicalLink.setAttribute('href', canonicalUrl);
+    // Update all head elements, Open Graph tags, Twitter cards, and canonical links
+    updateSeoTags(metadata);
 
     // Dynamically find or fallback create the sitemap link tag
     let sitemapLink = document.querySelector('link[rel="sitemap"]');
@@ -338,9 +230,9 @@ export const App: React.FC = () => {
       'background: #0f172a; color: #38bdf8; font-weight: bold; padding: 4px 8px; border-radius: 6px;',
       'color: inherit;',
       'Language', language.toUpperCase(),
-      'Title', title,
-      'Description', description,
-      'Canonical', canonicalUrl,
+      'Title', metadata.title,
+      'Description', metadata.description,
+      'Canonical', metadata.url,
       'Sitemap XML', sitemapXmlString.length, (sitemapXmlString.match(/<url>/g) || []).length
     );
   }, [selectedArticle, selectedStartup, location.pathname, language, approvedStartups, newsArticles]);

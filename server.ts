@@ -5,6 +5,7 @@ import { createServer as createViteServer } from 'vite';
 
 import { STARTUPS } from './src/data/startups';
 import { NEWS_ARTICLES } from './src/data/news';
+import { getSeoMetadata } from './src/utils/seo';
 
 const rootDir = process.cwd();
 
@@ -95,9 +96,6 @@ async function startServer() {
     }
 
     try {
-      let title = 'SportTech Türkiye | Spor Teknolojileri Ekosistemi';
-      let description = "Türkiye'nin ve bölgenin en kapsamlı spor teknolojileri, akıllı antrenman ve performans analizi çözümleri.";
-      
       const forwardedHost = req.headers['x-forwarded-host'];
       const host = (Array.isArray(forwardedHost) ? forwardedHost[0] : forwardedHost) || req.get('host') || 'sporttech.com.tr';
       
@@ -105,28 +103,15 @@ async function startServer() {
       const protocol = (Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto) || req.protocol || 'https';
       
       const baseUrl = `${protocol}://${host}`;
-      let image = `${baseUrl}/og-image.png`;
 
-      const newsMatch = url.match(/\/news\/([^/?#]+)/);
-      const startupMatch = url.match(/\/startup\/([^/?#]+)/);
+      // Detect language from query parameter, cookies, headers, or default 'tr'
+      const langParam = req.query.lang;
+      const language = typeof langParam === 'string' && ['tr', 'en-US', 'en-GB', 'ar'].includes(langParam)
+        ? langParam
+        : 'tr';
 
-      if (startupMatch) {
-        const id = startupMatch[1];
-        const startup = STARTUPS.find(s => s.id === id);
-        if (startup) {
-          title = `${startup.name} | SportTech Türkiye`;
-          description = startup.tagLine || startup.description.substring(0, 160);
-          image = startup.logo.startsWith('http') ? startup.logo : `${baseUrl}${startup.logo}`;
-        }
-      } else if (newsMatch) {
-        const id = newsMatch[1];
-        const article = NEWS_ARTICLES.find(a => a.id === id);
-        if (article) {
-          title = `${article.title} | SportTech Türkiye`;
-          description = article.excerpt || article.content[0].substring(0, 160);
-          image = article.coverImage.startsWith('http') ? article.coverImage : `${baseUrl}${article.coverImage}`;
-        }
-      }
+      // Retrieve centralized SEO metadata
+      const metadata = getSeoMetadata(url, language, STARTUPS, NEWS_ARTICLES, baseUrl);
 
       const indexPath = process.env.NODE_ENV === 'production'
         ? path.resolve(rootDir, 'dist/index.html')
@@ -144,21 +129,19 @@ async function startServer() {
         template = await vite.transformIndexHtml(url, template);
       }
 
-      const fullUrl = `${baseUrl}${url}`;
-
       const headContent = `
-    <title>${title}</title>
-    <meta name="description" content="${description}" />
-    <meta property="og:title" content="${title}" />
-    <meta property="og:description" content="${description}" />
-    <meta property="og:image" content="${image}" />
-    <meta property="og:url" content="${fullUrl}" />
+    <title>${metadata.title}</title>
+    <meta name="description" content="${metadata.description}" />
+    <meta property="og:title" content="${metadata.title}" />
+    <meta property="og:description" content="${metadata.description}" />
+    <meta property="og:image" content="${metadata.image}" />
+    <meta property="og:url" content="${metadata.url}" />
     <meta property="og:type" content="website" />
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content="${title}" />
-    <meta property="twitter:description" content="${description}" />
-    <meta property="twitter:image" content="${image}" />
-    <meta property="twitter:url" content="${fullUrl}" />
+    <meta property="twitter:title" content="${metadata.title}" />
+    <meta property="twitter:description" content="${metadata.description}" />
+    <meta property="twitter:image" content="${metadata.image}" />
+    <meta property="twitter:url" content="${metadata.url}" />
 `;
 
       let html = template
