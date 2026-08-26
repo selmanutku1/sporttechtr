@@ -62,7 +62,7 @@ export const App: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<StartupCategory>('all');
 
   // Startups State (Dynamic with LocalStorage Persistence)
-  const [approvedStartups, setApprovedStartups] = useState<Startup[]>([]);
+  const [approvedStartups, setApprovedStartups] = useState<Startup[]>(() => getApprovedStartups());
   const [pendingSubmissions, setPendingSubmissions] = useState<PendingStartupSubmission[]>([]);
 
   // Partners & Supporters State (Dynamic with LocalStorage Persistence)
@@ -73,11 +73,49 @@ export const App: React.FC = () => {
   const [newsletterSubscribers, setNewsletterSubscribers] = useState<NewsletterSubscriber[]>([]);
 
   // News Articles State
-  const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([]);
+  const [newsArticles, setNewsArticles] = useState<NewsArticle[]>(() => getNewsArticles());
 
-  // Modal States
-  const [selectedStartup, setSelectedStartup] = useState<Startup | null>(null);
-  const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
+  // Modal States - Synchronously resolve direct URL path parameters on first render (supports both clean paths and hash fallbacks)
+  const [selectedStartup, setSelectedStartup] = useState<Startup | null>(() => {
+    const path = window.location.pathname;
+    const hash = window.location.hash;
+    let id = '';
+    
+    if (path.startsWith('/startup/')) {
+      id = decodeURIComponent(path.split('/startup/')[1].split('?')[0].split('#')[0]);
+    } else if (hash.startsWith('#/startup/')) {
+      id = decodeURIComponent(hash.split('#/startup/')[1].split('?')[0]);
+    } else if (hash.startsWith('#startup/')) {
+      id = decodeURIComponent(hash.split('#startup/')[1].split('?')[0]);
+    }
+
+    if (id) {
+      const allStartups = getApprovedStartups();
+      return allStartups.find(s => s.id === id) || null;
+    }
+    return null;
+  });
+
+  const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(() => {
+    const path = window.location.pathname;
+    const hash = window.location.hash;
+    let id = '';
+    
+    if (path.startsWith('/news/')) {
+      id = decodeURIComponent(path.split('/news/')[1].split('?')[0].split('#')[0]);
+    } else if (hash.startsWith('#/news/')) {
+      id = decodeURIComponent(hash.split('#/news/')[1].split('?')[0]);
+    } else if (hash.startsWith('#news/')) {
+      id = decodeURIComponent(hash.split('#news/')[1].split('?')[0]);
+    }
+
+    if (id) {
+      const allArticles = getNewsArticles();
+      return allArticles.find(a => a.id === id) || null;
+    }
+    return null;
+  });
+
   const [isStartupSubmitOpen, setIsStartupSubmitOpen] = useState(false);
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
@@ -108,13 +146,11 @@ export const App: React.FC = () => {
     // Initial routing based on URL
     const path = location.pathname;
     if (path.startsWith('/news/')) {
-      const id = path.split('/news/')[1];
+      const id = decodeURIComponent(path.split('/news/')[1].split('?')[0].split('#')[0]);
       const article = articles.find(a => a.id === id);
       if (article) setSelectedArticle(article);
     } else if (path.startsWith('/startup/')) {
-      const id = path.split('/startup/')[1];
-      // We need startups to find it, but they might not be loaded yet in state
-      // but they are loaded in local variable above or via getApprovedStartups
+      const id = decodeURIComponent(path.split('/startup/')[1].split('?')[0].split('#')[0]);
       const allStartups = getApprovedStartups();
       const startup = allStartups.find(s => s.id === id);
       if (startup) setSelectedStartup(startup);
@@ -131,7 +167,7 @@ export const App: React.FC = () => {
       setSelectedArticle(null);
       setSelectedStartup(null);
     } else if (path.startsWith('/news/')) {
-      const id = path.split('/news/')[1];
+      const id = decodeURIComponent(path.split('/news/')[1].split('?')[0].split('#')[0]);
       if (selectedArticle?.id !== id) {
         const article = newsArticles.find(a => a.id === id);
         if (article) {
@@ -139,7 +175,7 @@ export const App: React.FC = () => {
         }
       }
     } else if (path.startsWith('/startup/')) {
-      const id = path.split('/startup/')[1];
+      const id = decodeURIComponent(path.split('/startup/')[1].split('?')[0].split('#')[0]);
       if (selectedStartup?.id !== id) {
         const startup = approvedStartups.find(s => s.id === id);
         if (startup) {
@@ -281,6 +317,87 @@ export const App: React.FC = () => {
     setIsAdminLoggedIn(false);
     setIsAdminDashboardOpen(false);
   };
+
+  const isStartupRoute = location.pathname.startsWith('/startup/');
+  const isNewsRoute = location.pathname.startsWith('/news/');
+
+  if (isStartupRoute) {
+    if (selectedStartup) {
+      return (
+        <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900 animate-in fade-in duration-200">
+          <StartupDetailModal
+            startup={selectedStartup}
+            onClose={() => {
+              setSelectedStartup(null);
+              navigate('/');
+            }}
+            onSelectArticle={(article) => {
+              setSelectedStartup(null);
+              setSelectedArticle(article);
+              navigate(`/news/${article.id}`);
+            }}
+            articles={newsArticles}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center font-sans p-6">
+          <div className="text-center max-w-md">
+            <h2 className="text-3xl font-bold font-display text-emerald-400 mb-4">Girişim Bulunamadı</h2>
+            <p className="text-slate-400 mb-8">Aradığınız girişim ekosistemimizde bulunmuyor veya pasif durumda olabilir.</p>
+            <button 
+              onClick={() => navigate('/')}
+              className="px-6 py-3 bg-emerald-500 text-slate-950 rounded-xl font-semibold hover:bg-emerald-400 transition-colors"
+            >
+              Ana Sayfaya Dön
+            </button>
+          </div>
+        </div>
+      );
+    }
+  }
+
+  if (isNewsRoute) {
+    if (selectedArticle) {
+      return (
+        <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900 animate-in fade-in duration-200">
+          <NewsDetailModal
+            article={selectedArticle}
+            onClose={() => {
+              setSelectedArticle(null);
+              navigate('/');
+            }}
+            onSelectStartup={(startup) => {
+              setSelectedArticle(null);
+              setSelectedStartup(startup);
+              navigate(`/startup/${startup.id}`);
+            }}
+            onSelectArticle={(article) => {
+              setSelectedArticle(article);
+              navigate(`/news/${article.id}`);
+            }}
+            articles={newsArticles}
+          />
+        </div>
+      );
+    } else {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center font-sans p-6">
+          <div className="text-center max-w-md">
+            <h2 className="text-3xl font-bold font-display text-emerald-400 mb-4">Haber Bulunamadı</h2>
+            <p className="text-slate-400 mb-8">Aradığınız haber içeriği sistemimizde mevcut değil veya henüz yayınlanmamış olabilir.</p>
+            <button 
+              onClick={() => navigate('/')}
+              className="px-6 py-3 bg-emerald-500 text-slate-950 rounded-xl font-semibold hover:bg-emerald-400 transition-colors"
+            >
+              Ana Sayfaya Dön
+            </button>
+          </div>
+        </div>
+      );
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
