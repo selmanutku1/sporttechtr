@@ -22,8 +22,9 @@ app.get('*', async (req, res, next) => {
     const forwardedHost = req.headers['x-forwarded-host'];
     const host = (Array.isArray(forwardedHost) ? forwardedHost[0] : forwardedHost) || req.get('host') || 'sporttech.com.tr';
     
-    const forwardedProto = req.headers['x-forwarded-proto'];
-    const protocol = (Array.isArray(forwardedProto) ? forwardedProto[0] : forwardedProto) || req.protocol || 'https';
+    // Auto-detect localhost vs remote domains, defaulting to secure https for production
+    const isLocal = host.includes('localhost') || host.includes('127.0.0.1') || host.includes(':3000');
+    const protocol = isLocal ? 'http' : 'https';
     
     const baseUrl = `${protocol}://${host}`;
 
