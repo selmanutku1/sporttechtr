@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Rocket, 
   Newspaper, 
@@ -11,10 +11,67 @@ import {
   PlusCircle, 
   Search,
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  ChevronDown,
+  Check
 } from 'lucide-react';
 import { BrandIcon } from './BrandLogo';
 import { StartupCategory } from '../types';
+import { useLanguage, Language } from '../context/LanguageContext';
+
+const TRFlag = () => (
+  <svg viewBox="0 0 24 24" className="w-5 h-5 rounded-full shrink-0 shadow-xs border border-slate-200/40">
+    <rect width="24" height="24" rx="12" fill="#E30A17" />
+    <circle cx="10" cy="12" r="4.5" fill="#FFFFFF" />
+    <circle cx="11.8" cy="12" r="3.6" fill="#E30A17" />
+    <polygon points="15.5,10 16.2,12.2 14.2,10.8 16.8,10.8 14.8,12.2" fill="#FFFFFF" />
+  </svg>
+);
+
+const UKFlag = () => (
+  <svg viewBox="0 0 24 24" className="w-5 h-5 rounded-full shrink-0 shadow-xs border border-slate-200/40 overflow-hidden">
+    <rect width="24" height="24" rx="12" fill="#012169" />
+    <path d="M0 0 L24 24 M0 24 L24 0" stroke="#FFF" strokeWidth="2.5" />
+    <path d="M0 0 L24 24 M0 24 L24 0" stroke="#C8102E" strokeWidth="1.2" />
+    <path d="M12 0 v24 M0 12 h24" stroke="#FFF" strokeWidth="4" />
+    <path d="M12 0 v24 M0 12 h24" stroke="#C8102E" strokeWidth="2.4" />
+  </svg>
+);
+
+const USFlag = () => (
+  <svg viewBox="0 0 24 24" className="w-5 h-5 rounded-full shrink-0 shadow-xs border border-slate-200/40 overflow-hidden">
+    <rect width="24" height="24" rx="12" fill="#FFF" />
+    <path d="M0 1.8h24M0 5.4h24M0 9h24M0 12.6h24M0 16.2h24M0 19.8h24M0 23.4h24" stroke="#B22234" strokeWidth="1.8" />
+    <rect width="11" height="11" fill="#3C3B6E" />
+    <circle cx="2" cy="2" r="0.4" fill="#FFF" />
+    <circle cx="5" cy="2" r="0.4" fill="#FFF" />
+    <circle cx="8" cy="2" r="0.4" fill="#FFF" />
+    <circle cx="3.5" cy="4.5" r="0.4" fill="#FFF" />
+    <circle cx="6.5" cy="4.5" r="0.4" fill="#FFF" />
+    <circle cx="2" cy="7" r="0.4" fill="#FFF" />
+    <circle cx="5" cy="7" r="0.4" fill="#FFF" />
+    <circle cx="8" cy="7" r="0.4" fill="#FFF" />
+    <circle cx="3.5" cy="9.5" r="0.4" fill="#FFF" />
+    <circle cx="6.5" cy="9.5" r="0.4" fill="#FFF" />
+  </svg>
+);
+
+const ARFlag = () => (
+  <svg viewBox="0 0 24 24" className="w-5 h-5 rounded-full shrink-0 shadow-xs border border-slate-200/40 overflow-hidden">
+    <rect width="24" height="24" rx="12" fill="#165D31" />
+    <path d="M5 14.5 h14 v-1 h-14 z" fill="#FFF" />
+    <path d="M6 13.5 h3.5 v1 h-3.5 z" fill="#FFF" />
+    <path d="M7 8 q1.5 -1.5 3 0 t3 0 t3 -1.5" stroke="#FFF" strokeWidth="0.8" fill="none" />
+    <path d="M8.5 10.5 q1.5 1.5 3 -1.5 t3 0" stroke="#FFF" strokeWidth="0.8" fill="none" />
+  </svg>
+);
+
+const LANGUAGES = [
+  { code: 'tr' as Language, name: 'Türkçe', flag: TRFlag, short: 'TR' },
+  { code: 'en-GB' as Language, name: 'English (UK)', flag: UKFlag, short: 'UK' },
+  { code: 'en-US' as Language, name: 'English (US)', flag: USFlag, short: 'US' },
+  { code: 'ar' as Language, name: 'العربية', flag: ARFlag, short: 'AR' }
+];
 
 interface HeaderProps {
   activeSection: string;
@@ -31,6 +88,12 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false);
+  const { language, setLanguage, t } = useLanguage();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const currentLangObj = LANGUAGES.find(l => l.code === language) || LANGUAGES[0];
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,6 +101,16 @@ export const Header: React.FC<HeaderProps> = ({
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsLangDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const scrollToSection = (id: string) => {
@@ -59,11 +132,11 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const navItems = [
-    { id: 'startups', label: 'Girişimler', icon: Rocket },
-    { id: 'news', label: 'Haberler', icon: Newspaper },
-    { id: 'about', label: 'Hakkımızda', icon: Info },
-    { id: 'supporters', label: 'Destekleyiciler', icon: ShieldCheck },
-    { id: 'events', label: 'Etkinlikler', icon: Calendar },
+    { id: 'startups', label: t('nav.startups'), icon: Rocket },
+    { id: 'news', label: t('nav.news'), icon: Newspaper },
+    { id: 'about', label: t('nav.about'), icon: Info },
+    { id: 'supporters', label: t('nav.supporters'), icon: ShieldCheck },
+    { id: 'events', label: t('nav.events'), icon: Calendar },
   ];
 
   return (
@@ -127,17 +200,68 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Action CTAs */}
           <div className="hidden sm:flex items-center gap-3">
+            {/* Language Switcher */}
+            <div className="relative" ref={dropdownRef} id="lang-switcher-dropdown-container">
+              <button
+                onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50/80 hover:bg-white border border-slate-200/80 hover:border-slate-300 hover:shadow-sm transition-all duration-300 cursor-pointer text-xs font-bold text-slate-700 active:scale-95 select-none"
+                title="Select Language / Dil Seçimi"
+                id="lang-selector-btn"
+              >
+                {React.createElement(currentLangObj.flag)}
+                <span className="hidden xl:inline">{currentLangObj.name}</span>
+                <span className="xl:hidden">{currentLangObj.short}</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-300 ${isLangDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {isLangDropdownOpen && (
+                <div 
+                  className="absolute right-0 mt-2.5 w-60 rounded-2xl bg-white border border-slate-200 shadow-xl p-1.5 z-50 space-y-1 animate-in fade-in slide-in-from-top-2 duration-200"
+                  id="lang-dropdown-menu"
+                >
+                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-3 py-2 border-b border-slate-100 mb-1">
+                    {language === 'tr' ? 'DİL SEÇİMİ' : 'SELECT LANGUAGE'}
+                  </div>
+                  {LANGUAGES.map((lang) => {
+                    const isSelected = language === lang.code;
+                    const FlagComponent = lang.flag;
+                    return (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          setLanguage(lang.code);
+                          setIsLangDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          isSelected 
+                            ? 'bg-blue-50 text-blue-600 border border-blue-100/50' 
+                            : 'text-slate-600 hover:bg-slate-50 border border-transparent'
+                        }`}
+                        id={`lang-opt-${lang.code}`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <FlagComponent />
+                          <span className={isSelected ? 'text-blue-700' : 'text-slate-700'}>{lang.name}</span>
+                        </div>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-blue-600 stroke-[2.5]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             {/* Search Trigger */}
             <button
               onClick={onOpenSearch}
               className="group flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-50/50 hover:bg-white border border-slate-200/60 hover:border-slate-300 hover:shadow-sm transition-all duration-300"
-              title="Ekosistemde Ara (Ctrl+K)"
+              title={t('btn.search')}
               id="search-trigger-btn"
             >
               <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-white shadow-xs border border-slate-100 group-hover:scale-110 transition-transform">
                 <Search className="w-3 h-3 text-slate-400 group-hover:text-blue-500" />
               </div>
-              <span className="hidden xl:inline text-xs text-slate-400 font-medium group-hover:text-slate-600 transition-colors">Hızlı Ara...</span>
+              <span className="hidden xl:inline text-xs text-slate-400 font-medium group-hover:text-slate-600 transition-colors">{t('btn.quick_search')}</span>
               <div className="hidden xl:flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200">
                 <span className="text-[9px] font-bold text-slate-400 uppercase">Cmd</span>
                 <span className="text-[9px] font-bold text-slate-400 uppercase">K</span>
@@ -152,12 +276,57 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <PlusCircle className="w-4 h-4 text-blue-400 group-hover:text-white transition-colors" />
-              <span className="relative z-10">Girişim Ekle</span>
+              <span className="relative z-10">{t('btn.add_startup')}</span>
             </button>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex items-center gap-2 lg:hidden">
+          <div className="flex items-center gap-1.5 lg:hidden">
+            {/* Mobile Language Switcher */}
+            <div className="relative" id="mobile-lang-container">
+              <button
+                onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
+                className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 active:scale-95"
+                id="mobile-lang-trigger"
+              >
+                {React.createElement(currentLangObj.flag)}
+                <span className="text-[10px] font-bold">{currentLangObj.short}</span>
+                <ChevronDown className="w-3 h-3 text-slate-400" />
+              </button>
+
+              {isLangDropdownOpen && (
+                <div 
+                  className="absolute right-0 mt-2 w-48 rounded-2xl bg-white border border-slate-200 shadow-xl p-1 z-50 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150"
+                  id="mobile-lang-dropdown"
+                >
+                  {LANGUAGES.map((lang) => {
+                    const isSelected = language === lang.code;
+                    const FlagComponent = lang.flag;
+                    return (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          setLanguage(lang.code);
+                          setIsLangDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
+                          isSelected 
+                            ? 'bg-blue-50 text-blue-600' 
+                            : 'text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <FlagComponent />
+                          <span>{lang.name}</span>
+                        </div>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-blue-600 stroke-[2.5]" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             <button
               onClick={onOpenSearch}
               className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 border border-slate-200"
@@ -184,7 +353,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="lg:hidden fixed inset-x-0 top-[65px] bottom-0 z-40 bg-white/95 backdrop-blur-2xl border-t border-slate-200/60 px-4 pt-6 pb-8 space-y-6 overflow-y-auto animate-in slide-in-from-top-4 duration-300">
           <div className="space-y-1">
             <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4 mb-3">
-              EKOSİSTEM GEZGİNİ
+              {language === 'tr' ? 'EKOSİSTEM GEZGİNİ' : 'ECOSYSTEM EXPLORER'}
             </div>
             <div className="grid grid-cols-1 gap-2">
               {navItems.map((item) => {
@@ -224,7 +393,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center">
                 <PlusCircle className="w-4 h-4 text-blue-400" />
               </div>
-              <span>Girişimini Ekosisteme Ekle</span>
+              <span>{t('btn.add_startup')}</span>
             </button>
             <div className="flex items-center justify-center gap-2 py-2">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />

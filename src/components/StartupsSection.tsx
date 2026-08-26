@@ -18,6 +18,8 @@ import { Startup, StartupCategory, FundingStage } from '../types';
 import { STARTUPS } from '../data/startups';
 import { CATEGORIES_DATA } from '../data/ecosystem';
 import { BrandIcon } from './BrandLogo';
+import { useLanguage } from '../context/LanguageContext';
+import { translateStartup } from '../lib/translator';
 
 interface StartupsSectionProps {
   onSelectStartup: (startup: Startup) => void;
@@ -36,10 +38,15 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStage, setSelectedStage] = useState<FundingStage>('all');
+  const { language, t } = useLanguage();
 
   const stages: FundingStage[] = ['all', 'Pre-Seed', 'Seed', 'Series A', 'Bootstrapped'];
 
-  const allStartups = startupsList && startupsList.length > 0 ? startupsList : STARTUPS;
+  // Dynamically translate startup items
+  const allStartups = useMemo(() => {
+    const rawList = startupsList && startupsList.length > 0 ? startupsList : STARTUPS;
+    return rawList.map(s => translateStartup(s, language));
+  }, [startupsList, language]);
 
   const filteredStartups = useMemo(() => {
     return allStartups.filter((startup) => {
@@ -63,7 +70,34 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
       }
       return true;
     });
-  }, [selectedCategory, selectedStage, searchTerm]);
+  }, [allStartups, selectedCategory, selectedStage, searchTerm]);
+
+  // Dynamically translate category name for filters
+  const translateCategoryName = (catId: string, trName: string) => {
+    if (language === 'tr') return trName;
+    if (language === 'ar') {
+      const arKeys: Record<string, string> = {
+        'management_platform': 'المنصة الإدارية والرقمية',
+        'ai_analytics': 'الذكاء الاصطناعي والتحليلات',
+        'wearables_iot': 'الأجهزة القابلة للارتداء وإنترنت الأشياء',
+        'smart_venues': 'المرافق الذكية والملاعب',
+        'performance_recovery': 'الأداء والميكانيكا الحيوية',
+        'fan_media': 'تقنيات الجماهير والإعلام',
+        'esports_gaming': 'الرياضات الإلكترونية والألعاب'
+      };
+      return arKeys[catId] || trName;
+    }
+    const catKeys: Record<string, string> = {
+      'management_platform': 'Management & Digital Platform',
+      'ai_analytics': 'AI & Performance',
+      'wearables_iot': 'Wearables & IoT',
+      'smart_venues': 'Smart Venues',
+      'performance_recovery': 'Performance & Recovery',
+      'fan_media': 'Fan & Media Tech',
+      'esports_gaming': 'Esports & Gaming'
+    };
+    return catKeys[catId] || trName;
+  };
 
   return (
     <section id="startups" className="py-20 bg-slate-50/70 border-b border-slate-200/80 relative">
@@ -74,16 +108,32 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-blue-700 text-xs font-bold uppercase tracking-wider mb-3 shadow-2xs">
               <Rocket className="w-3.5 h-3.5 text-orange-500" />
-              <span>Girişimler Dizini</span>
+              <span>{language === 'tr' ? 'Girişimler Dizini' : language === 'ar' ? 'دليل الشركات الناشئة' : 'Startups Directory'}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight">
-              Türkiye'nin Öncü <br className="hidden sm:inline" />
-              <span className="text-blue-600">
-                Spor Teknolojisi Girişimleri
-              </span>
+              {language === 'tr' ? (
+                <>
+                  Türkiye'nin Öncü <br className="hidden sm:inline" />
+                  <span className="text-blue-600">Spor Teknolojisi Girişimleri</span>
+                </>
+              ) : language === 'ar' ? (
+                <>
+                  شركات تكنولوجيا الرياضة <br className="hidden sm:inline" />
+                  <span className="text-blue-600">الرائدة في تركيا</span>
+                </>
+              ) : (
+                <>
+                  Turkey's Pioneering <br className="hidden sm:inline" />
+                  <span className="text-blue-600">Sports Technology Startups</span>
+                </>
+              )}
             </h2>
             <p className="text-slate-600 text-sm mt-2 max-w-xl">
-              Kulüplerin performansını artıran, taraftar deneyimini zenginleştiren ve spor sağlığını koruyan yerli girişimler.
+              {language === 'tr' 
+                ? 'Kulüplerin performansını artıran, taraftar deneyimini zenginleştiren ve spor sağlığını koruyan yerli girişimler.'
+                : language === 'ar'
+                ? 'الشركات الناشئة الوطنية التي تعزز أداء الأندية، وتثري تفاعل الجماهير، وتحمي الصحة الرياضية.'
+                : 'National startups boosting athletic performance, enriching fan engagement, and securing sports health.'}
             </p>
           </div>
 
@@ -94,7 +144,7 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
             id="startups-submit-cta-btn"
           >
             <PlusCircle className="w-4 h-4 text-orange-300" />
-            <span>Girişimini Dizine Ekle</span>
+            <span>{t('btn.add_startup')}</span>
           </button>
         </div>
 
@@ -107,7 +157,7 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
-                placeholder="Girişim adı, teknoloji (PyTorch, BLE, IMU) veya etiket ara..."
+                placeholder={t('startups.search_placeholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-600 transition-colors"
@@ -117,14 +167,16 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
                   onClick={() => setSearchTerm('')}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-700"
                 >
-                  Temizle
+                  {language === 'tr' ? 'Temizle' : language === 'ar' ? 'مسح' : 'Clear'}
                 </button>
               )}
             </div>
 
             {/* Stage filter dropdown/pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-              <span className="text-xs text-slate-500 font-medium pl-1 pr-2 hidden sm:inline">Aşama:</span>
+              <span className="text-xs text-slate-500 font-medium pl-1 pr-2 hidden sm:inline">
+                {language === 'tr' ? 'Aşama:' : language === 'ar' ? 'المرحلة:' : 'Stage:'}
+              </span>
               {stages.map((st) => (
                 <button
                   key={st}
@@ -135,7 +187,7 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
                       : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
                   }`}
                 >
-                  {st === 'all' ? 'Tüm Aşamalar' : st}
+                  {st === 'all' ? (language === 'tr' ? 'Tüm Aşamalar' : language === 'ar' ? 'جميع المراحل' : 'All Stages') : st}
                 </button>
               ))}
             </div>
@@ -151,7 +203,7 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
                   : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
               }`}
             >
-              Tümü ({STARTUPS.length})
+              {language === 'tr' ? 'Tümü' : language === 'ar' ? 'الكل' : 'All'} ({STARTUPS.length})
             </button>
             {CATEGORIES_DATA.map((cat) => {
               const count = STARTUPS.filter(s => s.category === cat.id).length;
@@ -165,7 +217,7 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
                       : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
                   }`}
                 >
-                  {cat.name} {count > 0 ? `(${count})` : ''}
+                  {translateCategoryName(cat.id, cat.name)} {count > 0 ? `(${count})` : ''}
                 </button>
               );
             })}
@@ -175,7 +227,7 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
         {/* Startups Grid */}
         {filteredStartups.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 shadow-xs">
-            <p className="text-slate-500 text-sm mb-3">Aradığınız kriterlere uygun spor teknolojisi girişimi bulunamadı.</p>
+            <p className="text-slate-500 text-sm mb-3">{t('startups.no_results')}</p>
             <button
               onClick={() => {
                 setSearchTerm('');
@@ -184,7 +236,7 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
               }}
               className="text-xs text-blue-600 font-semibold hover:underline"
             >
-              Filtreleri Sıfırla
+              {language === 'tr' ? 'Filtreleri Sıfırla' : language === 'ar' ? 'إعادة ضبط الفلاتر' : 'Reset Filters'}
             </button>
           </div>
         ) : (
@@ -231,7 +283,9 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
                           <span>{startup.name}</span>
                           <BrandIcon className="w-4 h-4 shrink-0" />
                         </h3>
-                        <p className="text-[11px] text-slate-200 truncate font-medium">{startup.location} • Kuruluş {startup.foundedYear}</p>
+                        <p className="text-[11px] text-slate-200 truncate font-medium">
+                          {startup.location} • {language === 'tr' ? 'Kuruluş' : language === 'ar' ? 'تأسست عام' : 'Founded'} {startup.foundedYear}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -281,10 +335,10 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
                 {/* Footer Action */}
                 <div className="px-5 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
                   <span className="text-slate-500 text-[11px] font-medium">
-                    Özel Girişim Dosyası
+                    {language === 'tr' ? 'Özel Girişim Dosyası' : language === 'ar' ? 'ملف تعريفي خاص بالشركة' : 'Exclusive Startup Portfolio'}
                   </span>
                   <span className="text-blue-700 font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                    <span>Profili & Haberi Oku</span>
+                    <span>{language === 'tr' ? 'Profili & Haberi Oku' : language === 'ar' ? 'اقرأ الملف التعريفي والأخبار' : 'View Profile & News'}</span>
                     <ArrowUpRight className="w-4 h-4 text-blue-600" />
                   </span>
                 </div>

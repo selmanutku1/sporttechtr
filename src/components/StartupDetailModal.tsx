@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   X, 
   ExternalLink, 
@@ -30,6 +30,9 @@ import {
 import { Startup, NewsArticle } from '../types';
 import { NEWS_ARTICLES } from '../data/news';
 import { BrandIcon } from './BrandLogo';
+import { useSEO } from '../hooks/useSEO';
+import { useLanguage } from '../context/LanguageContext';
+import { translateStartup } from '../lib/translator';
 
 interface StartupDetailModalProps {
   startup: Startup | null;
@@ -39,11 +42,18 @@ interface StartupDetailModalProps {
 }
 
 export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({ 
-  startup, 
+  startup: rawStartup, 
   onClose,
   onSelectArticle,
   articles = NEWS_ARTICLES
 }) => {
+  const { language, t } = useLanguage();
+
+  const startup = useMemo(() => {
+    if (!rawStartup) return null;
+    return translateStartup(rawStartup, language);
+  }, [rawStartup, language]);
+
   const [demoRequested, setDemoRequested] = useState(false);
   const [senderName, setSenderName] = useState('');
   const [senderEmail, setSenderEmail] = useState('');
@@ -69,6 +79,14 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [startup, onClose]);
+
+  // Dynamically update head meta tags for Open Graph and Twitter Card
+  useSEO({
+    title: startup ? `${startup.name} | SportTech Türkiye` : undefined,
+    description: startup ? (startup.tagLine ? `${startup.tagLine} - ${startup.description}` : startup.description) : undefined,
+    image: startup ? startup.logo : undefined,
+    type: 'profile'
+  });
 
   if (!startup) return null;
 
@@ -141,10 +159,10 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
             <button
               onClick={onClose}
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold border border-slate-200/80 transition-colors shrink-0"
-              title="Girişimler Dizinine Dön"
+              title={language === 'tr' ? "Girişimler Dizinine Dön" : "Back to Startup Directory"}
             >
               <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Dizine Dön</span>
+              <span className="hidden sm:inline">{language === 'tr' ? "Dizine Dön" : "Back to Directory"}</span>
             </button>
 
             <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 truncate font-medium">
@@ -167,7 +185,7 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
               rel="noopener noreferrer"
               className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs"
             >
-              <span>Resmi Web Sitesi</span>
+              <span>{language === 'tr' ? "Resmi Web Sitesi" : "Official Website"}</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
 
@@ -177,7 +195,7 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
                 className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1 transition-colors ${
                   showShareMenu ? 'bg-blue-50 border-blue-300 text-blue-600' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
                 }`}
-                title="Girişimi Paylaş"
+                title={language === 'tr' ? "Girişimi Paylaş" : "Share Startup"}
               >
                 <Share2 className="w-4 h-4" />
               </button>
@@ -194,21 +212,21 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                       <Linkedin className="w-4 h-4 text-[#0077b5]" />
-                      <span>LinkedIn'de Paylaş</span>
+                      <span>{language === 'tr' ? "LinkedIn'de Paylaş" : "Share on LinkedIn"}</span>
                     </button>
                     <button
                       onClick={shareOnTwitter}
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                       <Twitter className="w-4 h-4 text-[#1da1f2]" />
-                      <span>Twitter'da Paylaş</span>
+                      <span>{language === 'tr' ? "Twitter'da Paylaş" : "Share on Twitter"}</span>
                     </button>
                     <button
                       onClick={shareOnWhatsapp}
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                       <MessageCircle className="w-4 h-4 text-[#25d366]" />
-                      <span>WhatsApp'ta Paylaş</span>
+                      <span>{language === 'tr' ? "WhatsApp'ta Paylaş" : "Share on WhatsApp"}</span>
                     </button>
                     <div className="my-1 border-t border-slate-100" />
                     <button
@@ -216,7 +234,7 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                       {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Share2 className="w-4 h-4 text-slate-400" />}
-                      <span>{copied ? 'Kopyalandı!' : 'Bağlantıyı Kopyala'}</span>
+                      <span>{copied ? (language === 'tr' ? 'Kopyalandı!' : 'Copied!') : (language === 'tr' ? 'Bağlantıyı Kopyala' : 'Copy Link')}</span>
                     </button>
                   </div>
                 </>
@@ -228,7 +246,7 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
               className={`p-2 rounded-xl border text-xs font-semibold transition-colors ${
                 isSaved ? 'bg-amber-50 border-amber-300 text-amber-600' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
               }`}
-              title="Listeme Kaydet"
+              title={language === 'tr' ? "Listeme Kaydet" : "Bookmark Profile"}
             >
               <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-500 text-amber-500' : ''}`} />
             </button>
@@ -236,7 +254,7 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
             <button
               onClick={onClose}
               className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition-colors ml-1"
-              aria-label="Kapat"
+              aria-label={language === 'tr' ? "Kapat" : "Close"}
             >
               <X className="w-5 h-5" />
             </button>
@@ -252,13 +270,13 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
         <div className="flex flex-wrap items-center gap-2.5 mb-4">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/70 border border-blue-200 text-blue-800 text-[11px] font-bold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5 text-orange-500" />
-            <span>Özel Girişim Dosyası</span>
+            <span>{language === 'tr' ? 'Özel Girişim Dosyası' : 'Exclusive Startup Portfolio'}</span>
           </span>
           <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-semibold border border-slate-200">
             {startup.categoryName}
           </span>
           <span className="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[11px] font-bold shadow-2xs">
-            {startup.stage} Aşaması
+            {startup.stage} {language === 'tr' ? 'Aşaması' : 'Stage'}
           </span>
         </div>
 
@@ -275,21 +293,21 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-slate-900">SportTech Türkiye Araştırma & Girişim Masası</span>
-                <ShieldCheck className="w-4 h-4 text-blue-600" title="Doğrulanmış Profil" />
+                <span className="font-bold text-slate-900">{language === 'tr' ? 'SportTech Türkiye Araştırma & Girişim Masası' : 'SportTech Turkey Research & Venture Desk'}</span>
+                <ShieldCheck className="w-4 h-4 text-blue-600" title={language === 'tr' ? "Doğrulanmış Profil" : "Verified Profile"} />
               </div>
-              <span className="text-slate-500 text-[11px]">Sektörel İnceleme ve Şeffaf Girişim Profili</span>
+              <span className="text-slate-500 text-[11px]">{language === 'tr' ? 'Sektörel İnceleme ve Şeffaf Girişim Profili' : 'Sectoral Review & Transparent Startup Profile'}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 text-slate-500">
+          <div className="flex flex-wrap items-center gap-4 text-slate-500">
             <span className="flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5 text-slate-400" />
-              <span>Kuruluş: {startup.foundedYear}</span>
+              <span>{language === 'tr' ? 'Kuruluş' : 'Founded'}: {startup.foundedYear}</span>
             </span>
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5 text-slate-400" />
-              <span>5 dk okuma</span>
+              <span>{language === 'tr' ? '5 dk okuma' : '5 min read'}</span>
             </span>
           </div>
         </div>
@@ -338,8 +356,12 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
           </div>
           
           <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 italic flex items-center justify-between">
-            <span>Fotoğraf & İnceleme: {startup.name} dijital platform altyapısı ve spor çözümleri.</span>
-            <span className="font-semibold text-slate-700">SportTech Arşivi</span>
+            <span>
+              {language === 'tr' 
+                ? `Fotoğraf & İnceleme: ${startup.name} dijital platform altyapısı ve spor çözümleri.` 
+                : `Photo & Review: ${startup.name} digital platform infrastructure and sports solutions.`}
+            </span>
+            <span className="font-semibold text-slate-700">{language === 'tr' ? 'SportTech Arşivi' : 'SportTech Archives'}</span>
           </div>
         </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   X, 
   Calendar, 
@@ -21,6 +21,9 @@ import {
 import { NewsArticle, Startup } from '../types';
 import { STARTUPS } from '../data/startups';
 import { NEWS_ARTICLES } from '../data/news';
+import { useSEO } from '../hooks/useSEO';
+import { useLanguage } from '../context/LanguageContext';
+import { translateNewsArticle, translateStartup } from '../lib/translator';
 
 interface NewsDetailModalProps {
   article: NewsArticle | null;
@@ -31,12 +34,19 @@ interface NewsDetailModalProps {
 }
 
 export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({ 
-  article, 
+  article: rawArticle, 
   onClose,
   onSelectStartup,
   onSelectArticle,
   articles = NEWS_ARTICLES
 }) => {
+  const { language, t } = useLanguage();
+
+  const article = useMemo(() => {
+    if (!rawArticle) return null;
+    return translateNewsArticle(rawArticle, language);
+  }, [rawArticle, language]);
+
   const [likes, setLikes] = useState(article ? article.likesCount : 0);
   const [hasLiked, setHasLiked] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -50,6 +60,14 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
       setHasLiked(false);
     }
   }, [article]);
+
+  // Dynamically update head meta tags for Open Graph and Twitter Card
+  useSEO({
+    title: article ? `${article.title} | SportTech Türkiye` : undefined,
+    description: article ? (article.excerpt || article.title) : undefined,
+    image: article ? article.coverImage : undefined,
+    type: 'article'
+  });
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -110,16 +128,21 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
   };
 
   // Find other articles
-  const otherArticles = articles
-    .filter(a => a.id !== article.id && a.status !== 'passive')
-    .slice(0, 3);
+  const otherArticles = useMemo(() => {
+    return articles
+      .filter(a => a.id !== article.id && a.status !== 'passive')
+      .slice(0, 3)
+      .map(other => translateNewsArticle(other, language));
+  }, [articles, article.id, language]);
 
   // Find related startups
-  const relatedStartups = STARTUPS.filter(s => 
-    article.title.toLowerCase().includes(s.name.toLowerCase()) ||
-    article.excerpt.toLowerCase().includes(s.name.toLowerCase()) ||
-    article.tags.some(t => t.toLowerCase().includes(s.name.toLowerCase()))
-  );
+  const relatedStartups = useMemo(() => {
+    return STARTUPS.filter(s => 
+      article.title.toLowerCase().includes(s.name.toLowerCase()) ||
+      article.excerpt.toLowerCase().includes(s.name.toLowerCase()) ||
+      article.tags.some(t => t.toLowerCase().includes(s.name.toLowerCase()))
+    ).map(s => translateStartup(s, language));
+  }, [article, language]);
 
   return (
     <div 
@@ -140,10 +163,10 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
             <button
               onClick={onClose}
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold border border-slate-200/80 transition-colors shrink-0"
-              title="Haberler Bölümüne Dön"
+              title={language === 'tr' ? "Haberler Bölümüne Dön" : "Back to News Section"}
             >
               <ArrowLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Haberlere Dön</span>
+              <span className="hidden sm:inline">{language === 'tr' ? "Haberlere Dön" : "Back to News"}</span>
             </button>
 
             <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 truncate font-medium">
@@ -177,7 +200,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                 className={`p-2 rounded-xl border text-xs font-semibold flex items-center gap-1 transition-colors ${
                   showShareMenu ? 'bg-blue-50 border-blue-300 text-blue-600' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
                 }`}
-                title="Haberi Paylaş"
+                title={language === 'tr' ? "Haberi Paylaş" : "Share News"}
               >
                 <Share2 className="w-4 h-4" />
               </button>
@@ -194,21 +217,21 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                       <Linkedin className="w-4 h-4 text-[#0077b5]" />
-                      <span>LinkedIn'de Paylaş</span>
+                      <span>{language === 'tr' ? "LinkedIn'de Paylaş" : "Share on LinkedIn"}</span>
                     </button>
                     <button
                       onClick={shareOnTwitter}
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                       <Twitter className="w-4 h-4 text-[#1da1f2]" />
-                      <span>Twitter'da Paylaş</span>
+                      <span>{language === 'tr' ? "Twitter'da Paylaş" : "Share on Twitter"}</span>
                     </button>
                     <button
                       onClick={shareOnWhatsapp}
                       className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                     >
                       <MessageCircle className="w-4 h-4 text-[#25d366]" />
-                      <span>WhatsApp'ta Gönder</span>
+                      <span>{language === 'tr' ? "WhatsApp'ta Gönder" : "Share on WhatsApp"}</span>
                     </button>
                     <div className="h-px bg-slate-100 my-1" />
                     <button
@@ -218,12 +241,12 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                       {copied ? (
                         <>
                           <Check className="w-4 h-4 text-emerald-600" />
-                          <span className="text-emerald-600 font-medium">Kopyalandı!</span>
+                          <span className="text-emerald-600 font-medium">{language === 'tr' ? "Kopyalandı!" : "Copied!"}</span>
                         </>
                       ) : (
                         <>
                           <Share2 className="w-4 h-4 text-slate-400" />
-                          <span>Bağlantıyı Kopyala</span>
+                          <span>{language === 'tr' ? "Bağlantıyı Kopyala" : "Copy Link"}</span>
                         </>
                       )}
                     </button>
@@ -238,7 +261,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
               className={`p-2 rounded-xl border text-xs font-semibold transition-colors ${
                 isSaved ? 'bg-amber-50 border-amber-300 text-amber-600' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
               }`}
-              title="Haberi Kaydet"
+              title={language === 'tr' ? "Haberi Kaydet" : "Bookmark News"}
             >
               <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-500 text-amber-500' : ''}`} />
             </button>
@@ -247,7 +270,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
             <button
               onClick={onClose}
               className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition-colors ml-1"
-              aria-label="Kapat"
+              aria-label={language === 'tr' ? "Kapat" : "Close"}
             >
               <X className="w-5 h-5" />
             </button>
@@ -267,7 +290,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
           {article.isFeatured && (
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-100/80 border border-orange-200 text-orange-900 text-[11px] font-bold">
               <Sparkles className="w-3 h-3 text-orange-600" />
-              <span>Manşet Analiz</span>
+              <span>{language === 'tr' ? "Manşet Analiz" : "Headline Analysis"}</span>
             </span>
           )}
         </div>
@@ -318,7 +341,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
             />
           </div>
           <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
-            <span>Fotoğraf: SportTech Türkiye Editoryal Arşivi</span>
+            <span>{language === 'tr' ? "Fotoğraf: SportTech Türkiye Editoryal Arşivi" : "Photo: SportTech Turkey Editorial Archives"}</span>
             <span className="font-semibold text-slate-700">sporttech.com.tr</span>
           </div>
         </div>
@@ -358,7 +381,9 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                     </div>
                   </div>
                   <div className="mt-3 text-center text-xs text-slate-500 font-medium">
-                    SportsFly Bütünleşik Ekosistem Döngüsü (Pazarlama, Satış, İletişim, Kütüphane, Web) ve Tablet Randevu Arayüzü
+                    {language === 'tr' 
+                      ? "SportsFly Bütünleşik Ekosistem Döngüsü (Pazarlama, Satış, İletişim, Kütüphane, Web) ve Tablet Randevu Arayüzü" 
+                      : "SportsFly Integrated Ecosystem Loop (Marketing, Sales, Communication, Library, Web) & Tablet Booking Interface"}
                   </div>
                 </div>
               )}
@@ -373,7 +398,9 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                     className="w-full h-auto object-cover"
                   />
                   <div className="px-5 py-3 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 text-center italic">
-                    fmag.tr: Türkiye'nin Profesyonel Menajerlik Dizini ve Futbolcu Veri Ağı
+                    {language === 'tr' 
+                      ? "fmag.tr: Türkiye'nin Profesyonel Menajerlik Dizini ve Futbolcu Veri Ağı" 
+                      : "fmag.tr: Turkey's Professional Agency Registry & Footballer Data Network"}
                   </div>
                 </div>
               )}
@@ -386,7 +413,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-2">
               <Tag className="w-4 h-4 text-slate-400" />
-              <span className="text-xs font-bold text-slate-500 mr-1">Etiketler:</span>
+              <span className="text-xs font-bold text-slate-500 mr-1">{language === 'tr' ? "Etiketler:" : "Tags:"}</span>
               {article.tags.map((tag, idx) => (
                 <span 
                   key={idx}
@@ -398,25 +425,25 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-500 mr-2">Bu Analizi Paylaş:</span>
+              <span className="text-xs font-bold text-slate-500 mr-2">{language === 'tr' ? "Bu Analizi Paylaş:" : "Share This Analysis:"}</span>
               <button 
                 onClick={shareOnLinkedin}
                 className="p-2 rounded-xl bg-slate-50 hover:bg-[#0077b5]/10 text-slate-600 hover:text-[#0077b5] border border-slate-200 transition-all"
-                title="LinkedIn'de Paylaş"
+                title={language === 'tr' ? "LinkedIn'de Paylaş" : "Share on LinkedIn"}
               >
                 <Linkedin className="w-4 h-4" />
               </button>
               <button 
                 onClick={shareOnTwitter}
                 className="p-2 rounded-xl bg-slate-50 hover:bg-[#1da1f2]/10 text-slate-600 hover:text-[#1da1f2] border border-slate-200 transition-all"
-                title="Twitter'da Paylaş"
+                title={language === 'tr' ? "Twitter'da Paylaş" : "Share on Twitter"}
               >
                 <Twitter className="w-4 h-4" />
               </button>
               <button 
                 onClick={shareOnWhatsapp}
                 className="p-2 rounded-xl bg-slate-50 hover:bg-[#25d366]/10 text-slate-600 hover:text-[#25d366] border border-slate-200 transition-all"
-                title="WhatsApp'ta Paylaş"
+                title={language === 'tr' ? "WhatsApp'ta Paylaş" : "Share on WhatsApp"}
               >
                 <MessageCircle className="w-4 h-4" />
               </button>
@@ -425,7 +452,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                 className={`p-2 rounded-xl border transition-all ${
                   copied ? 'bg-emerald-50 border-emerald-200 text-emerald-600' : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
                 }`}
-                title="Bağlantıyı Kopyala"
+                title={language === 'tr' ? "Bağlantıyı Kopyala" : "Copy Link"}
               >
                 {copied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
               </button>
@@ -434,8 +461,8 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
 
           {article.source && (
             <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
-              <span><strong>Kaynak:</strong> {article.source}</span>
-              <span className="text-slate-400">Doğrulanmış İçerik</span>
+              <span><strong>{language === 'tr' ? "Kaynak:" : "Source:"}</strong> {article.source}</span>
+              <span className="text-slate-400">{language === 'tr' ? "Doğrulanmış İçerik" : "Verified Content"}</span>
             </div>
           )}
         </div>
@@ -445,7 +472,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
           <div className="mt-10 pt-8 border-t border-slate-200">
             <h3 className="text-lg font-bold font-display text-slate-900 mb-4 flex items-center gap-2">
               <Rocket className="w-4 h-4 text-orange-500" />
-              <span>Bu Haberde Adı Geçen Girişimler</span>
+              <span>{language === 'tr' ? "Bu Haberde Adı Geçen Girişimler" : "Startups Mentioned In This Article"}</span>
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {relatedStartups.map((st) => (
@@ -469,7 +496,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                     </h4>
                     <p className="text-xs text-slate-500 truncate">{st.tagLine}</p>
                     <span className="text-[11px] text-blue-600 font-semibold flex items-center gap-1 mt-1">
-                      <span>Girişim Profilini İncele</span>
+                    <span>{language === 'tr' ? "Girişim Profilini İncele" : "View Startup Profile"}</span>
                       <ArrowUpRight className="w-3 h-3" />
                     </span>
                   </div>
@@ -483,7 +510,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
         <div className="mt-12 pt-8 border-t border-slate-200">
           <h3 className="text-xl font-bold font-display text-slate-900 mb-6 flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-orange-500" />
-            <span>Diğer Spor Teknolojisi Haberleri</span>
+            <span>{language === 'tr' ? "Diğer Spor Teknolojisi Haberleri" : "Other Sports Technology News"}</span>
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -511,7 +538,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
                 <div className="pt-3 mt-3 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-400">
                   <span>{other.date}</span>
                   <span className="text-blue-600 font-bold group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
-                    Oku →
+                    {language === 'tr' ? "Oku →" : "Read →"}
                   </span>
                 </div>
               </div>
@@ -526,7 +553,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Haberler Bölümüne Geri Dön</span>
+            <span>{language === 'tr' ? "Haberler Bölümüne Geri Dön" : "Back to News Section"}</span>
           </button>
 
           <span className="text-xs text-slate-400 font-mono">

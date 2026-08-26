@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { SporsepetiIcon } from './SporsepetiIcon';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
@@ -16,6 +17,8 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit, onOpenAdmin }) => {
+  const { language, t } = useLanguage();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -31,16 +34,20 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
             <div 
               onClick={onOpenAdmin}
               className="flex flex-col items-start gap-1.5 cursor-pointer group select-none"
-              title="Yönetici Paneli Girişi"
+              title={language === 'tr' ? 'Yönetici Paneli Girişi' : language === 'ar' ? 'تسجيل دخول لوحة المسؤول' : 'Admin Console Login'}
             >
               <BrandLogo showText={true} size="md" />
               <span className="text-[11px] font-semibold text-blue-800 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-full mt-1 group-hover:bg-blue-100 transition-colors">
-                Türkiye Spor Teknolojileri Platformu
+                {language === 'tr' ? 'Türkiye Spor Teknolojileri Platformu' : language === 'ar' ? 'منصة تكنولوجيا الرياضة التركية' : 'Turkey Sports Technology Platform'}
               </span>
             </div>
 
             <p className="text-xs text-slate-600 leading-relaxed max-w-sm">
-              Türkiye'nin spor teknolojileri, biyomekanik sistemler, yapay zeka analitiği ve akıllı stadyum ekosistem platformu. Girişimleri kulüplerle, yatırımcılarla ve akademiyle buluşturuyoruz.
+              {language === 'tr' 
+                ? "Türkiye'nin spor teknolojileri, biyomekanik sistemler, yapay zeka analitiği ve akıllı stadyum ekosistem platformu. Girişimleri kulüplerle, yatırımcılarla ve akademiyle buluşturuyoruz."
+                : language === 'ar'
+                ? "المنصة التركية الرائدة لمنظومة تكنولوجيا الرياضة، الميكانيكا الحيوية، تحليلات الذكاء الاصطناعي، والملاعب الذكية. نربط الشركات الناشئة بالأندية والمستثمرين والأكاديميات."
+                : "Turkey's leading sports tech ecosystem. Connecting biomechanical, IoT, and AI startups with elite clubs, professional investors, and academic hubs."}
             </p>
 
             <div className="pt-2 flex flex-col gap-2 text-xs text-slate-500">
@@ -56,7 +63,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
                   rel="noopener noreferrer"
                   className="hover:text-blue-600 transition-colors flex items-center gap-1"
                 >
-                  LinkedIn'de Takip Et
+                  {language === 'tr' ? "LinkedIn'de Takip Et" : language === 'ar' ? "تابعنا على LinkedIn" : "Follow on LinkedIn"}
                 </a>
               </div>
             </div>
@@ -65,7 +72,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
           {/* Column 2: Ekosistem Bölümleri */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-              Ekosistem
+              {language === 'tr' ? 'Ekosistem' : language === 'ar' ? 'المنظومة' : 'Ecosystem'}
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
@@ -73,7 +80,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
                   onClick={() => onNavigate('startups')}
                   className="hover:text-emerald-700 transition-colors"
                 >
-                  Girişimler Dizini
+                  {language === 'tr' ? 'Girişimler Dizini' : language === 'ar' ? 'دليل الشركات الناشئة' : 'Startups Index'}
                 </button>
               </li>
               <li>
@@ -81,7 +88,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
                   onClick={() => onNavigate('news')}
                   className="hover:text-emerald-700 transition-colors"
                 >
-                  Haberler & Analizler
+                  {language === 'tr' ? 'Haberler & Analizler' : language === 'ar' ? 'الأخبار والتحليلات' : 'News & Analysis'}
                 </button>
               </li>
               <li>
@@ -89,7 +96,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
                   onClick={() => onNavigate('about')}
                   className="hover:text-emerald-700 transition-colors"
                 >
-                  Hakkımızda & Vizyon
+                  {language === 'tr' ? 'Hakkımızda & Vizyon' : language === 'ar' ? 'من نحن والرؤية' : 'About & Vision'}
                 </button>
               </li>
               <li>
@@ -97,7 +104,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
                   onClick={() => onNavigate('supporters')}
                   className="hover:text-emerald-700 transition-colors"
                 >
-                  Destekleyiciler & Partnerler
+                  {language === 'tr' ? 'Destekleyiciler & Partnerler' : language === 'ar' ? 'الداعمون والشركاء' : 'Supporters & Partners'}
                 </button>
               </li>
               <li>
@@ -105,7 +112,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
                   onClick={() => onNavigate('events')}
                   className="hover:text-emerald-700 transition-colors"
                 >
-                  Zirveler & Hackathonlar
+                  {language === 'tr' ? 'Zirveler & Hackathonlar' : language === 'ar' ? 'القمم والهكاثونات' : 'Summits & Hackathons'}
                 </button>
               </li>
             </ul>
@@ -114,34 +121,38 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
           {/* Column 3: Teknoloji Alanları */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-              Teknolojiler
+              {language === 'tr' ? 'Teknolojiler' : language === 'ar' ? 'التقنيات' : 'Technologies'}
             </h4>
             <ul className="space-y-2 text-xs">
-              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">Yapay Zeka & Bilgisayarlı Görü</span></li>
-              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">Giyilebilir IoT & Sensörler</span></li>
-              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">Akıllı Tesis & 5G Stadyum</span></li>
-              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">Markerless 3D Biyomekanik</span></li>
-              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">Biyometrik Ter & Laktat Yaması</span></li>
-              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">E-Spor & Kognitif Analiz</span></li>
+              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">{language === 'tr' ? 'Yapay Zeka & Bilgisayarlı Görü' : language === 'ar' ? 'الذكاء الاصطناعي والرؤية الحاسوبية' : 'AI & Computer Vision'}</span></li>
+              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">{language === 'tr' ? 'Giyilebilir IoT & Sensörler' : language === 'ar' ? 'الأجهزة القابلة للارتداء وحساسات إنترنت الأشياء' : 'Wearables & IoT Sensors'}</span></li>
+              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">{language === 'tr' ? 'Akıllı Tesis & 5G Stadyum' : language === 'ar' ? 'المرافق الذكية وملاعب 5G' : 'Smart Venues & 5G Stadiums'}</span></li>
+              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">{language === 'tr' ? 'Markerless 3D Biyomekanik' : language === 'ar' ? 'الميكانيكا الحيوية ثلاثية الأبعاد بدون علامات' : 'Markerless 3D Biomechanics'}</span></li>
+              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">{language === 'tr' ? 'Biyometrik Ter & Laktat Yaması' : language === 'ar' ? 'المؤشرات الحيوية للعرق واللاكتات' : 'Biometric Sweat & Lactate'}</span></li>
+              <li><span className="text-slate-600 hover:text-slate-900 transition-colors cursor-default">{language === 'tr' ? 'E-Spor & Kognitif Analiz' : language === 'ar' ? 'الرياضات الإلكترونية والتتبع المعرفي' : 'Esports & Cognitive Tracking'}</span></li>
             </ul>
           </div>
 
           {/* Column 4: Hızlı Aksiyon & Başvuru */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-              Katılım & İletişim
+              {language === 'tr' ? 'Katılım & İletişim' : language === 'ar' ? 'الانضمام والتواصل' : 'Join & Contact'}
             </h4>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Spor teknolojisi girişiminizi listelemek veya kulüp pilot testi başlatmak için hemen başvurun.
+              {language === 'tr' 
+                ? 'Spor teknolojisi girişiminizi listelemek veya kulüp pilot testi başlatmak için hemen başvurun.'
+                : language === 'ar'
+                ? 'قدم طلبك اليوم لإدراج شركتك الناشئة في تكنولوجيا الرياضة أو بدء اختبارات تجريبية مع الأندية.'
+                : 'Apply today to list your sports technology startup or kickstart club pilot tests.'}
             </p>
             <button
               onClick={onOpenStartupSubmit}
               className="w-full py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-xs transition-all text-center block"
             >
-              Girişimini Dizine Ekle
+              {t('btn.add_startup')}
             </button>
             <div className="text-[11px] text-slate-500 pt-1">
-              sporttech.com.tr Resmi Portal
+              {language === 'tr' ? 'sporttech.com.tr Resmi Portal' : language === 'ar' ? 'sporttech.com.tr البوابة الرسمية' : 'sporttech.com.tr Official Portal'}
             </div>
           </div>
 
@@ -156,11 +167,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
               <button 
                 onClick={onOpenAdmin} 
                 className="font-bold text-slate-700 hover:text-blue-600 transition-colors focus:outline-none cursor-pointer"
-                title="Yönetim Paneli Girişi"
+                title={language === 'tr' ? 'Yönetici Paneli Girişi' : language === 'ar' ? 'تسجيل دخول لوحة المسؤول' : 'Admin Console Login'}
               >
                 Sport Tech Türkiye
               </button>{' '}
-              (sporttech.com.tr). Tüm hakları saklıdır.
+              (sporttech.com.tr). {language === 'tr' ? 'Tüm hakları saklıdır.' : language === 'ar' ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}
             </span>
           </div>
 
@@ -175,7 +186,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
             >
               <SporsepetiIcon className="w-4 h-4 shrink-0" />
               <span className="font-semibold text-xs tracking-tight">sporsepeti</span>
-              <ExternalLink className="w-3 h-3 opacity-60 text-slate-400" />
+              <ExternalLink className="w-3.5 h-3.5 opacity-60 text-slate-400" />
             </a>
           </div>
 
@@ -183,7 +194,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenStartupSubmit,
             onClick={scrollToTop}
             className="flex items-center gap-1.5 text-slate-600 hover:text-slate-900 text-xs transition-colors p-2 rounded-lg hover:bg-slate-100 border border-slate-200 bg-white shadow-2xs"
           >
-            <span>Yukarı Çık</span>
+            <span>{language === 'tr' ? 'Yukarı Çık' : language === 'ar' ? 'العودة للأعلى' : 'Scroll Up'}</span>
             <ArrowUp className="w-3.5 h-3.5" />
           </button>
 

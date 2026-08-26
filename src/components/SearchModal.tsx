@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Search, 
   X, 
@@ -13,6 +13,8 @@ import { NEWS_ARTICLES } from '../data/news';
 import { SUPPORTERS } from '../data/supporters';
 import { Startup, NewsArticle, Supporter } from '../types';
 import { BrandIcon } from './BrandLogo';
+import { useLanguage } from '../context/LanguageContext';
+import { translateStartup, translateNewsArticle } from '../lib/translator';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -34,12 +36,12 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   supporters = SUPPORTERS
 }) => {
   const [query, setQuery] = useState('');
+  const { language } = useLanguage();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
-        // Toggle or open handled by parent
       }
       if (e.key === 'Escape') {
         onClose();
@@ -49,18 +51,26 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
+  const localizedStartups = useMemo(() => {
+    return startups.map(s => translateStartup(s, language));
+  }, [startups, language]);
+
+  const localizedArticles = useMemo(() => {
+    return articles.map(a => translateNewsArticle(a, language));
+  }, [articles, language]);
+
   if (!isOpen) return null;
 
   const q = query.toLowerCase().trim();
 
-  const matchedStartups = q ? startups.filter(s => 
+  const matchedStartups = q ? localizedStartups.filter(s => 
     s.name.toLowerCase().includes(q) || 
     s.tagLine.toLowerCase().includes(q) || 
     s.categoryName.toLowerCase().includes(q) ||
     s.techStack.some(t => t.toLowerCase().includes(q))
   ) : [];
 
-  const matchedNews = q ? articles.filter(n => 
+  const matchedNews = q ? localizedArticles.filter(n => 
     n.status !== 'passive' && (
       n.title.toLowerCase().includes(q) || 
       n.excerpt.toLowerCase().includes(q) || 
@@ -84,7 +94,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           <input
             type="text"
             autoFocus
-            placeholder="Girişim, haber, teknoloji (PyTorch, BLE, IMU) veya kurum ara..."
+            placeholder={language === 'tr' ? "Girişim, haber, teknoloji (PyTorch, BLE, IMU) veya kurum ara..." : "Search startups, news, tech stack (PyTorch, BLE, IMU) or institutions..."}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full bg-transparent text-slate-900 text-sm sm:text-base focus:outline-none placeholder-slate-400"
@@ -92,14 +102,14 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           {query && (
             <button 
               onClick={() => setQuery('')}
-              className="text-xs text-slate-400 hover:text-slate-700"
+              className="text-xs text-slate-400 hover:text-slate-700 font-medium shrink-0"
             >
-              Temizle
+              {language === 'tr' ? 'Temizle' : 'Clear'}
             </button>
           )}
           <button 
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-700 p-1 rounded-lg bg-slate-100 border border-slate-200"
+            className="text-slate-400 hover:text-slate-700 p-1 rounded-lg bg-slate-100 border border-slate-200 shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
@@ -109,25 +119,33 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         <div className="max-h-[60vh] overflow-y-auto p-4 space-y-6">
           {!query ? (
             <div className="py-8 text-center text-xs text-slate-500 space-y-2">
-              <p>Aramak istediğiniz anahtar kelimeyi yazın.</p>
+              <p>{language === 'tr' ? 'Aramak istediğiniz anahtar kelimeyi yazın.' : 'Type any keyword to search.'}</p>
               <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-                <span className="text-slate-500">Popüler:</span>
-                {['Sporsepeti', 'SportsFly', 'Sporpuan', 'Yapay Zeka', 'GPS Yeleği', 'Akıllı Stadyum'].map((pop, idx) => (
-                  <button 
-                    key={idx}
-                    onClick={() => setQuery(pop)}
-                    className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 text-[11px] border border-slate-200 transition-colors"
-                  >
-                    {pop}
-                  </button>
-                ))}
+                <span className="text-slate-500">{language === 'tr' ? 'Popüler:' : 'Popular:'}</span>
+                {['Sporsepeti', 'SportsFly', 'Sporpuan', 'Yapay Zeka', 'GPS Yeleği', 'Akıllı Stadyum'].map((pop, idx) => {
+                  let displayPop = pop;
+                  if (language === 'en') {
+                    if (pop === 'Yapay Zeka') displayPop = 'Artificial Intelligence';
+                    if (pop === 'GPS Yeleği') displayPop = 'GPS Tracker';
+                    if (pop === 'Akıllı Stadyum') displayPop = 'Smart Stadium';
+                  }
+                  return (
+                    <button 
+                      key={idx}
+                      onClick={() => setQuery(pop)}
+                      className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 text-[11px] border border-slate-200 transition-colors"
+                    >
+                      {displayPop}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ) : (
             <>
               {matchedStartups.length === 0 && matchedNews.length === 0 && matchedSupporters.length === 0 && (
                 <div className="py-8 text-center text-xs text-slate-500">
-                  "{query}" ile eşleşen sonuç bulunamadı.
+                  {language === 'tr' ? `"${query}" ile eşleşen sonuç bulunamadı.` : `No results found for "${query}".`}
                 </div>
               )}
 
@@ -136,14 +154,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 <div>
                   <div className="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Rocket className="w-3.5 h-3.5 text-orange-500" />
-                    <span>Girişimler ({matchedStartups.length})</span>
+                    <span>{language === 'tr' ? 'Girişimler' : 'Startups'} ({matchedStartups.length})</span>
                   </div>
                   <div className="space-y-1.5">
                     {matchedStartups.map((s) => (
                       <div
                         key={s.id}
                         onClick={() => {
-                          onSelectStartup(s);
+                          const realStartup = startups.find(rs => rs.id === s.id);
+                          if (realStartup) onSelectStartup(realStartup);
                           onClose();
                         }}
                         className="p-3 rounded-xl bg-slate-50 hover:bg-blue-50/50 hover:border-blue-200 border border-slate-200 cursor-pointer flex items-center justify-between transition-colors"
@@ -172,14 +191,15 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 <div>
                   <div className="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <Newspaper className="w-3.5 h-3.5 text-orange-500" />
-                    <span>Haberler & Analizler ({matchedNews.length})</span>
+                    <span>{language === 'tr' ? 'Haberler & Analizler' : 'News & Analysis'} ({matchedNews.length})</span>
                   </div>
                   <div className="space-y-1.5">
                     {matchedNews.map((n) => (
                       <div
                         key={n.id}
                         onClick={() => {
-                          onSelectArticle(n);
+                          const realArticle = articles.find(ra => ra.id === n.id);
+                          if (realArticle) onSelectArticle(realArticle);
                           onClose();
                         }}
                         className="p-3 rounded-xl bg-slate-50 hover:bg-blue-50/50 hover:border-blue-200 border border-slate-200 cursor-pointer flex items-center justify-between transition-colors"
@@ -200,7 +220,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 <div>
                   <div className="text-[11px] font-bold text-indigo-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                     <ShieldCheck className="w-3.5 h-3.5 text-orange-500" />
-                    <span>Destekleyiciler ({matchedSupporters.length})</span>
+                    <span>{language === 'tr' ? 'Destekleyiciler' : 'Supporters'} ({matchedSupporters.length})</span>
                   </div>
                   <div className="space-y-1.5">
                     {matchedSupporters.map((sup) => (
@@ -212,7 +232,11 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                           <img src={sup.logo} alt={sup.name} className="w-8 h-8 rounded-lg object-cover border border-slate-200" />
                           <div>
                             <h4 className="text-xs font-bold text-slate-900">{sup.name}</h4>
-                            <p className="text-[11px] text-slate-500">{sup.typeName}</p>
+                            <p className="text-[11px] text-slate-500">
+                              {language === 'tr' 
+                                ? sup.typeName 
+                                : (sup.type === 'club' ? 'Club / Academy' : (sup.type === 'vc_fund' ? 'VC / Investment Fund' : 'Institution'))}
+                            </p>
                           </div>
                         </div>
                         <span className="text-[10px] text-slate-500">{sup.location}</span>
@@ -227,7 +251,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
 
         {/* Footer */}
         <div className="p-3 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 text-center flex items-center justify-between px-5">
-          <span>Kapatmak için ESC tuşuna basın</span>
+          <span>{language === 'tr' ? 'Kapatmak için ESC tuşuna basın' : 'Press ESC key to close'}</span>
           <span className="text-blue-700 font-semibold">Sport Tech Türkiye</span>
         </div>
 

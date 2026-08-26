@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { NewsArticle, NewsCategory } from '../types';
 import { NEWS_ARTICLES } from '../data/news';
+import { useLanguage } from '../context/LanguageContext';
+import { translateNewsArticle } from '../lib/translator';
 
 interface NewsSectionProps {
   onSelectArticle: (article: NewsArticle) => void;
@@ -21,19 +23,23 @@ interface NewsSectionProps {
 
 export const NewsSection: React.FC<NewsSectionProps> = ({ onSelectArticle, articles }) => {
   const [selectedCategory, setSelectedCategory] = useState<NewsCategory>('all');
+  const { language, t } = useLanguage();
 
   const currentArticles = useMemo(() => {
     const rawArticles = articles && articles.length > 0 ? articles : NEWS_ARTICLES;
-    return rawArticles.filter(a => a.status !== 'passive');
-  }, [articles]);
+    const active = rawArticles.filter(a => a.status !== 'passive');
+    return active.map(a => translateNewsArticle(a, language));
+  }, [articles, language]);
 
-  const categories: { id: NewsCategory; label: string }[] = [
-    { id: 'all', label: 'Tüm Haberler' },
-    { id: 'ecosystem', label: 'Ekosistem & Sporsepeti' },
-    { id: 'ai_data', label: 'Yapay Zeka & Performans' },
-    { id: 'management_platform', label: 'SportsFly & Yönetim Yazılımları' },
-    { id: 'community_rating', label: 'Sporpuan & Tesis Puanlama' }
-  ];
+  const categories: { id: NewsCategory; label: string }[] = useMemo(() => {
+    return [
+      { id: 'all', label: language === 'tr' ? 'Tüm Haberler' : language === 'ar' ? 'جميع الأخبار' : 'All News' },
+      { id: 'ecosystem', label: language === 'tr' ? 'Ekosistem & Sporsepeti' : language === 'ar' ? 'المنظومة وسبورت سيبت' : 'Ecosystem & Sporsepeti' },
+      { id: 'ai_data', label: language === 'tr' ? 'Yapay Zeka & Performans' : language === 'ar' ? 'الذكاء الاصطناعي والأداء' : 'AI & Performance' },
+      { id: 'management_platform', label: language === 'tr' ? 'SportsFly & Yönetim Yazılımları' : language === 'ar' ? 'سبورتس فلاي وبرمجيات الإدارة' : 'SportsFly & Management' },
+      { id: 'community_rating', label: language === 'tr' ? 'Sporpuan & Tesis Puanlama' : language === 'ar' ? 'سبوربوان وتقييم المرافق' : 'Sporpuan & Reviews' }
+    ];
+  }, [language]);
 
   const filteredArticles = useMemo(() => {
     if (selectedCategory === 'all') return currentArticles;
@@ -52,18 +58,34 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ onSelectArticle, artic
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-blue-700 text-xs font-bold uppercase tracking-wider mb-3">
               <Newspaper className="w-3.5 h-3.5 text-orange-500" />
-              <span>Haberler & Analizler</span>
+              <span>{t('news.title')}</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-slate-900 tracking-tight">
-              Spor Teknolojileri <br className="hidden sm:inline" />
-              <span className="text-blue-600">
-                Gündemi ve Trend Raporları
-              </span>
+              {language === 'tr' ? (
+                <>
+                  Spor Teknolojileri <br className="hidden sm:inline" />
+                  <span className="text-blue-600">Gündemi ve Trend Raporları</span>
+                </>
+              ) : language === 'ar' ? (
+                <>
+                  أجندة تكنولوجيا الرياضة <br className="hidden sm:inline" />
+                  <span className="text-blue-600">وتقارير الاتجاهات الحديثة</span>
+                </>
+              ) : (
+                <>
+                  Sports Tech <br className="hidden sm:inline" />
+                  <span className="text-blue-600">Agenda & Trend Reports</span>
+                </>
+              )}
             </h2>
           </div>
 
           <p className="text-slate-600 text-xs sm:text-sm max-w-md">
-            Yatırım turları, kulüp-startup işbirlikleri, yapay zeka analizleri ve küresel spor inovasyonları.
+            {language === 'tr' 
+              ? 'Yatırım turları, kulüp-startup işbirlikleri, yapay zeka analizleri ve küresel spor inovasyonları.'
+              : language === 'ar'
+              ? 'جولات الاستثمار، والتعاون بين الأندية والشركات الناشئة، وتحليلات الذكاء الاصطناعي، وابتكارات الرياضة العالمية.'
+              : 'Investment rounds, club-startup synergies, AI analytics, and global sports innovation news.'}
           </p>
         </div>
 
@@ -104,7 +126,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ onSelectArticle, artic
                 />
                 <div className="absolute top-4 left-4 flex items-center gap-2">
                   <span className="px-3 py-1 rounded-full bg-orange-500 text-white text-[11px] font-bold uppercase tracking-wider shadow-sm">
-                    Öne Çıkan Rapor
+                    {language === 'tr' ? 'Öne Çıkan Rapor' : language === 'ar' ? 'تقرير مميز' : 'Featured Insight'}
                   </span>
                 </div>
               </div>
@@ -149,7 +171,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ onSelectArticle, artic
                   </div>
 
                   <span className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
-                    <span>Raporu Oku</span>
+                    <span>{language === 'tr' ? 'Raporu Oku' : language === 'ar' ? 'اقرأ التقرير' : 'Read Insight'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </span>
                 </div>
@@ -206,7 +228,7 @@ export const NewsSection: React.FC<NewsSectionProps> = ({ onSelectArticle, artic
                   {article.author.name}
                 </span>
                 <span className="text-blue-600 font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                  <span>Devamını Oku</span>
+                  <span>{language === 'tr' ? 'Devamını Oku' : language === 'ar' ? 'اقرأ المزيد' : 'Read Article'}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </span>
               </div>

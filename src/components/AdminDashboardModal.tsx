@@ -116,6 +116,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
   // Navigation Tabs: 'submissions' | 'startups' | 'partners' | 'news' | 'newsletter' | 'stats'
   const [activeTab, setActiveTab] = useState<'submissions' | 'startups' | 'partners' | 'news' | 'newsletter' | 'stats'>('submissions');
   const [partnerSubTab, setPartnerSubTab] = useState<'pending' | 'approved'>('pending');
+  const [submissionSubTab, setSubmissionSubTab] = useState<'startups' | 'partners'>('startups');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   // Mobile View State (for tabs with list/detail view)
@@ -633,7 +634,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
       }`}>
         
         {/* ========================================================================= */}
-        {/* TAB 1: STARTUP SUBMISSIONS REVIEW */}
+        {/* TAB 1: SUBMISSIONS REVIEW (STARTUPS AND PARTNERS) */}
         {/* ========================================================================= */}
         {activeTab === 'submissions' && (
           <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
@@ -645,6 +646,42 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
               mobileViewMode === 'detail' ? 'hidden lg:flex' : 'flex'
             }`}>
               
+              {/* Sub-tab Selection Toggle */}
+              <div className={`p-4 pb-2 border-b flex gap-2 shrink-0 transition-colors ${
+                theme === 'dark' ? 'border-slate-850' : 'border-slate-100'
+              }`}>
+                <button
+                  onClick={() => {
+                    setSubmissionSubTab('startups');
+                    setSearchQuery('');
+                    setMobileViewMode('list');
+                  }}
+                  className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer ${
+                    submissionSubTab === 'startups'
+                      ? theme === 'dark' ? 'bg-slate-100 text-slate-900 font-extrabold' : 'bg-blue-600 text-white shadow-xs'
+                      : theme === 'dark' ? 'bg-slate-900 hover:bg-slate-800 text-slate-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                  }`}
+                >
+                  <Rocket className="w-3.5 h-3.5" />
+                  <span>Girişimler ({pendingSubmissions.length})</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setSubmissionSubTab('partners');
+                    setSearchQuery('');
+                    setMobileViewMode('list');
+                  }}
+                  className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer ${
+                    submissionSubTab === 'partners'
+                      ? theme === 'dark' ? 'bg-slate-100 text-slate-900 font-extrabold' : 'bg-blue-600 text-white shadow-xs'
+                      : theme === 'dark' ? 'bg-slate-900 hover:bg-slate-800 text-slate-400' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                  }`}
+                >
+                  <Handshake className="w-3.5 h-3.5" />
+                  <span>Partnerler ({pendingPartners.length})</span>
+                </button>
+              </div>
+
               {/* Header */}
               <div className={`p-5 border-b space-y-4 transition-colors ${
                 theme === 'dark' ? 'border-slate-800' : 'border-slate-100'
@@ -652,10 +689,14 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
                 <div className="flex items-center justify-between">
                   <h2 className={`text-xs font-bold uppercase tracking-widest ${
                     theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
-                  }`}>Gelen Başvurular</h2>
-                  <span className={`text-[10px] font-bold ${
+                  }`}>
+                    {submissionSubTab === 'startups' ? 'Girişim Başvuruları' : 'Partnerlik Başvuruları'}
+                  </h2>
+                  <span className={`text-[10px] font-mono font-bold ${
                     theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
-                  }`}>{filteredStartupSubmissions.length} ADET</span>
+                  }`}>
+                    {submissionSubTab === 'startups' ? filteredStartupSubmissions.length : filteredPendingPartners.length} ADET
+                  </span>
                 </div>
                 <div className="relative">
                   <Search className={`w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 ${
@@ -663,7 +704,7 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
                   }`} />
                   <input
                     type="text"
-                    placeholder="Girişim ara..."
+                    placeholder={submissionSubTab === 'startups' ? "Girişim ara..." : "Kurum veya yetkili ara..."}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className={`w-full pl-9 pr-3 py-2 rounded-xl text-xs transition-all focus:outline-none ${
@@ -677,46 +718,98 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
 
               {/* Scrollable List */}
               <div className="flex-1 overflow-y-auto p-2 space-y-1">
-                {filteredStartupSubmissions.length === 0 ? (
-                  <div className={`py-20 text-center text-xs uppercase tracking-widest ${
-                    theme === 'dark' ? 'text-slate-700' : 'text-slate-400'
-                  }`}>Başvuru bulunamadı</div>
+                {submissionSubTab === 'startups' ? (
+                  filteredStartupSubmissions.length === 0 ? (
+                    <div className={`py-20 text-center text-xs uppercase tracking-widest ${
+                      theme === 'dark' ? 'text-slate-700' : 'text-slate-400'
+                    }`}>Başvuru bulunamadı</div>
+                  ) : (
+                    filteredStartupSubmissions.map((sub) => {
+                      const isSelected = selectedSubmission?.id === sub.id;
+                      return (
+                        <button
+                          key={sub.id}
+                          onClick={() => {
+                            setSelectedSubmission(sub);
+                            setMobileViewMode('detail');
+                          }}
+                          className={`w-full text-left p-4 rounded-2xl transition-all cursor-pointer ${
+                            isSelected 
+                              ? theme === 'dark' ? 'bg-slate-100 text-slate-900 font-bold' : 'bg-blue-50 text-blue-900 shadow-xs' 
+                              : theme === 'dark' ? 'bg-transparent text-slate-400 hover:bg-slate-900' : 'bg-transparent text-slate-500 hover:bg-slate-50'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className={`text-sm font-bold truncate max-w-[200px] ${
+                              isSelected 
+                                ? theme === 'dark' ? 'text-slate-900' : 'text-blue-900' 
+                                : theme === 'dark' ? 'text-white' : 'text-slate-900'
+                            }`}>{sub.name}</span>
+                            <span className={`text-[9px] font-bold uppercase tracking-widest ${
+                              isSelected 
+                                ? theme === 'dark' ? 'text-slate-500' : 'text-blue-600' 
+                                : theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
+                            }`}>{sub.submittedAt}</span>
+                          </div>
+                          <p className={`text-[11px] line-clamp-1 ${
+                            isSelected 
+                              ? theme === 'dark' ? 'text-slate-600' : 'text-blue-700/70' 
+                              : theme === 'dark' ? 'text-slate-500' : 'text-slate-500'
+                          }`}>{sub.tagLine}</p>
+                        </button>
+                      );
+                    })
+                  )
                 ) : (
-                  filteredStartupSubmissions.map((sub) => {
-                    const isSelected = selectedSubmission?.id === sub.id;
-                    return (
-                      <button
-                        key={sub.id}
-                        onClick={() => {
-                          setSelectedSubmission(sub);
-                          setMobileViewMode('detail');
-                        }}
-                        className={`w-full text-left p-4 rounded-2xl transition-all ${
-                          isSelected 
-                            ? theme === 'dark' ? 'bg-slate-100 text-slate-900' : 'bg-blue-50 text-blue-900 shadow-xs' 
-                            : theme === 'dark' ? 'bg-transparent text-slate-400 hover:bg-slate-900' : 'bg-transparent text-slate-500 hover:bg-slate-50'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-1">
-                          <span className={`text-sm font-bold ${
+                  filteredPendingPartners.length === 0 ? (
+                    <div className={`py-20 text-center text-xs uppercase tracking-widest ${
+                      theme === 'dark' ? 'text-slate-700' : 'text-slate-400'
+                    }`}>Başvuru bulunamadı</div>
+                  ) : (
+                    filteredPendingPartners.map((item) => {
+                      const activeItem = selectedPartnerSubmission || (filteredPendingPartners.length > 0 ? filteredPendingPartners[0] : null);
+                      const isSelected = activeItem?.id === item.id;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            setSelectedPartnerSubmission(item);
+                            setMobileViewMode('detail');
+                          }}
+                          className={`w-full text-left p-4 rounded-2xl transition-all cursor-pointer ${
                             isSelected 
-                              ? theme === 'dark' ? 'text-slate-900' : 'text-blue-900' 
-                              : theme === 'dark' ? 'text-white' : 'text-slate-900'
-                          }`}>{sub.name}</span>
-                          <span className={`text-[9px] font-bold uppercase tracking-widest ${
-                            isSelected 
-                              ? theme === 'dark' ? 'text-slate-500' : 'text-blue-600' 
-                              : theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
-                          }`}>{sub.submittedAt}</span>
-                        </div>
-                        <p className={`text-[11px] line-clamp-1 ${
-                          isSelected 
-                            ? theme === 'dark' ? 'text-slate-600' : 'text-blue-700/70' 
-                            : theme === 'dark' ? 'text-slate-500' : 'text-slate-500'
-                        }`}>{sub.tagLine}</p>
-                      </button>
-                    );
-                  })
+                              ? theme === 'dark' ? 'bg-slate-100 text-slate-900 font-bold' : 'bg-blue-50 text-blue-900 shadow-xs' 
+                              : theme === 'dark' ? 'bg-transparent text-slate-400 hover:bg-slate-900' : 'bg-transparent text-slate-500 hover:bg-slate-50'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className={`text-sm font-bold truncate max-w-[200px] ${
+                              isSelected 
+                                ? theme === 'dark' ? 'text-slate-900' : 'text-blue-900' 
+                                : theme === 'dark' ? 'text-white' : 'text-slate-900'
+                            }`}>{item.orgName}</span>
+                            <span className={`text-[9px] font-bold uppercase tracking-widest ${
+                              isSelected 
+                                ? theme === 'dark' ? 'text-slate-500' : 'text-blue-600' 
+                                : theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
+                            }`}>{item.submittedAt}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-1.5">
+                            <Building2 className={`w-3 h-3 ${
+                              isSelected 
+                                ? theme === 'dark' ? 'text-slate-500' : 'text-blue-700/60' 
+                                : 'text-slate-500'
+                            }`} />
+                            <span className={`text-[10px] font-semibold truncate ${
+                              isSelected 
+                                ? theme === 'dark' ? 'text-slate-600' : 'text-blue-700/80' 
+                                : theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                            }`}>{item.orgTypeName}</span>
+                          </div>
+                        </button>
+                      );
+                    })
+                  )
                 )}
               </div>
             </div>
@@ -727,95 +820,344 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
             } ${
               mobileViewMode === 'list' ? 'hidden lg:flex' : 'flex'
             }`}>
-              {selectedSubmission ? (
-                <div className="p-6 sm:p-12 lg:p-20 max-w-4xl mx-auto w-full space-y-12 animate-in fade-in duration-300">
-                  
-                  {/* Mobile Back Button */}
-                  <button onClick={() => setMobileViewMode('list')} className={`lg:hidden flex items-center gap-2 font-bold text-xs mb-8 ${
-                    theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
-                  }`}>
-                    <ArrowLeft className="w-4 h-4" />
-                    <span>Listeye Dön</span>
-                  </button>
+              {submissionSubTab === 'startups' ? (
+                selectedSubmission ? (
+                  <div className="p-6 sm:p-12 lg:p-20 max-w-4xl mx-auto w-full space-y-12 animate-in fade-in duration-300">
+                    
+                    {/* Mobile Back Button */}
+                    <button onClick={() => setMobileViewMode('list')} className={`lg:hidden flex items-center gap-2 font-bold text-xs mb-8 ${
+                      theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                    }`}>
+                      <ArrowLeft className="w-4 h-4" />
+                      <span>Listeye Dön</span>
+                    </button>
 
-                  <div className="space-y-3">
-                    <h2 className={`text-4xl font-bold tracking-tighter transition-colors ${
-                      theme === 'dark' ? 'text-white' : 'text-slate-900'
-                    }`}>{selectedSubmission.name}</h2>
-                    <p className={`text-lg font-medium transition-colors ${
-                      theme === 'dark' ? 'text-slate-500' : 'text-slate-500'
-                    }`}>{selectedSubmission.tagLine}</p>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                    <div className="space-y-4">
-                      <h3 className={`text-[10px] font-bold uppercase tracking-widest border-b pb-3 transition-colors ${
-                        theme === 'dark' ? 'text-slate-600 border-slate-900' : 'text-slate-400 border-slate-100'
-                      }`}>Kurucu</h3>
-                      <div className="space-y-1">
-                        <p className={`text-sm font-bold transition-colors ${
-                          theme === 'dark' ? 'text-white' : 'text-slate-900'
-                        }`}>{selectedSubmission.founderName}</p>
-                        <p className="text-xs text-slate-500">{selectedSubmission.email}</p>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold tracking-wider transition-colors border ${
+                          theme === 'dark' ? 'bg-blue-500/10 border-blue-400/20 text-blue-300' : 'bg-blue-50 border-blue-200 text-blue-700'
+                        }`}>
+                          GİRİŞİM BAŞVURUSU
+                        </span>
+                        <div className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>Başvuru Zamanı: {selectedSubmission.submittedAt}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div className="space-y-4">
-                      <h3 className={`text-[10px] font-bold uppercase tracking-widest border-b pb-3 transition-colors ${
-                        theme === 'dark' ? 'text-slate-600 border-slate-900' : 'text-slate-400 border-slate-100'
-                      }`}>Aşama / Konum</h3>
-                      <div className="space-y-1">
-                        <p className={`text-sm font-bold transition-colors ${
-                          theme === 'dark' ? 'text-white' : 'text-slate-900'
-                        }`}>{selectedSubmission.stage}</p>
-                        <p className="text-xs text-slate-500">{selectedSubmission.location}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <h3 className={`text-[10px] font-bold uppercase tracking-widest border-b pb-3 transition-colors ${
-                        theme === 'dark' ? 'text-slate-600 border-slate-900' : 'text-slate-400 border-slate-100'
-                      }`}>Kategori</h3>
-                      <p className={`text-sm font-bold uppercase tracking-wider transition-colors ${
+                      <h2 className={`text-4xl font-bold tracking-tighter transition-colors ${
                         theme === 'dark' ? 'text-white' : 'text-slate-900'
-                      }`}>{selectedSubmission.categoryName}</p>
+                      }`}>{selectedSubmission.name}</h2>
+                      <p className={`text-lg font-medium transition-colors ${
+                        theme === 'dark' ? 'text-slate-500' : 'text-slate-500'
+                      }`}>{selectedSubmission.tagLine}</p>
                     </div>
-                  </div>
 
-                  <div className="space-y-4">
-                    <h3 className={`text-[10px] font-bold uppercase tracking-widest border-b pb-3 transition-colors ${
-                      theme === 'dark' ? 'text-slate-600 border-slate-900' : 'text-slate-400 border-slate-100'
-                    }`}>Detaylı Açıklama</h3>
-                    <p className={`text-sm leading-relaxed max-w-2xl transition-colors ${
-                      theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
-                    }`}>{selectedSubmission.description}</p>
-                  </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                      <div className="space-y-4">
+                        <h3 className={`text-[10px] font-bold uppercase tracking-widest border-b pb-3 transition-colors ${
+                          theme === 'dark' ? 'text-slate-600 border-slate-900' : 'text-slate-400 border-slate-100'
+                        }`}>Kurucu</h3>
+                        <div className="space-y-1">
+                          <p className={`text-sm font-bold transition-colors ${
+                            theme === 'dark' ? 'text-white' : 'text-slate-900'
+                          }`}>{selectedSubmission.founderName}</p>
+                          <p className="text-xs text-slate-500">{selectedSubmission.email}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <h3 className={`text-[10px] font-bold uppercase tracking-widest border-b pb-3 transition-colors ${
+                          theme === 'dark' ? 'text-slate-600 border-slate-900' : 'text-slate-400 border-slate-100'
+                        }`}>Aşama / Konum</h3>
+                        <div className="space-y-1">
+                          <p className={`text-sm font-bold transition-colors ${
+                            theme === 'dark' ? 'text-white' : 'text-slate-900'
+                          }`}>{selectedSubmission.stage}</p>
+                          <p className="text-xs text-slate-500">{selectedSubmission.location}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-4">
+                        <h3 className={`text-[10px] font-bold uppercase tracking-widest border-b pb-3 transition-colors ${
+                          theme === 'dark' ? 'text-slate-600 border-slate-900' : 'text-slate-400 border-slate-100'
+                        }`}>Kategori</h3>
+                        <p className={`text-sm font-bold uppercase tracking-wider transition-colors ${
+                          theme === 'dark' ? 'text-white' : 'text-slate-900'
+                        }`}>{selectedSubmission.categoryName}</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h3 className={`text-[10px] font-bold uppercase tracking-widest border-b pb-3 transition-colors ${
+                        theme === 'dark' ? 'text-slate-600 border-slate-900' : 'text-slate-400 border-slate-100'
+                      }`}>Detaylı Açıklama</h3>
+                      <p className={`text-sm leading-relaxed max-w-2xl transition-colors ${
+                        theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+                      }`}>{selectedSubmission.description}</p>
+                    </div>
 
                     <div className="pt-10 flex items-center gap-4">
-                    <button
-                      onClick={() => handleApproveStartup(selectedSubmission.id, selectedSubmission.name)}
-                      className={`px-8 py-3 rounded-xl font-bold text-sm transition-all ${
-                        theme === 'dark' ? 'bg-slate-100 hover:bg-white text-slate-900' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200'
-                      }`}
-                    >
-                      Onayla ve Yayınla
-                    </button>
-                    <button
-                      onClick={() => handleRejectStartup(selectedSubmission.id, selectedSubmission.name)}
-                      className={`px-8 py-3 rounded-xl border font-bold text-sm transition-all flex items-center gap-2 ${
-                        theme === 'dark' 
-                          ? 'bg-slate-900 border-slate-800 text-slate-500 hover:text-red-400 hover:border-red-900/40' 
-                          : 'bg-white border-slate-200 text-slate-500 hover:text-red-600 hover:bg-red-50'
-                      }`}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span>Reddet & Sil</span>
-                    </button>
-                  </div>
+                      <button
+                        onClick={() => handleApproveStartup(selectedSubmission.id, selectedSubmission.name)}
+                        className={`px-8 py-3 rounded-xl font-bold text-sm transition-all cursor-pointer ${
+                          theme === 'dark' ? 'bg-slate-100 hover:bg-white text-slate-900' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200'
+                        }`}
+                      >
+                        Onayla ve Yayınla
+                      </button>
+                      <button
+                        onClick={() => handleRejectStartup(selectedSubmission.id, selectedSubmission.name)}
+                        className={`px-8 py-3 rounded-xl border font-bold text-sm transition-all flex items-center gap-2 cursor-pointer ${
+                          theme === 'dark' 
+                            ? 'bg-slate-900 border-slate-800 text-slate-500 hover:text-red-400 hover:border-red-900/40' 
+                            : 'bg-white border-slate-200 text-slate-500 hover:text-red-600 hover:bg-red-50'
+                        }`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        <span>Reddet & Sil</span>
+                      </button>
+                    </div>
 
-                </div>
+                  </div>
+                ) : (
+                  <div className={`flex-1 flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.2em] transition-colors ${
+                    theme === 'dark' ? 'text-slate-800' : 'text-slate-200'
+                  }`}>İncelemek için seçim yapın</div>
+                )
               ) : (
-                <div className={`flex-1 flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.2em] transition-colors ${
-                  theme === 'dark' ? 'text-slate-800' : 'text-slate-200'
-                }`}>İncelemek için seçim yapın</div>
+                (() => {
+                  const activeItem = selectedPartnerSubmission || (filteredPendingPartners.length > 0 ? filteredPendingPartners[0] : null);
+                  if (!activeItem) {
+                    return (
+                      <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                        <Handshake className={`w-12 h-12 mb-4 stroke-1 ${
+                          theme === 'dark' ? 'text-slate-850' : 'text-slate-300'
+                        }`} />
+                        <p className={`text-sm font-semibold transition-colors ${
+                          theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
+                        }`}>Gelen partner başvurusu bulunmuyor</p>
+                      </div>
+                    );
+                  }
+                  return (
+                    <div className="p-6 sm:p-12 lg:p-16 max-w-4xl mx-auto w-full space-y-10 animate-in fade-in duration-300">
+                      
+                      {/* Mobile Back Button */}
+                      <button onClick={() => setMobileViewMode('list')} className={`lg:hidden flex items-center gap-2 font-bold text-xs mb-6 ${
+                        theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                      }`}>
+                        <ArrowLeft className="w-4 h-4" />
+                        <span>Başvurulara Dön</span>
+                      </button>
+
+                      {/* Header with time */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100/10">
+                        <div className="flex items-center gap-2.5">
+                          <span className={`px-2.5 py-1 rounded-full text-[9px] font-bold tracking-wider border transition-colors ${
+                            theme === 'dark' 
+                              ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' 
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}>
+                            PARTNER BAŞVURUSU
+                          </span>
+                          <div className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>Başvuru Zamanı: {activeItem.submittedAt}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleOpenPartnerApprovalModal(activeItem)}
+                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                              theme === 'dark' 
+                                ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md' 
+                                : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
+                            }`}
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                            <span>Düzenle & Onayla</span>
+                          </button>
+                          <button
+                            onClick={() => handleQuickApprovePartner(activeItem)}
+                            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                              theme === 'dark' 
+                                ? 'bg-emerald-600 hover:bg-emerald-500 text-white' 
+                                : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                            }`}
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>Hızlı Onayla</span>
+                          </button>
+                          <button
+                            onClick={() => handleRejectPartner(activeItem.id, activeItem.orgName)}
+                            className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+                              theme === 'dark' 
+                                ? 'bg-slate-900 border-slate-800 hover:bg-red-950 text-slate-400 hover:text-red-400' 
+                                : 'bg-white border-slate-200 hover:bg-red-50 text-slate-400 hover:text-red-600'
+                            }`}
+                            title="Reddet & Sil"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Title & Core Details */}
+                      <div className="space-y-3">
+                        <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight transition-colors ${
+                          theme === 'dark' ? 'text-white' : 'text-slate-900'
+                        }`}>{activeItem.orgName}</h2>
+                        <div className="flex flex-wrap items-center gap-3 text-xs">
+                          <span className={`px-2.5 py-1 rounded-lg font-bold ${
+                            theme === 'dark' ? 'bg-slate-900 text-slate-300 border border-slate-800' : 'bg-slate-100 text-slate-700 border border-slate-200'
+                          }`}>
+                            {activeItem.orgTypeName}
+                          </span>
+                          {activeItem.location && (
+                            <div className="flex items-center gap-1 text-slate-500">
+                              <MapPin className="w-3.5 h-3.5" />
+                              <span>{activeItem.location}</span>
+                            </div>
+                          )}
+                          {activeItem.website && (
+                            <a 
+                              href={activeItem.website} 
+                              target="_blank" 
+                              rel="noreferrer"
+                              className="flex items-center gap-1 text-blue-500 hover:underline font-medium"
+                            >
+                              <Globe className="w-3.5 h-3.5" />
+                              <span>Web Sitesi</span>
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Two Column Grid: Contact Person Info and Organization Meta */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        
+                        {/* Column 1: Kurum Temsilcisi Bilgileri */}
+                        <div className={`p-6 rounded-3xl border transition-colors ${
+                          theme === 'dark' ? 'bg-slate-900/30 border-slate-800/80' : 'bg-slate-50/50 border-slate-100'
+                        }`}>
+                          <h3 className={`text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2 ${
+                            theme === 'dark' ? 'text-slate-400' : 'text-slate-800'
+                          }`}>
+                            <Users className="w-4 h-4 text-blue-500" />
+                            <span>Başvuran Kurum Yetkilisi</span>
+                          </h3>
+
+                          <div className="space-y-4 text-xs">
+                            <div>
+                              <span className="text-slate-500 block mb-0.5">Adı Soyadı / Görevi</span>
+                              <span className={`font-bold text-sm ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                                {activeItem.contactName}
+                              </span>
+                              <span className="text-slate-400 block mt-0.5">
+                                {activeItem.contactRole || 'Temsilci'}
+                              </span>
+                            </div>
+
+                            <div className="pt-2 border-t border-slate-100/10">
+                              <span className="text-slate-500 block mb-0.5">E-posta</span>
+                              <div className="flex items-center gap-2">
+                                <a href={`mailto:${activeItem.email}`} className="font-semibold text-blue-500 hover:underline">
+                                  {activeItem.email}
+                                </a>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(activeItem.email);
+                                    showNotification('E-posta adresi panoya kopyalandı.');
+                                  }}
+                                  className="p-1 rounded hover:bg-slate-500/10 text-slate-400 hover:text-slate-300 cursor-pointer"
+                                  title="E-postayı Kopyala"
+                                >
+                                  <Copy className="w-3 h-3" />
+                                </button>
+                              </div>
+                            </div>
+
+                            {activeItem.phone && (
+                              <div className="pt-2 border-t border-slate-100/10">
+                                <span className="text-slate-500 block mb-0.5">Telefon</span>
+                                <div className="flex items-center gap-2">
+                                  <span className={`font-semibold ${theme === 'dark' ? 'text-slate-300' : 'text-slate-800'}`}>
+                                    {activeItem.phone}
+                                  </span>
+                                  <button
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(activeItem.phone);
+                                      showNotification('Telefon numarası panoya kopyalandı.');
+                                    }}
+                                    className="p-1 rounded hover:bg-slate-500/10 text-slate-400 hover:text-slate-300 cursor-pointer"
+                                    title="Telefonu Kopyala"
+                                  >
+                                    <Copy className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Column 2: Kurum Türü ve İşbirliği Teması */}
+                        <div className={`p-6 rounded-3xl border transition-colors ${
+                          theme === 'dark' ? 'bg-slate-900/30 border-slate-800/80' : 'bg-slate-50/50 border-slate-100'
+                        }`}>
+                          <h3 className={`text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2 ${
+                            theme === 'dark' ? 'text-slate-400' : 'text-slate-800'
+                          }`}>
+                            <Building2 className="w-4 h-4 text-emerald-500" />
+                            <span>Kurum Kimliği</span>
+                          </h3>
+
+                          <div className="space-y-4 text-xs">
+                            <div>
+                              <span className="text-slate-500 block mb-0.5">Kurum Adı</span>
+                              <span className={`font-bold ${theme === 'dark' ? 'text-slate-200' : 'text-slate-900'}`}>
+                                {activeItem.orgName}
+                              </span>
+                            </div>
+
+                            <div>
+                              <span className="text-slate-500 block mb-0.5">Kurum Sınıflandırması</span>
+                              <span className={`font-bold ${theme === 'dark' ? 'text-slate-200' : 'text-slate-900'}`}>
+                                {activeItem.orgTypeName}
+                              </span>
+                            </div>
+
+                            {activeItem.location && (
+                              <div>
+                                <span className="text-slate-500 block mb-0.5">Ofis / Merkez Lokasyonu</span>
+                                <span className={`font-semibold ${theme === 'dark' ? 'text-slate-300' : 'text-slate-800'}`}>
+                                  {activeItem.location}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                      </div>
+
+                      {/* Mesaj & İşbirliği Beklentisi */}
+                      <div className={`p-8 rounded-3xl border transition-colors ${
+                        theme === 'dark' ? 'bg-slate-900/10 border-slate-800/80' : 'bg-slate-50 border-slate-100'
+                      }`}>
+                        <h3 className={`text-xs font-bold uppercase tracking-wider mb-4 ${
+                          theme === 'dark' ? 'text-slate-400' : 'text-slate-800'
+                        }`}>
+                          İşbirliği Beklentisi & Başvuru Mesajı
+                        </h3>
+                        <p className={`text-sm leading-relaxed whitespace-pre-wrap transition-colors ${
+                          theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
+                        }`}>
+                          {activeItem.message || 'Herhangi bir detaylı mesaj belirtilmedi.'}
+                        </p>
+                      </div>
+
+                    </div>
+                  );
+                })()
               )}
             </div>
           </div>
@@ -1011,75 +1353,432 @@ export const AdminDashboardModal: React.FC<AdminDashboardModalProps> = ({
         {/* TAB 3: PARTNERS & ECOSYSTEM SUPPORTERS */}
         {/* ========================================================================= */}
         {activeTab === 'partners' && (
-          <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-8">
-            
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              <div>
-                <h2 className={`text-lg font-bold transition-colors ${
-                  theme === 'dark' ? 'text-white' : 'text-slate-900'
-                }`}>Partner & Destekçiler</h2>
-                <p className={`text-xs mt-0.5 transition-colors ${
-                  theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
-                }`}>Ekosistemdeki onaylı {approvedSupporters.length} kurum</p>
-              </div>
-
-              <div className="flex items-center gap-2.5">
-                <button
-                  onClick={() => setIsPartnerReviewMode(!isPartnerReviewMode)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                    isPartnerReviewMode 
-                      ? theme === 'dark' ? 'bg-blue-600 text-white' : 'bg-blue-600 text-white shadow-md shadow-blue-100' 
-                      : theme === 'dark' ? 'bg-slate-900 text-slate-400 hover:bg-slate-800' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  {isPartnerReviewMode ? 'Listeye Dön' : `Başvurular (${pendingPartners.length})`}
-                </button>
-                <button
-                  onClick={handleOpenLivePartnerCreate}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition-all ${
-                    theme === 'dark' ? 'bg-slate-100 hover:bg-white text-slate-900' : 'bg-white border border-slate-200 text-slate-900 hover:bg-slate-50'
-                  }`}
-                >
-                  Yeni Partner
-                </button>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {(isPartnerReviewMode ? (pendingPartners as any[]) : (approvedSupporters as any[])).map((item) => (
-                <div key={item.id} className={`border rounded-2xl p-6 group transition-all ${
-                  theme === 'dark' ? 'bg-slate-900/30 border-slate-800 hover:border-slate-700' : 'bg-white border-slate-100 hover:border-slate-200 hover:shadow-lg'
+          <>
+            {isPartnerReviewMode ? (
+              // Split View layout for Ecosystem Partner Applications
+              <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative h-full">
+                
+                {/* Left Column: Submissions List */}
+                <div className={`w-full lg:w-96 lg:min-w-[380px] border-r flex flex-col overflow-hidden transition-colors ${
+                  theme === 'dark' ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                } ${
+                  mobileViewMode === 'detail' ? 'hidden lg:flex' : 'flex'
                 }`}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center transition-all ${
-                      theme === 'dark' ? 'grayscale-[0.5] group-hover:grayscale-0' : 'border border-slate-100'
-                    }`}>
-                       <Building2 className="w-6 h-6 text-slate-900" />
+                  
+                  {/* Header/Search bar inside the list */}
+                  <div className={`p-5 border-b space-y-4 transition-colors ${
+                    theme === 'dark' ? 'border-slate-800' : 'border-slate-100'
+                  }`}>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <h2 className={`text-xs font-bold uppercase tracking-widest ${
+                          theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                        }`}>Partner Başvuruları</h2>
+                        <span className={`text-[10px] font-bold ${
+                          theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
+                        }`}>Ekosistem Partneri İnceleme Masası</span>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        theme === 'dark' ? 'bg-slate-900 text-slate-400 border border-slate-800' : 'bg-slate-100 text-slate-600 border border-slate-200'
+                      }`}>{filteredPendingPartners.length} ADET</span>
                     </div>
-                      <div className="flex items-center gap-2">
-                      {isPartnerReviewMode ? (
-                        <>
-                          <button onClick={() => handleQuickApprovePartner(item)} className="text-blue-400 hover:text-blue-600" title="Onayla"><CheckCircle2 className="w-4 h-4" /></button>
-                          <button onClick={() => handleRejectPartner(item.id, item.orgName)} className="text-slate-500 hover:text-red-400" title="Reddet & Sil"><Trash2 className="w-4 h-4" /></button>
-                        </>
-                      ) : (
-                        <>
-                          <button onClick={() => handleOpenLivePartnerEdit(item)} className="text-slate-500 hover:text-slate-900" title="Düzenle"><Edit3 className="w-4 h-4" /></button>
-                          <button onClick={() => handleDeleteLivePartner(item.id, item.name)} className="text-slate-500 hover:text-red-400 transition-colors" title="Kaldır"><Trash2 className="w-4 h-4" /></button>
-                        </>
-                      )}
+
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Search className={`w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 ${
+                          theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
+                        }`} />
+                        <input
+                          type="text"
+                          placeholder="Kurum veya yetkili ara..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className={`w-full pl-9 pr-3 py-2 rounded-xl text-xs transition-all focus:outline-none ${
+                            theme === 'dark' 
+                              ? 'bg-slate-900 border border-slate-800 text-white placeholder-slate-700 focus:border-slate-700' 
+                              : 'bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:border-blue-400'
+                          }`}
+                        />
+                      </div>
+                      <button
+                        onClick={() => setIsPartnerReviewMode(false)}
+                        className={`px-3 py-2 rounded-xl text-xs font-bold transition-all border shrink-0 ${
+                          theme === 'dark' 
+                            ? 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800' 
+                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        }`}
+                        title="Aktif Partner Listesine Dön"
+                      >
+                        Listeye Dön
+                      </button>
                     </div>
                   </div>
-                  <h3 className={`text-sm font-bold transition-colors ${
-                    theme === 'dark' ? 'text-white' : 'text-slate-900'
-                  }`}>{isPartnerReviewMode ? item.orgName : item.name}</h3>
-                  <p className={`text-xs mt-1 transition-colors ${
-                    theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
-                  }`}>{isPartnerReviewMode ? item.orgTypeName : item.role}</p>
+
+                  {/* Scrollable List of Submissions */}
+                  <div className="flex-1 overflow-y-auto p-2 space-y-1">
+                    {filteredPendingPartners.length === 0 ? (
+                      <div className={`py-20 text-center text-xs uppercase tracking-widest ${
+                        theme === 'dark' ? 'text-slate-700' : 'text-slate-400'
+                      }`}>Başvuru bulunamadı</div>
+                    ) : (
+                      filteredPendingPartners.map((item) => {
+                        const activeItem = selectedPartnerSubmission || filteredPendingPartners[0];
+                        const isSelected = activeItem?.id === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            onClick={() => {
+                              setSelectedPartnerSubmission(item);
+                              setMobileViewMode('detail');
+                            }}
+                            className={`w-full text-left p-4 rounded-2xl transition-all ${
+                              isSelected 
+                                ? theme === 'dark' ? 'bg-slate-100 text-slate-900' : 'bg-blue-55 text-blue-900 shadow-xs' 
+                                : theme === 'dark' ? 'bg-transparent text-slate-400 hover:bg-slate-900' : 'bg-transparent text-slate-500 hover:bg-slate-50'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className={`text-sm font-bold ${
+                                isSelected 
+                                  ? theme === 'dark' ? 'text-slate-900' : 'text-blue-900' 
+                                  : theme === 'dark' ? 'text-white' : 'text-slate-900'
+                              }`}>{item.orgName}</span>
+                              <span className={`text-[9px] font-bold uppercase tracking-widest ${
+                                isSelected 
+                                  ? theme === 'dark' ? 'text-slate-500' : 'text-blue-600' 
+                                  : theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
+                              }`}>{item.submittedAt}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-1.5">
+                              <Building2 className={`w-3 h-3 ${
+                                isSelected 
+                                  ? theme === 'dark' ? 'text-slate-500' : 'text-blue-700/60' 
+                                  : 'text-slate-500'
+                              }`} />
+                              <span className={`text-[10px] font-semibold ${
+                                isSelected 
+                                  ? theme === 'dark' ? 'text-slate-600' : 'text-blue-700/80' 
+                                  : theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                              }`}>{item.orgTypeName}</span>
+                            </div>
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
+
+                {/* Right Column: Detailed Application Inspection View */}
+                <div className={`flex-1 overflow-y-auto transition-colors ${
+                  theme === 'dark' ? 'bg-slate-950' : 'bg-white'
+                } ${
+                  mobileViewMode === 'list' ? 'hidden lg:flex' : 'flex'
+                }`}>
+                  {(() => {
+                    const activeItem = selectedPartnerSubmission || (filteredPendingPartners.length > 0 ? filteredPendingPartners[0] : null);
+                    if (!activeItem) {
+                      return (
+                        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+                          <Handshake className={`w-12 h-12 mb-4 stroke-1 ${
+                            theme === 'dark' ? 'text-slate-800' : 'text-slate-300'
+                          }`} />
+                          <p className={`text-sm font-semibold transition-colors ${
+                            theme === 'dark' ? 'text-slate-600' : 'text-slate-400'
+                          }`}>Seçili başvuru bulunmamaktadır</p>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div className="p-6 sm:p-12 lg:p-16 max-w-4xl mx-auto w-full space-y-10 animate-in fade-in duration-300">
+                        
+                        {/* Mobile Back Button */}
+                        <button onClick={() => setMobileViewMode('list')} className={`lg:hidden flex items-center gap-2 font-bold text-xs mb-6 ${
+                          theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                        }`}>
+                          <ArrowLeft className="w-4 h-4" />
+                          <span>Başvurulara Dön</span>
+                        </button>
+
+                        {/* Submission Time & Status header */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100/10">
+                          <div className="flex items-center gap-2.5">
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold border transition-colors ${
+                              theme === 'dark' 
+                                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' 
+                                : 'bg-amber-50 text-amber-800 border-amber-200'
+                            }`}>
+                              BAŞVURU İNCELEMEDE
+                            </span>
+                            <div className="flex items-center gap-1 text-[11px] font-medium text-slate-500">
+                              <Clock className="w-3.5 h-3.5" />
+                              <span>Başvuru Zamanı: {activeItem.submittedAt}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleOpenPartnerApprovalModal(activeItem)}
+                              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                                theme === 'dark' 
+                                  ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md' 
+                                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
+                              }`}
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                              <span>Düzenle & Onayla</span>
+                            </button>
+                            <button
+                              onClick={() => handleQuickApprovePartner(activeItem)}
+                              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                                theme === 'dark' 
+                                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white' 
+                                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                              }`}
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>Hızlı Onayla</span>
+                            </button>
+                            <button
+                              onClick={() => handleRejectPartner(activeItem.id, activeItem.orgName)}
+                              className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+                                theme === 'dark' 
+                                  ? 'bg-slate-900 border-slate-800 hover:bg-red-950 text-slate-400 hover:text-red-400' 
+                                  : 'bg-white border-slate-200 hover:bg-red-50 text-slate-400 hover:text-red-600'
+                              }`}
+                              title="Reddet & Sil"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Title & Core Details */}
+                        <div className="space-y-3">
+                          <h2 className={`text-3xl sm:text-4xl font-extrabold tracking-tight transition-colors ${
+                            theme === 'dark' ? 'text-white' : 'text-slate-900'
+                          }`}>{activeItem.orgName}</h2>
+                          <div className="flex flex-wrap items-center gap-3 text-xs">
+                            <span className={`px-2.5 py-1 rounded-lg font-bold ${
+                              theme === 'dark' ? 'bg-slate-900 text-slate-300' : 'bg-slate-100 text-slate-700'
+                            }`}>
+                              {activeItem.orgTypeName}
+                            </span>
+                            {activeItem.location && (
+                              <div className="flex items-center gap-1 text-slate-500">
+                                <MapPin className="w-3.5 h-3.5" />
+                                <span>{activeItem.location}</span>
+                              </div>
+                            )}
+                            {activeItem.website && (
+                              <a 
+                                href={activeItem.website} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                className="flex items-center gap-1 text-blue-500 hover:underline font-medium"
+                              >
+                                <Globe className="w-3.5 h-3.5" />
+                                <span>Web Sitesi</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Two Column Grid: Contact Person Info and Organization Meta */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                          
+                          {/* Column 1: Kurum Temsilcisi Bilgileri */}
+                          <div className={`p-6 rounded-3xl border transition-colors ${
+                            theme === 'dark' ? 'bg-slate-900/30 border-slate-800' : 'bg-slate-50/50 border-slate-100'
+                          }`}>
+                            <h3 className={`text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2 ${
+                              theme === 'dark' ? 'text-slate-400' : 'text-slate-800'
+                            }`}>
+                              <Users className="w-4 h-4 text-blue-500" />
+                              <span>Başvuran Kurum Yetkilisi</span>
+                            </h3>
+
+                            <div className="space-y-4 text-xs">
+                              <div>
+                                <span className="text-slate-500 block mb-0.5">Adı Soyadı / Unvanı</span>
+                                <span className={`font-bold text-sm ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                                  {activeItem.contactName}
+                                </span>
+                                <span className="text-slate-400 block mt-0.5">
+                                  {activeItem.contactRole || 'Temsilci'}
+                                </span>
+                              </div>
+
+                              <div className="pt-2 border-t border-slate-150/10">
+                                <span className="text-slate-500 block mb-0.5">E-posta</span>
+                                <div className="flex items-center gap-2">
+                                  <a href={`mailto:${activeItem.email}`} className="font-semibold text-blue-500 hover:underline">
+                                    {activeItem.email}
+                                  </a>
+                                  <button
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(activeItem.email);
+                                      showNotification('E-posta adresi panoya kopyalandı.');
+                                    }}
+                                    className="p-1 rounded hover:bg-slate-500/10 text-slate-400 hover:text-slate-300"
+                                    title="E-postayı Kopyala"
+                                  >
+                                    <Copy className="w-3 h-3" />
+                                  </button>
+                                </div>
+                              </div>
+
+                              {activeItem.phone && (
+                                <div className="pt-2 border-t border-slate-150/10">
+                                  <span className="text-slate-500 block mb-0.5">Telefon</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className={`font-semibold ${theme === 'dark' ? 'text-slate-300' : 'text-slate-800'}`}>
+                                      {activeItem.phone}
+                                    </span>
+                                    <button
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(activeItem.phone);
+                                        showNotification('Telefon numarası panoya kopyalandı.');
+                                      }}
+                                      className="p-1 rounded hover:bg-slate-500/10 text-slate-400 hover:text-slate-300"
+                                      title="Telefonu Kopyala"
+                                    >
+                                      <Copy className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Column 2: Kurum Türü ve İşbirliği Teması */}
+                          <div className={`p-6 rounded-3xl border transition-colors ${
+                            theme === 'dark' ? 'bg-slate-900/30 border-slate-800' : 'bg-slate-50/50 border-slate-100'
+                          }`}>
+                            <h3 className={`text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2 ${
+                              theme === 'dark' ? 'text-slate-400' : 'text-slate-800'
+                            }`}>
+                              <Building2 className="w-4 h-4 text-emerald-500" />
+                              <span>Kurum Kimliği</span>
+                            </h3>
+
+                            <div className="space-y-4 text-xs">
+                              <div>
+                                <span className="text-slate-500 block mb-0.5">Kurum Adı</span>
+                                <span className={`font-bold ${theme === 'dark' ? 'text-slate-200' : 'text-slate-900'}`}>
+                                  {activeItem.orgName}
+                                </span>
+                              </div>
+
+                              <div>
+                                <span className="text-slate-500 block mb-0.5">Kurum Sınıflandırması</span>
+                                <span className={`font-bold ${theme === 'dark' ? 'text-slate-200' : 'text-slate-900'}`}>
+                                  {activeItem.orgTypeName}
+                                </span>
+                              </div>
+
+                              {activeItem.location && (
+                                <div>
+                                  <span className="text-slate-500 block mb-0.5">Ofis / Merkez Lokasyonu</span>
+                                  <span className={`font-semibold ${theme === 'dark' ? 'text-slate-300' : 'text-slate-800'}`}>
+                                    {activeItem.location}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                        </div>
+
+                        {/* Mesaj & İşbirliği Beklentisi */}
+                        <div className={`p-8 rounded-3xl border transition-colors ${
+                          theme === 'dark' ? 'bg-slate-900/10 border-slate-800' : 'bg-slate-50 border-slate-100'
+                        }`}>
+                          <h3 className={`text-xs font-bold uppercase tracking-wider mb-4 ${
+                            theme === 'dark' ? 'text-slate-400' : 'text-slate-800'
+                          }`}>
+                            İşbirliği Beklentisi & Başvuru Mesajı
+                          </h3>
+                          <p className={`text-sm leading-relaxed whitespace-pre-wrap transition-colors ${
+                            theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
+                          }`}>
+                            {activeItem.message || 'Herhangi bir detaylı mesaj belirtilmedi.'}
+                          </p>
+                        </div>
+
+                      </div>
+                    );
+                  })()}
+                </div>
+
+              </div>
+            ) : (
+              // Standard grid layout for approved supporters
+              <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-8 h-full">
+                
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                  <div>
+                    <h2 className={`text-lg font-bold transition-colors ${
+                      theme === 'dark' ? 'text-white' : 'text-slate-900'
+                    }`}>Partner & Destekçiler</h2>
+                    <p className={`text-xs mt-0.5 transition-colors ${
+                      theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                    }`}>Ekosistemdeki onaylı {approvedSupporters.length} kurum</p>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      onClick={() => setIsPartnerReviewMode(true)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all relative ${
+                        theme === 'dark' ? 'bg-slate-900 text-slate-400 hover:bg-slate-800' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}
+                    >
+                      <span>Başvurular ({pendingPartners.length})</span>
+                      {pendingPartners.length > 0 && (
+                        <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-blue-600 text-white font-mono text-[9px] font-bold flex items-center justify-center animate-pulse">
+                          {pendingPartners.length}
+                        </span>
+                      )}
+                    </button>
+                    <button
+                      onClick={handleOpenLivePartnerCreate}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition-all ${
+                        theme === 'dark' ? 'bg-slate-100 hover:bg-white text-slate-900' : 'bg-white border border-slate-200 text-slate-900 hover:bg-slate-50'
+                      }`}
+                    >
+                      Yeni Partner
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {(approvedSupporters as any[]).map((item) => (
+                    <div key={item.id} className={`border rounded-2xl p-6 group transition-all ${
+                      theme === 'dark' ? 'bg-slate-900/30 border-slate-800 hover:border-slate-700' : 'bg-white border-slate-100 hover:border-slate-200 hover:shadow-lg'
+                    }`}>
+                      <div className="flex items-start justify-between mb-4">
+                        <div className={`w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center transition-all ${
+                          theme === 'dark' ? 'grayscale-[0.5] group-hover:grayscale-0' : 'border border-slate-100'
+                        }`}>
+                           <Building2 className="w-6 h-6 text-slate-900" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => handleOpenLivePartnerEdit(item)} className="text-slate-500 hover:text-slate-900" title="Düzenle"><Edit3 className="w-4 h-4" /></button>
+                          <button onClick={() => handleDeleteLivePartner(item.id, item.name)} className="text-slate-500 hover:text-red-400 transition-colors" title="Kaldır"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      </div>
+                      <h3 className={`text-sm font-bold transition-colors ${
+                        theme === 'dark' ? 'text-white' : 'text-slate-900'
+                      }`}>{item.name}</h3>
+                      <p className={`text-xs mt-1 transition-colors ${
+                        theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                      }`}>{item.role}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         {/* ========================================================================= */}
