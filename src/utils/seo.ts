@@ -8,6 +8,20 @@ export interface SeoMetadata {
 }
 
 /**
+ * Helper to ensure a valid raster Open Graph image (since LinkedIn, FB, Twitter do not support SVGs)
+ */
+function getRasterImage(imagePath: string | undefined, origin: string): string {
+  if (!imagePath) {
+    return `${origin}/og-image.png`;
+  }
+  // Check if it ends with SVG. If so, fallback to default high-quality raster og-image.png
+  if (imagePath.toLowerCase().endsWith('.svg')) {
+    return `${origin}/og-image.png`;
+  }
+  return imagePath.startsWith('http') ? imagePath : `${origin}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+}
+
+/**
  * Returns centralized SEO metadata based on path, language, and current list data
  */
 export function getSeoMetadata(
@@ -19,40 +33,55 @@ export function getSeoMetadata(
   selectedStartup?: Startup | null,
   selectedArticle?: NewsArticle | null
 ): SeoMetadata {
-  // Normalize pathname: remove trailing slash except root
-  const cleanPath = pathname.endsWith('/') && pathname !== '/' ? pathname.slice(0, -1) : pathname;
-  const url = `${origin}${cleanPath}`;
+  // Normalize pathname: extract path without query strings or hash parameters
+  const cleanPath = pathname.split('?')[0].split('#')[0];
+  const normalizedPath = cleanPath.endsWith('/') && cleanPath !== '/' ? cleanPath.slice(0, -1) : cleanPath;
+  const url = `${origin}${normalizedPath}`;
   
   let title = '';
   let description = '';
   let image = `${origin}/og-image.png`;
 
   // Matches for paths
-  const newsMatch = cleanPath.match(/\/news\/([^/?#]+)/);
-  const startupMatch = cleanPath.match(/\/startup\/([^/?#]+)/);
+  const newsMatch = normalizedPath.match(/\/news\/([^/?#]+)/);
+  const startupMatch = normalizedPath.match(/\/startup\/([^/?#]+)/);
 
   // 1. Dynamic Startup Detail page
   if (selectedStartup || startupMatch) {
-    const startup = selectedStartup || (startupMatch ? startups.find(s => s.id === startupMatch[1]) : null);
+    const rawId = decodeURIComponent(startupMatch ? startupMatch[1] : '').toLowerCase();
+    const startup = selectedStartup || startups.find(s => 
+      s.id.toLowerCase() === rawId || 
+      s.name.toLowerCase() === rawId ||
+      s.id.toLowerCase().includes(rawId) ||
+      rawId.includes(s.id.toLowerCase())
+    );
     if (startup) {
       title = `${startup.name} | SportTech Türkiye`;
       description = startup.tagLine || startup.description.substring(0, 160);
-      image = startup.logo.startsWith('http') ? startup.logo : `${origin}${startup.logo}`;
+      image = getRasterImage(startup.coverImage || startup.logo, origin);
     }
   } 
   // 2. Dynamic News Detail page
   else if (selectedArticle || newsMatch) {
-    const article = selectedArticle || (newsMatch ? newsArticles.find(a => a.id === newsMatch[1]) : null);
+    const rawId = decodeURIComponent(newsMatch ? newsMatch[1] : '').toLowerCase();
+    const article = selectedArticle || newsArticles.find(a => 
+      a.id.toLowerCase() === rawId || 
+      a.slug?.toLowerCase() === rawId ||
+      a.id.toLowerCase().includes(rawId) ||
+      rawId.includes(a.id.toLowerCase()) ||
+      a.slug?.toLowerCase().includes(rawId) ||
+      rawId.includes(a.slug?.toLowerCase() || '')
+    );
     if (article) {
       title = `${article.title} | SportTech Türkiye`;
       description = article.excerpt || article.content[0].substring(0, 160);
-      image = article.coverImage.startsWith('http') ? article.coverImage : `${origin}${article.coverImage}`;
+      image = getRasterImage(article.coverImage, origin);
     }
   }
 
   // 3. Static Pages & Sections
   if (!title) {
-    if (cleanPath.includes('/section/startups')) {
+    if (normalizedPath.includes('/section/startups')) {
       if (language === 'tr') {
         title = "Girişimler & Teknolojiler | SportTech Türkiye";
         description = "Spor teknolojileri ekosistemindeki akıllı antrenman, performans analizi, giyilebilir teknoloji ve yönetim yazılımları sunan lider girişimler.";
@@ -63,18 +92,18 @@ export function getSeoMetadata(
         title = "Startups & Technologies | SportTech Turkey";
         description = "The database of innovative startups shaping the future of sport technologies: smart coaching, wearable devices, and sports analytics.";
       }
-    } else if (cleanPath.includes('/section/news')) {
+    } else if (normalizedPath.includes('/section/news')) {
       if (language === 'tr') {
         title = "Sektörel Haberler & Analizler | SportTech Türkiye";
         description = "Spor ve teknolojinin kesişimindeki en son gelişmeler, yeni ürün lansmanları, yatırım turları ve derinlemesine pazar analizleri.";
       } else if (language === 'ar') {
         title = "أخبار القطاع والتحليلات | سبورت تيك تركيا";
-        description = "آخر التطورات والابتكارات وجولات الاستثمار والتحليلات العميقة في تقاطع الرياضة والتكنولوجيا.";
+        description = "آخر التطورات والابتكارات وجولات الاستثمار والتحليلات العميقة in تقاطع الرياضة والتكنولوجيا.";
       } else {
         title = "Industry News & Market Insights | SportTech Turkey";
         description = "Latest developments, product launches, venture capital funding rounds, and in-depth market analyses in sports tech.";
       }
-    } else if (cleanPath.includes('/section/about')) {
+    } else if (normalizedPath.includes('/section/about')) {
       if (language === 'tr') {
         title = "Hakkımızda | SportTech Türkiye";
         description = "SportTech Türkiye, ülkemizdeki spor teknolojisi ekosistemini bir araya getiren, büyüyen ve dünyaya açan bağımsız bir platformdur.";
@@ -83,9 +112,9 @@ export function getSeoMetadata(
         description = "منصة مستقلة تجمع وتنمي وتعرض منظومة التكنولوجيا الرياضية في تركيا للعالم.";
       } else {
         title = "About Us | SportTech Turkey";
-        description = "SportTech Turkey is an independent platform that unites, scales, and accelerates our nation's sports tech ecosystem globally.";
+        description = "About Us | SportTech Turkey";
       }
-    } else if (cleanPath.includes('/section/supporters')) {
+    } else if (normalizedPath.includes('/section/supporters')) {
       if (language === 'tr') {
         title = "Ekosistem Destekleyicileri & Partnerler | SportTech Türkiye";
         description = "Platformumuzun gelişimine, girişimlerin büyümesine ve spor kültürünün dijitalleşmesine katkı sağlayan lider kurumlar.";
@@ -96,7 +125,7 @@ export function getSeoMetadata(
         title = "Ecosystem Supporters & Partners | SportTech Turkey";
         description = "Leading institutions and corporate partners contributing to the scale-up and digitalization of the sports tech ecosystem.";
       }
-    } else if (cleanPath.includes('/section/events')) {
+    } else if (normalizedPath.includes('/section/events')) {
       if (language === 'tr') {
         title = "Etkinlikler & Programlar | SportTech Türkiye";
         description = "Yaklaşan spor teknolojisi zirveleri, hackathonlar, yatırımcı buluşmaları ve girişim hızlandırma programları.";
