@@ -99,9 +99,21 @@ export const getApprovedStartups = (): Startup[] => {
     const saved = localStorage.getItem(STORAGE_KEY_APPROVED);
     if (saved) {
       const parsed = JSON.parse(saved);
-      const existingIds = new Set(INITIAL_STARTUPS.map(s => s.id));
-      const customOnes = parsed.filter((s: Startup) => !existingIds.has(s.id));
-      return [...INITIAL_STARTUPS, ...customOnes];
+      const savedMap = new Map(parsed.map((s: Startup) => [s.id, s]));
+      
+      // Map initial startups, overlaying any custom edits from localStorage
+      const mergedInitials = INITIAL_STARTUPS.map(initial => {
+        if (savedMap.has(initial.id)) {
+          return savedMap.get(initial.id) as Startup;
+        }
+        return initial;
+      });
+
+      // Append any brand new startups that don't exist in the initial set
+      const initialIds = new Set(INITIAL_STARTUPS.map(s => s.id));
+      const customNewStartups = parsed.filter((s: Startup) => !initialIds.has(s.id));
+
+      return [...mergedInitials, ...customNewStartups];
     }
   } catch (e) {
     console.error('Error loading approved startups:', e);

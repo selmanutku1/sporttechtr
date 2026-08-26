@@ -101,7 +101,7 @@ export const STARTUPS: Startup[] = [
     description: "Türkiye'nin bağımsız spor tesisleri ve etkinlikleri puanlama platformu. Spor salonlarını, spor okullarını ve etkinlikleri hijyen, ekipman ve lokasyon gibi objektif kriterlere göre değerlendirip tarafsız kullanıcı yorumlarıyla sporseverlere rehberlik ediyor. Hedef: tesis seçiminde şeffaf ve güvenilir bir referans kaynağı olmak.",
     fullStory: "Sporpuan, Türkiye'nin bağımsız spor tesisleri ve etkinlikleri puanlama platformudur. Spor salonlarını, spor okullarını ve etkinlikleri hijyen, ekipman ve lokasyon gibi objektif kriterlere göre değerlendirip tarafsız kullanıcı yorumlarıyla sporseverlere rehberlik ediyor. Hedef: tesis seçiminde şeffaf ve güvenilir bir referans kaynağı olmak.",
     logo: '/sporpuan-logo.svg',
-    coverImage: '/sporpuan-map-v2.svg',
+    coverImage: '/sporttech-sppn.svg',
     category: 'management_platform',
     categoryName: 'Yönetim & Dijital Platform',
     stage: 'Bootstrapped',

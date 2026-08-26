@@ -14,11 +14,22 @@ function getRasterImage(imagePath: string | undefined, origin: string): string {
   if (!imagePath) {
     return `${origin}/og-image.png`;
   }
-  // Check if it ends with SVG. If so, fallback to default high-quality raster og-image.png
-  if (imagePath.toLowerCase().endsWith('.svg')) {
-    return `${origin}/og-image.png`;
+  
+  const absoluteUrl = imagePath.startsWith('http') 
+    ? imagePath 
+    : `${origin}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+
+  // If it's an SVG, dynamically convert it to a raster PNG using the secure, fast weserv.nl proxy
+  if (absoluteUrl.toLowerCase().endsWith('.svg')) {
+    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      return `${origin}/og-image.png`;
+    }
+    const cleanUrl = absoluteUrl.replace(/^https?:\/\//i, '');
+    const protocol = absoluteUrl.startsWith('https') ? 'ssl:' : '';
+    return `https://images.weserv.nl/?url=${protocol}${cleanUrl}&output=png`;
   }
-  return imagePath.startsWith('http') ? imagePath : `${origin}${imagePath.startsWith('/') ? '' : '/'}${imagePath}`;
+
+  return absoluteUrl;
 }
 
 /**
@@ -57,7 +68,10 @@ export function getSeoMetadata(
     );
     if (startup) {
       title = `${startup.name} | SportTech Türkiye`;
-      description = startup.tagLine || startup.description.substring(0, 160);
+      description = startup.description || startup.tagLine;
+      if (description.length > 165) {
+        description = description.substring(0, 162) + '...';
+      }
       image = getRasterImage(startup.coverImage || startup.logo, origin);
     }
   } 

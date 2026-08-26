@@ -37,6 +37,20 @@ app.get('*', async (req, res, next) => {
     // Retrieve centralized SEO metadata
     const metadata = getSeoMetadata(url, language, STARTUPS, NEWS_ARTICLES, baseUrl);
 
+    const escapeHtmlAttr = (unsafe: string) => {
+      return unsafe
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    };
+
+    const escapedTitle = escapeHtmlAttr(metadata.title);
+    const escapedDesc = escapeHtmlAttr(metadata.description);
+    const escapedImage = escapeHtmlAttr(metadata.image);
+    const escapedUrl = escapeHtmlAttr(metadata.url);
+
     const indexPath = path.resolve(rootDir, 'dist/index.html');
     const backupIndexPath = path.resolve(rootDir, 'index.html');
     const finalIndexPath = fs.existsSync(indexPath) ? indexPath : backupIndexPath;
@@ -48,18 +62,18 @@ app.get('*', async (req, res, next) => {
     let template = fs.readFileSync(finalIndexPath, 'utf-8');
 
     const headContent = `
-    <title>${metadata.title}</title>
-    <meta name="description" content="${metadata.description}" />
-    <meta property="og:title" content="${metadata.title}" />
-    <meta property="og:description" content="${metadata.description}" />
-    <meta property="og:image" content="${metadata.image}" />
-    <meta property="og:url" content="${metadata.url}" />
+    <title>${escapedTitle}</title>
+    <meta name="description" content="${escapedDesc}" />
+    <meta property="og:title" content="${escapedTitle}" />
+    <meta property="og:description" content="${escapedDesc}" />
+    <meta property="og:image" content="${escapedImage}" />
+    <meta property="og:url" content="${escapedUrl}" />
     <meta property="og:type" content="website" />
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:title" content="${metadata.title}" />
-    <meta property="twitter:description" content="${metadata.description}" />
-    <meta property="twitter:image" content="${metadata.image}" />
-    <meta property="twitter:url" content="${metadata.url}" />
+    <meta property="twitter:title" content="${escapedTitle}" />
+    <meta property="twitter:description" content="${escapedDesc}" />
+    <meta property="twitter:image" content="${escapedImage}" />
+    <meta property="twitter:url" content="${escapedUrl}" />
 `;
 
     let html = template

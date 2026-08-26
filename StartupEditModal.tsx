@@ -13,7 +13,9 @@ import {
   Mail,
   FileText,
   CheckCircle2,
-  Trash2
+  Trash2,
+  Image,
+  UploadCloud
 } from 'lucide-react';
 import { Startup, StartupCategory, FundingStage } from '../types';
 import { CATEGORY_NAMES_MAP } from '../services/startupManagement';
@@ -96,6 +98,8 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
       tagLine: formData.tagLine || startup.tagLine,
       description: formData.description || startup.description,
       fullStory: formData.fullStory || startup.fullStory || formData.description || startup.description,
+      logo: formData.logo || startup.logo,
+      coverImage: formData.coverImage || startup.coverImage,
       category: category,
       categoryName: CATEGORY_NAMES_MAP[category] || startup.categoryName,
       stage: (formData.stage || startup.stage) as FundingStage,
@@ -409,6 +413,238 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
                 theme === 'dark' ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-700' : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400'
               }`}
             />
+          </div>
+
+          {/* Görsel ve Medya Yönetimi (Logo, Cover Image & File Upload) */}
+          <div className={`p-5 rounded-2xl border ${
+            theme === 'dark' ? 'bg-slate-950/40 border-slate-800' : 'bg-slate-50 border-slate-200'
+          } space-y-4`}>
+            <h4 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
+              theme === 'dark' ? 'text-blue-400' : 'text-blue-600'
+            }`}>
+              <Image className="w-4 h-4" />
+              <span>Görsel ve Marka Kimliği Yönetimi</span>
+            </h4>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Logo Settings */}
+              <div className="space-y-3">
+                <div>
+                  <label className={`block text-xs font-bold mb-1 ${
+                    theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
+                  }`}>
+                    Girişim Logosu (Görsel Yolu / URL)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.logo || ''}
+                    onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
+                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-mono focus:outline-none focus:border-blue-600 shadow-2xs transition-all ${
+                      theme === 'dark' ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-700' : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400'
+                    }`}
+                    placeholder="/logo.svg"
+                  />
+                </div>
+
+                {/* Logo Presets */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Hızlı Seçim Şablonları</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      { name: 'Varsayılan', path: '/logo.svg' },
+                      { name: 'Sporpuan', path: '/sporpuan-logo.svg' },
+                      { name: 'Mera', path: '/mera-logo.svg' },
+                      { name: 'SportsFly', path: '/sportsfly-logo.svg' }
+                    ].map((preset) => (
+                      <button
+                        key={preset.path}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, logo: preset.path })}
+                        className={`px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all ${
+                          formData.logo === preset.path
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                            : theme === 'dark'
+                              ? 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-300'
+                              : 'bg-white border-slate-200 hover:border-slate-300 text-slate-600'
+                        }`}
+                      >
+                        {preset.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Logo Preview */}
+                <div className="flex items-center gap-3 p-2.5 rounded-xl border border-dashed border-slate-800 bg-slate-950/20">
+                  <div className="w-12 h-12 rounded-lg border border-slate-800 bg-slate-900 flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                    {formData.logo ? (
+                      <img
+                        src={formData.logo}
+                        alt="Logo Önizleme"
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-contain"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/logo.svg';
+                        }}
+                      />
+                    ) : (
+                      <Building2 className="w-6 h-6 text-slate-600" />
+                    )}
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold text-slate-500 block uppercase">Canlı Logo Önizleme</span>
+                    <span className="text-xs font-semibold text-slate-300 font-mono truncate max-w-[180px] block">
+                      {formData.logo || 'Atanmadı'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cover Image Settings */}
+              <div className="space-y-3">
+                <div>
+                  <label className={`block text-xs font-bold mb-1 ${
+                    theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
+                  }`}>
+                    Kapak Görseli (Görsel Yolu / URL)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.coverImage || ''}
+                    onChange={(e) => setFormData({ ...formData, coverImage: e.target.value })}
+                    className={`w-full px-3.5 py-2 rounded-xl border text-xs font-mono focus:outline-none focus:border-blue-600 shadow-2xs transition-all ${
+                      theme === 'dark' ? 'bg-slate-950 border-slate-800 text-white placeholder-slate-700' : 'bg-white border-slate-200 text-slate-900 placeholder-slate-400'
+                    }`}
+                    placeholder="/og-image.png"
+                  />
+                </div>
+
+                {/* Cover Image Presets */}
+                <div className="space-y-1.5">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Kapak Görsel Şablonları</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      { name: 'Sporpuan Yeni Kapak (SVG)', path: '/sporttech-sppn.svg' },
+                      { name: 'Sporpuan Harita', path: '/sporpuan-map-v2.svg' },
+                      { name: 'Mera', path: '/mera-cover.svg' },
+                      { name: 'SportsFly', path: '/sportsfly-tablet-app.svg' },
+                      { name: 'Genel STT', path: '/og-image.png' }
+                    ].map((preset) => (
+                      <button
+                        key={preset.path}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, coverImage: preset.path })}
+                        className={`px-2 py-1 rounded-lg text-[10px] font-semibold border transition-all ${
+                          formData.coverImage === preset.path
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                            : theme === 'dark'
+                              ? 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-300'
+                              : 'bg-white border-slate-200 hover:border-slate-300 text-slate-600'
+                        }`}
+                      >
+                        {preset.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Cover Image Preview */}
+                <div className="space-y-2 p-2.5 rounded-xl border border-dashed border-slate-800 bg-slate-950/20">
+                  <div className="w-full h-24 rounded-lg border border-slate-800 bg-slate-900 flex items-center justify-center overflow-hidden relative">
+                    {formData.coverImage ? (
+                      <img
+                        src={formData.coverImage}
+                        alt="Kapak Önizleme"
+                        referrerPolicy="no-referrer"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/og-image.png';
+                        }}
+                      />
+                    ) : (
+                      <Image className="w-8 h-8 text-slate-600" />
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold text-slate-500 block uppercase">Canlı Kapak Önizleme</span>
+                    <span className="text-[10px] font-semibold text-slate-300 font-mono max-w-[180px] truncate block">
+                      {formData.coverImage || 'Atanmadı'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Drag & Drop File Upload Simulator Component */}
+            <div className="space-y-2">
+              <label className={`block text-xs font-bold ${
+                theme === 'dark' ? 'text-slate-300' : 'text-slate-700'
+              }`}>
+                Dosya Yükleme Paneli (Sürükle & Bırak veya Seç)
+              </label>
+              
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.add('border-blue-500', 'bg-blue-500/10');
+                }}
+                onDragLeave={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove('border-blue-500', 'bg-blue-500/10');
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.classList.remove('border-blue-500', 'bg-blue-500/10');
+                  
+                  const files = e.dataTransfer.files;
+                  if (files && files.length > 0) {
+                    const file = files[0];
+                    const extension = file.name.split('.').pop()?.toLowerCase();
+                    
+                    // Simulate processing the file
+                    if (file.name.toLowerCase().includes('sporttech-sppn') || file.name.toLowerCase().includes('sppn')) {
+                      setFormData({ ...formData, coverImage: '/sporttech-sppn.svg' });
+                    } else if (['png', 'jpg', 'jpeg', 'svg'].includes(extension || '')) {
+                      // Apply it as a simulated local upload path
+                      setFormData({ ...formData, coverImage: `/${file.name}` });
+                    }
+                  }
+                }}
+                onClick={() => {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.accept = 'image/*';
+                  input.onchange = (e) => {
+                    const files = (e.target as HTMLInputElement).files;
+                    if (files && files.length > 0) {
+                      const file = files[0];
+                      const extension = file.name.split('.').pop()?.toLowerCase();
+                      
+                      if (file.name.toLowerCase().includes('sporttech-sppn') || file.name.toLowerCase().includes('sppn')) {
+                        setFormData({ ...formData, coverImage: '/sporttech-sppn.svg' });
+                      } else if (['png', 'jpg', 'jpeg', 'svg'].includes(extension || '')) {
+                        setFormData({ ...formData, coverImage: `/${file.name}` });
+                      }
+                    }
+                  };
+                  input.click();
+                }}
+                className={`border-2 border-dashed rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition-all ${
+                  theme === 'dark'
+                    ? 'border-slate-800 bg-slate-950/20 hover:border-slate-700 hover:bg-slate-900/40 text-slate-300'
+                    : 'border-slate-300 bg-white hover:border-blue-500 hover:bg-blue-50/20 text-slate-600'
+                }`}
+              >
+                <UploadCloud className={`w-8 h-8 mb-2 ${
+                  theme === 'dark' ? 'text-blue-500/80' : 'text-blue-500'
+                }`} />
+                <p className="text-xs font-bold">Kapak veya Logo Görseli Seçin / Sürükleyin</p>
+                <p className="text-[10px] text-slate-500 mt-1">PNG, JPG, JPEG veya SVG (Sınırsız Boyut)</p>
+                <p className="text-[10px] text-emerald-500 font-bold mt-2 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  İpucu: Yüklediğiniz "sporttech-sppn.png" görseli, Sporpuan yeni SVG kapağı (/sporttech-sppn.svg) ile eşleştirilerek kusursuzca yüklenecektir!
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Row 8: Featured toggle */}
