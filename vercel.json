@@ -6,6 +6,10 @@
   },
   "rewrites": [
     {
+      "source": "/api/(.*)",
+      "destination": "/api/server"
+    },
+    {
       "source": "/news/(.*)",
       "destination": "/api/server"
     },
