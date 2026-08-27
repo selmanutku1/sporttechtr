@@ -245,7 +245,7 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
               <div
                 key={startup.id}
                 onClick={() => onSelectStartup(startup)}
-                className="bg-white hover:border-blue-300 border border-slate-200 rounded-3xl overflow-hidden transition-all cursor-pointer flex flex-col justify-between group shadow-xs hover:shadow-lg"
+                className="bg-white hover:border-blue-300 border border-slate-200 rounded-3xl overflow-hidden transition-all duration-300 cursor-pointer flex flex-col justify-between group shadow-xs hover:shadow-2xl hover:-translate-y-1.5 hover:scale-[1.02]"
                 id={`startup-card-${startup.id}`}
               >
                 <div>

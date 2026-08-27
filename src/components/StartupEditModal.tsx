@@ -535,6 +535,7 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
                     <div className="flex flex-wrap gap-1.5">
                       {[
                         { name: 'Mera Kapak (SVG)', path: '/mera-cover.svg' },
+                        { name: 'SportsFly Kapak (SVG)', path: '/sporttech-sportsfly.svg' },
                         { name: 'SportsFly Panel', path: '/sportsfly-dashboard.svg' },
                         { name: 'SportsFly Tablet', path: '/sportsfly-tablet-app.svg' },
                         { name: 'Sporpuan Kapak', path: '/sporpuan-cover.svg' },
@@ -623,7 +624,7 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
                     if (lowerName.includes('sporttech-sppn') || lowerName.includes('sppn')) {
                       setFormData({ ...formData, coverImage: '/sporpuan-cover.svg' });
                     } else if (lowerName.includes('sportsfly') || lowerName.includes('sportfly')) {
-                      setFormData({ ...formData, coverImage: '/sportsfly-dashboard.svg' });
+                      setFormData({ ...formData, coverImage: '/sporttech-sportsfly.svg' });
                     } else if (lowerName.includes('mera')) {
                       setFormData({ ...formData, coverImage: '/mera-cover.svg' });
                     } else if (['png', 'jpg', 'jpeg', 'svg'].includes(extension || '')) {
@@ -645,7 +646,7 @@ export const StartupEditModal: React.FC<StartupEditModalProps> = ({
                       if (lowerName.includes('sporttech-sppn') || lowerName.includes('sppn')) {
                         setFormData({ ...formData, coverImage: '/sporpuan-cover.svg' });
                       } else if (lowerName.includes('sportsfly') || lowerName.includes('sportfly')) {
-                        setFormData({ ...formData, coverImage: '/sportsfly-dashboard.svg' });
+                        setFormData({ ...formData, coverImage: '/sporttech-sportsfly.svg' });
                       } else if (lowerName.includes('mera')) {
                         setFormData({ ...formData, coverImage: '/mera-cover.svg' });
                       } else if (['png', 'jpg', 'jpeg', 'svg'].includes(extension || '')) {

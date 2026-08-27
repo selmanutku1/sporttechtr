@@ -149,7 +149,7 @@ export const StartupDetailModal: React.FC<StartupDetailModalProps> = ({
       <meta name="description" content={startup.tagLine} />
       <meta property="og:title" content={`${startup.name} | SportTech Türkiye`} />
       <meta property="og:description" content={startup.tagLine} />
-      <meta property="og:image" content={startup.logo.startsWith('http') ? startup.logo : `https://sporttech.com.tr${startup.logo}`} />
+      <meta property="og:image" content={`https://sporttech.com.tr/api/og-image/startup/${startup.id}.png`} />
       {/* Sticky Editorial Top Bar */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">

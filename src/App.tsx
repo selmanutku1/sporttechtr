@@ -18,6 +18,7 @@ import { SearchModal } from './components/SearchModal';
 import { AdminAuthModal } from './components/AdminAuthModal';
 import { AdminDashboardModal } from './components/AdminDashboardModal';
 import { useLanguage } from './context/LanguageContext';
+import { SportTechAI } from './components/SportTechAI';
 
 import { Startup, NewsArticle, StartupCategory, Supporter } from './types';
 import { 
@@ -634,6 +635,8 @@ export const App: React.FC = () => {
           navigate(`/news/${a.id}`);
         }}
       />
+
+      <SportTechAI />
 
     </div>
   );

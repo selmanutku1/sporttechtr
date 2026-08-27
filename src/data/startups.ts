@@ -70,7 +70,7 @@ export const STARTUPS: Startup[] = [
     description: 'Spor salonları, spor okulları, fitness/pilates/yoga stüdyoları ve tenis akademilerinin üye yönetimi, yoklama, eğitmen/personel yönetimi, sadakat programları ve raporlama ihtiyaçlarını tek bir panelden karşılıyor. Amaç: işletmelerin dijital dönüşümünü kolaylaştırıp üye deneyimini iyileştirmek.',
     fullStory: 'SportsFly, spor işletmeleri için geliştirilmiş kapsamlı bir yönetim yazılımıdır. Spor salonları, spor okulları, fitness/pilates/yoga stüdyoları, tenis akademileri ve benzeri tesislerin üye yönetimi, yoklama, eğitmen/personel yönetimi, sadakat programları ve raporlama ihtiyaçlarını tek bir panelden karşılıyor. Amaç: işletmelerin dijital dönüşümünü kolaylaştırıp üye deneyimini iyileştirmek.',
     logo: '/sportsfly-logo.svg',
-    coverImage: '/sportsfly-dashboard.svg',
+    coverImage: '/sporttech-sportsfly.svg',
     category: 'management_platform',
     categoryName: 'Yönetim & Dijital Platform',
     stage: 'Bootstrapped',

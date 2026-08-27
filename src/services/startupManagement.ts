@@ -113,7 +113,15 @@ export const getApprovedStartups = (): Startup[] => {
       const initialIds = new Set(INITIAL_STARTUPS.map(s => s.id));
       const customNewStartups = parsed.filter((s: Startup) => !initialIds.has(s.id));
 
-      return [...mergedInitials, ...customNewStartups];
+      const mergedList = [...mergedInitials, ...customNewStartups];
+      
+      // Self-heal and normalize stale/incorrect SportsFly cover images from local cache
+      return mergedList.map(s => {
+        if (s.id === 'sportsfly' && (s.coverImage === '/sportsfly-dashboard.svg' || !s.coverImage)) {
+          return { ...s, coverImage: '/sporttech-sportsfly.svg' };
+        }
+        return s;
+      });
     }
   } catch (e) {
     console.error('Error loading approved startups:', e);

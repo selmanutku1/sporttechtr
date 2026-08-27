@@ -155,7 +155,7 @@ export const NewsDetailModal: React.FC<NewsDetailModalProps> = ({
       <meta name="description" content={article.excerpt} />
       <meta property="og:title" content={article.title} />
       <meta property="og:description" content={article.excerpt} />
-      <meta property="og:image" content={article.coverImage.startsWith('http') ? article.coverImage : `https://sporttech.com.tr${article.coverImage}`} />
+      <meta property="og:image" content={`https://sporttech.com.tr/api/og-image/news/${article.id}.png`} />
       {/* Sticky Editorial Top Bar */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">

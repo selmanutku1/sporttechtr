@@ -96,7 +96,7 @@ export function getSeoMetadata(
       if (description.length > 165) {
         description = description.substring(0, 162) + '...';
       }
-      image = getRasterImage(startup.coverImage || startup.logo, publicOrigin);
+      image = `${publicOrigin}/api/og-image/startup/${startup.id}.png`;
     }
   } 
   // 2. Dynamic News Detail page
@@ -113,7 +113,7 @@ export function getSeoMetadata(
     if (article) {
       title = `${article.title} | SportTech Türkiye`;
       description = article.excerpt || article.content[0].substring(0, 160);
-      image = getRasterImage(article.coverImage, publicOrigin);
+      image = `${publicOrigin}/api/og-image/news/${article.id}.png`;
     }
   }
 
