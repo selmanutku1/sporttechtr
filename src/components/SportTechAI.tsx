@@ -235,7 +235,16 @@ export const SportTechAI: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Yapay zeka servisi yanıt vermedi.');
+        let errMsg = 'Yapay zeka servisi yanıt vermedi.';
+        try {
+          const errData = await response.json();
+          if (errData && errData.details) {
+            errMsg = `${errData.error || 'Hata'}: ${errData.details}`;
+          } else if (errData && errData.error) {
+            errMsg = errData.error;
+          }
+        } catch (_) {}
+        throw new Error(errMsg);
       }
 
       const data = await response.json();
@@ -254,7 +263,7 @@ export const SportTechAI: React.FC = () => {
       const errorMessage: ChatMessage = {
         id: `err-${Date.now()}`,
         role: 'model',
-        text: "Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edip tekrar deneyiniz.",
+        text: err.message || "Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edip tekrar deneyiniz.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);

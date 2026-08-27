@@ -45,6 +45,13 @@ async function startServer() {
         return res.status(400).json({ error: 'Message parameter is required.' });
       }
 
+      if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'MY_GEMINI_API_KEY') {
+        return res.status(500).json({
+          error: 'Sistem Yapılandırma Hatası',
+          details: 'GEMINI_API_KEY ortam değişkeni tanımlanmamış veya varsayılan değerde bırakılmış. Lütfen projenin ana dizinindeki .env dosyasına geçerli bir GEMINI_API_KEY ekleyin.'
+        });
+      }
+
       const systemInstruction = 
         "Sen Türkiye'nin öncü spor teknolojileri ekosistemi portalı olan 'SportTech Türkiye'nin yapay zeka asistanı 'Sport Tech AI'sın. " +
         "Kullanıcılara spor teknolojileri, portalımızdaki girişimler (startups), spor haberleri, sağlıklı yaşam ve egzersiz (Sporsepeti Spor Kütüphanesi aracılığıyla), " +
