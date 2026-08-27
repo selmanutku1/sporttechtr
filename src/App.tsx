@@ -597,7 +597,7 @@ export const App: React.FC = () => {
         onSuccessAuth={handleSuccessfulAuth}
       />
 
-      {/* Full-Screen Admin Dashboard Modal */}
+      {/* Admin Dashboard */}
       <AdminDashboardModal
         isOpen={isAdminDashboardOpen}
         onClose={() => setIsAdminDashboardOpen(false)}
@@ -636,7 +636,8 @@ export const App: React.FC = () => {
         }}
       />
 
-      <SportTechAI />
+      {/* SportTech AI Asistanı - Geçici olarak kaldırıldı (Yeniden aktifleştirmek için aşağıdaki satırın yorumunu kaldırın) */}
+      {/* <SportTechAI /> */}
 
     </div>
   );
