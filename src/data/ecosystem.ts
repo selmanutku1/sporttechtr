@@ -78,7 +78,7 @@ export const UPCOMING_EVENTS: EcosystemEvent[] = [
     description: 'Türkiye\'nin ve bölgenin en büyük spor teknolojileri zirvesi. 50+ konuşmacı, 40+ startup standı, yatırımcı panelleri ve canlı teknoloji demoları.',
     organizer: 'SportTech Türkiye & TFF & SporSepeti',
     attendees: '1,500+ Katılımcı',
-    registrationOpen: true
+    registrationOpen: false
   },
   {
     id: 'sport-hackathon-2026-past',
@@ -90,7 +90,7 @@ export const UPCOMING_EVENTS: EcosystemEvent[] = [
     description: '48 saatlik maratonda canlı maç telemetrisi ve optik kamera verileriyle en iyi sakatlık tahmini ve taktik modeli geliştiren ekiplere 500.000 TL ödül.',
     organizer: 'SportTech Türkiye & Kulüpler Birliği',
     attendees: '300+ Yazılımcı & Veri Bilimci',
-    registrationOpen: true
+    registrationOpen: false
   },
   {
     id: 'sporttech-demo-day-q1-2026',
@@ -102,7 +102,7 @@ export const UPCOMING_EVENTS: EcosystemEvent[] = [
     description: 'Tohum ve Seri A aşamasındaki seçilmiş 10 spor teknolojisi girişimi, 40+ yerli ve uluslararası spor yatırımcısının karşısına çıkıyor.',
     organizer: 'SportTech Girişim Sermayesi Ağı',
     attendees: '80+ Yatırımcı Fonu',
-    registrationOpen: true
+    registrationOpen: false
   }
 ];
 

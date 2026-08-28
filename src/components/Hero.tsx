@@ -100,8 +100,8 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
 
         {/* Main Title & Value Proposition */}
-        <div className="text-center max-w-4xl mx-auto mb-10">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold text-slate-900 tracking-tight leading-[1.15] mb-6">
+        <div className="text-center max-w-4xl mx-auto mb-12">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold text-slate-950 tracking-tight leading-[1.12] mb-6">
             {language === 'tr' ? (
               <>
                 Sporun Geleceğini <br className="hidden sm:inline" />
@@ -126,7 +126,7 @@ export const Hero: React.FC<HeroProps> = ({
               </>
             ) : language === 'ar' ? (
               <>
-                إن <strong className="text-slate-900 font-semibold">سبورت تيك تركيا</strong> هي منصة بيئية مستقلة تجمع بين شركات الذكاء الاصطناعي، والمستشعرات القابلة للارتداء، والميكانيكا الحيوية، والملاعب الذكية مع الأندية الرياضية، والاتحادات، والأكاديميين، وصناديق الاستثمار.
+                إن <strong className="text-slate-900 font-semibold">سبورت تيك تركيا</strong> هي منصة بيئية مستقلة تجمع بين شركات الذkاء الاصطناعي، والمستشعرات القابلة للارتداء، والميكانيكا الحيوية، والملاعب الذكية مع الأندية الرياضية، والاتحادات، والأكاديميين، وصناديق الاستثمار.
               </>
             ) : (
               <>
@@ -136,10 +136,10 @@ export const Hero: React.FC<HeroProps> = ({
           </p>
 
           {/* Action CTAs */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             <button
               onClick={onExploreStartups}
-              className="px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-blue-600 hover:bg-blue-500 transition-all active:scale-95 flex items-center gap-2 group shadow-sm"
+              className="px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-blue-600 hover:bg-blue-500 transition-all active:scale-95 flex items-center gap-2 group shadow-md"
               id="hero-explore-startups-btn"
             >
               <Rocket className="w-4 h-4 text-orange-300" />
@@ -149,7 +149,7 @@ export const Hero: React.FC<HeroProps> = ({
 
             <button
               onClick={onOpenStartupSubmit}
-              className="px-5 py-3.5 rounded-xl font-semibold text-sm text-slate-800 bg-slate-100 hover:bg-slate-200 hover:text-slate-950 border border-slate-200 transition-all flex items-center gap-2 active:scale-95"
+              className="px-6 py-3.5 rounded-xl font-bold text-sm text-slate-800 bg-slate-50 hover:bg-slate-100 hover:text-slate-950 border border-slate-200 transition-all flex items-center gap-2 active:scale-95 shadow-sm"
               id="hero-submit-startup-btn"
             >
               <Sparkles className="w-4 h-4 text-orange-500" />
@@ -158,7 +158,7 @@ export const Hero: React.FC<HeroProps> = ({
 
             <button
               onClick={onExploreNews}
-              className="px-5 py-3.5 rounded-xl font-semibold text-sm text-slate-700 hover:text-blue-600 bg-white hover:bg-slate-50 border border-slate-200 transition-all flex items-center gap-2 shadow-2xs"
+              className="px-6 py-3.5 rounded-xl font-semibold text-sm text-slate-700 hover:text-blue-600 bg-white hover:bg-slate-50 border border-slate-200/80 transition-all flex items-center gap-2 shadow-xs"
               id="hero-news-btn"
             >
               <Radio className="w-4 h-4 text-blue-600" />
@@ -168,21 +168,21 @@ export const Hero: React.FC<HeroProps> = ({
         </div>
 
         {/* Live Ecosystem Metric Counters */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-12">
           {ECOSYSTEM_STATS.slice(0, 4).map((stat, idx) => {
             const { label, change } = translateStat(stat.label, stat.change);
             return (
               <div 
                 key={idx}
-                className="bg-slate-50/80 border border-slate-200 rounded-2xl p-4 sm:p-5 hover:bg-white hover:border-slate-300 hover:shadow-sm transition-all group"
+                className="bg-slate-50/70 border border-slate-100/90 rounded-2xl p-5 hover:bg-white hover:border-slate-200 hover:shadow-md transition-all duration-300 group"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                     {label}
                   </span>
-                  <span className="w-2 h-2 rounded-full bg-blue-600" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
                 </div>
-                <div className="text-2xl sm:text-3xl font-display font-extrabold text-slate-900 tracking-tight mb-1 group-hover:text-blue-600 transition-colors">
+                <div className="text-2xl sm:text-3xl font-display font-extrabold text-slate-950 tracking-tighter mb-1.5 group-hover:text-blue-600 transition-colors">
                   {stat.value}
                 </div>
                 <div className="text-xs font-semibold text-blue-700 flex items-center gap-1">

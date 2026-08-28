@@ -149,10 +149,10 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
         </div>
 
         {/* Filters & Search Toolbar */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 mb-8 space-y-4 shadow-xs">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-5 mb-10 space-y-4 shadow-xs">
           
           {/* Search bar & Stage Filter */}
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col lg:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
@@ -160,12 +160,12 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
                 placeholder={t('startups.search_placeholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-600 transition-colors"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-blue-600 transition-all duration-200"
               />
               {searchTerm && (
                 <button 
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-700"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-700 font-medium"
                 >
                   {language === 'tr' ? 'Temizle' : language === 'ar' ? 'مسح' : 'Clear'}
                 </button>
@@ -173,18 +173,18 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
             </div>
 
             {/* Stage filter dropdown/pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-              <span className="text-xs text-slate-500 font-medium pl-1 pr-2 hidden sm:inline">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 no-scrollbar">
+              <span className="text-xs text-slate-500 font-bold uppercase tracking-wider pl-1 pr-2 hidden sm:inline">
                 {language === 'tr' ? 'Aşama:' : language === 'ar' ? 'المرحلة:' : 'Stage:'}
               </span>
               {stages.map((st) => (
                 <button
                   key={st}
                   onClick={() => setSelectedStage(st)}
-                  className={`px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 ${
                     selectedStage === st
-                      ? 'bg-blue-600 text-white font-bold'
-                      : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-slate-50 text-slate-600 hover:text-slate-950 border border-slate-200/80 hover:bg-slate-100'
                   }`}
                 >
                   {st === 'all' ? (language === 'tr' ? 'Tüm Aşamalar' : language === 'ar' ? 'جميع المراحل' : 'All Stages') : st}
@@ -194,13 +194,13 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
           </div>
 
           {/* Category Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide pt-2 border-t border-slate-100 no-scrollbar">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide pt-4 border-t border-slate-100 no-scrollbar">
             <button
               onClick={() => onSelectCategory('all')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
+              className={`px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all duration-200 ${
                 selectedCategory === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'bg-slate-50 text-slate-600 hover:text-slate-950 border border-slate-200/80 hover:bg-slate-100'
               }`}
             >
               {language === 'tr' ? 'Tümü' : language === 'ar' ? 'الكل' : 'All'} ({STARTUPS.length})
@@ -211,10 +211,10 @@ export const StartupsSection: React.FC<StartupsSectionProps> = ({
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory(cat.id as StartupCategory)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                  className={`px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all duration-200 ${
                     selectedCategory === cat.id
-                      ? 'bg-blue-600 text-white font-bold'
-                      : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'bg-slate-50 text-slate-600 hover:text-slate-950 border border-slate-200/80 hover:bg-slate-100'
                   }`}
                 >
                   {translateCategoryName(cat.id, cat.name)} {count > 0 ? `(${count})` : ''}

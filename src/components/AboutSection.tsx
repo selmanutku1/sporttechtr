@@ -210,13 +210,13 @@ export const AboutSection: React.FC<{
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
           
           {/* Misyon */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 relative overflow-hidden group hover:border-slate-300 transition-all shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 mb-5">
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 relative overflow-hidden group hover:border-slate-300 transition-all duration-300 shadow-xs">
+            <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 mb-6">
               <Target className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-2">
+            <h3 className="text-xl font-display font-extrabold text-slate-950 tracking-tight mb-3 flex items-center gap-2">
               <span>{language === 'tr' ? 'Misyonumuz' : language === 'ar' ? 'رسالتنا' : 'Our Mission'}</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-orange-50 text-orange-700 font-mono font-bold">
+              <span className="text-[10px] px-2.5 py-1 rounded bg-orange-50 text-orange-700 font-mono font-bold uppercase tracking-wider">
                 {language === 'tr' ? 'ODAK' : language === 'ar' ? 'تركيز' : 'FOCUS'}
               </span>
             </h3>
@@ -252,13 +252,13 @@ export const AboutSection: React.FC<{
           </div>
 
           {/* Vizyon */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 relative overflow-hidden group hover:border-slate-300 transition-all shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-5">
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 relative overflow-hidden group hover:border-slate-300 transition-all duration-300 shadow-xs">
+            <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-6">
               <Eye className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-2">
+            <h3 className="text-xl font-display font-extrabold text-slate-950 tracking-tight mb-3 flex items-center gap-2">
               <span>{language === 'tr' ? 'Vizyonumuz' : language === 'ar' ? 'رؤيتنا' : 'Our Vision'}</span>
-              <span className="text-xs px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-mono font-bold">
+              <span className="text-[10px] px-2.5 py-1 rounded bg-blue-50 text-blue-700 font-mono font-bold uppercase tracking-wider">
                 {language === 'tr' ? '2030 HEDEFİ' : language === 'ar' ? 'هدف 2030' : '2030 TARGET'}
               </span>
             </h3>

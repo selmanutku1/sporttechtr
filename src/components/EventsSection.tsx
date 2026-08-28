@@ -14,6 +14,51 @@ import { UPCOMING_EVENTS } from '../data/ecosystem';
 import { EcosystemEvent } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 
+const isEventExpired = (dateStr: string): boolean => {
+  try {
+    const parts = dateStr.toLowerCase().split(/\s+/);
+    if (parts.length < 3) return false;
+
+    // Format is typically: "18-19 Mart 2026" or "05 Ocak 2026"
+    const dayPart = parts[0];
+    const monthPart = parts[1];
+    const yearPart = parts[2];
+
+    const year = parseInt(yearPart, 10);
+    if (isNaN(year)) return false;
+
+    // Get the last day if it is a range like "18-19"
+    const days = dayPart.split('-');
+    const day = parseInt(days[days.length - 1], 10);
+    if (isNaN(day)) return false;
+
+    let month = -1;
+    const trMonths: Record<string, number> = {
+      'ocak': 0, 'şubat': 1, 'mart': 2, 'nisan': 3, 'mayıs': 4, 'haziran': 5,
+      'temmuz': 6, 'ağustos': 7, 'eylül': 8, 'ekim': 9, 'kasım': 10, 'aralık': 11
+    };
+    const enMonths: Record<string, number> = {
+      'january': 0, 'february': 1, 'march': 2, 'april': 3, 'may': 4, 'june': 5,
+      'july': 6, 'august': 7, 'september': 8, 'october': 9, 'november': 10, 'december': 11,
+      'jan': 0, 'feb': 1, 'mar': 2, 'apr': 3, 'jun': 5, 'jul': 6, 'aug': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dec': 11
+    };
+
+    if (trMonths[monthPart] !== undefined) {
+      month = trMonths[monthPart];
+    } else if (enMonths[monthPart] !== undefined) {
+      month = enMonths[monthPart];
+    }
+
+    if (month === -1) return false;
+
+    const eventDate = new Date(year, month, day, 23, 59, 59);
+    return eventDate < new Date();
+  } catch (e) {
+    console.error("Error parsing event date:", e);
+    return false;
+  }
+};
+
 export const EventsSection: React.FC = () => {
   const [registeredEvents, setRegisteredEvents] = useState<string[]>([]);
   const [modalEvent, setModalEvent] = useState<EcosystemEvent | null>(null);
@@ -153,6 +198,7 @@ export const EventsSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {localizedEvents.map((evt) => {
             const isRegistered = registeredEvents.includes(evt.id);
+            const isExpired = !evt.registrationOpen || isEventExpired(evt.date);
             return (
               <div 
                 key={evt.id}
@@ -207,11 +253,16 @@ export const EventsSection: React.FC = () => {
                   </span>
 
                   <button
-                    onClick={() => !isRegistered && setModalEvent(evt)}
-                    disabled={isRegistered}
+                    onClick={() => {
+                      if (isExpired || isRegistered) return;
+                      setModalEvent(evt);
+                    }}
+                    disabled={isRegistered || isExpired}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
                       isRegistered
                         ? 'bg-blue-50 text-blue-700 border border-blue-200 cursor-default'
+                        : isExpired
+                        ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed shadow-none'
                         : 'bg-blue-600 hover:bg-blue-500 text-white active:scale-95 shadow-sm'
                     }`}
                   >
@@ -219,6 +270,11 @@ export const EventsSection: React.FC = () => {
                       <>
                         <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
                         <span>{language === 'tr' ? 'Kayıt Alındı' : language === 'ar' ? 'تم التسجيل' : 'Registered'}</span>
+                      </>
+                    ) : isExpired ? (
+                      <>
+                        <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                        <span>{language === 'tr' ? 'Süresi Geçti' : language === 'ar' ? 'انتهى التسجيل' : 'Expired'}</span>
                       </>
                     ) : (
                       <>
