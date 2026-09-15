@@ -1,20 +1,20 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# SportTech Türkiye Android App
 
-# Run and deploy your AI Studio app
+This project is a native Android application rewritten from the original React web application.
+It serves as the digital hub for the SportTech Türkiye community, showcasing sports technology startups, ecosystem news, and supporters.
 
-This contains everything you need to run your app locally.
+## Tech Stack
+- Kotlin
+- Jetpack Compose
+- Material 3 Design
+- Navigation Compose
+- Kotlin Serialization
 
-View your app in AI Studio: https://ai.studio/apps/79733adc-e432-4040-a6ac-0d681218df5e
+## Features
+- **Startups List & Details**: Browse innovative sports tech startups and view their detailed information.
+- **News**: Read the latest updates from the sports tech ecosystem.
+- **Supporters**: View the key technology and ecosystem supporters.
+- **Submit Startup**: Easily submit a new startup through the integrated Compose dialog.
 
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## How to Build
+Run `./gradlew assembleDebug` or use Android Studio to build the app.
